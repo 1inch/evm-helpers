@@ -21,4 +21,4 @@ module.exports = async ({ deployments, getNamedAccounts }) => {
     }
 };
 
-module.exports.skip = async () => false;
+module.exports.skip = async () => true;

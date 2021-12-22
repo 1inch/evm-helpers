@@ -52,16 +52,16 @@ if (process.env.XDAI_RPC_URL && process.env.XDAI_PRIVATE_KEY) {
     networks.xdai = {
         url: process.env.XDAI_RPC_URL,
         chainId: 100,
-        accounts : [process.env.XDAI_PRIVATE_KEY]
-    }
+        accounts: [process.env.XDAI_PRIVATE_KEY],
+    };
 }
 
 if (process.env.AVAX_RPC_URL && process.env.AVAX_PRIVATE_KEY) {
     networks.avax = {
         url: process.env.AVAX_RPC_URL,
         chainId: 43114,
-        accounts : [process.env.AVAX_PRIVATE_KEY]
-    }
+        accounts: [process.env.AVAX_PRIVATE_KEY],
+    };
 }
 
 module.exports = networks;
