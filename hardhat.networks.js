@@ -24,5 +24,4 @@ register('ropsten', 3, process.env.ROPSTEN_RPC_URL, process.env.ROPSTEN_PRIVATE_
 register('xdai', 100, process.env.XDAI_RPC_URL, process.env.XDAI_PRIVATE_KEY);
 register('avax', 43114, process.env.AVAX_RPC_URL, process.env.AVAX_PRIVATE_KEY);
 
-
 module.exports = networks;
