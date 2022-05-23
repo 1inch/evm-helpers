@@ -8,29 +8,29 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@openzeppelin/contracts": "4.5.0"
+    "@openzeppelin/contracts": "4.6.0"
   },
   "devDependencies": {
-    "@nomiclabs/hardhat-ethers": "2.0.5",
+    "@nomiclabs/hardhat-ethers": "2.0.6",
     "@nomiclabs/hardhat-etherscan": "3.0.3",
-    "@nomiclabs/hardhat-truffle5": "2.0.5",
+    "@nomiclabs/hardhat-truffle5": "2.0.6",
     "@nomiclabs/hardhat-web3": "2.0.0",
     "@openzeppelin/test-helpers": "0.5.15",
     "chai": "4.3.6",
-    "dotenv": "16.0.0",
-    "eslint": "8.11.0",
-    "eslint-config-standard": "16.0.3",
-    "eslint-plugin-import": "2.25.4",
-    "eslint-plugin-node": "11.1.0",
+    "dotenv": "16.0.1",
+    "eslint": "8.16.0",
+    "eslint-config-standard": "17.0.0",
+    "eslint-plugin-import": "2.26.0",
+    "eslint-plugin-n": "15.2.0",
     "eslint-plugin-promise": "6.0.0",
     "eslint-plugin-standard": "5.0.0",
-    "ethers": "5.6.1",
-    "hardhat": "2.8.4",
-    "hardhat-deploy": "0.11.0",
+    "ethers": "5.6.7",
+    "hardhat": "2.9.6",
+    "hardhat-deploy": "0.11.10",
     "hardhat-gas-reporter": "1.0.8",
     "rimraf": "3.0.2",
     "solhint": "3.3.7",
-    "solidity-coverage": "0.7.20"
+    "solidity-coverage": "0.7.21"
   },
   "scripts": {
     "clean": "rimraf artifacts cache coverage coverage.json",
