@@ -5,22 +5,10 @@ require('hardhat-deploy');
 require('hardhat-gas-reporter');
 require('solidity-coverage');
 
-const networks = require('./hardhat.networks');
+const { networks, etherscan } = require('./hardhat.networks');
 
 module.exports = {
-    etherscan: {
-        apiKey: {
-            mainnet: process.env.MAINNET_ETHERSCAN_KEY,
-            bsc: process.env.BSC_ETHERSCAN_KEY,
-            optimisticEthereum: process.env.OPTIMISTIC_ETHERSCAN_KEY,
-            polygon: process.env.MATIC_ETHERSCAN_KEY,
-            arbitrumOne: process.env.ARBITRUM_ETHERSCAN_KEY,
-            xdai: process.env.XDAI_ETHERSCAN_KEY,
-            avalanche: process.env.AVAX_ETHERSCAN_KEY,
-            kovan: process.env.KOVAN_ETHERSCAN_KEY,
-            opera: process.env.FANTOM_ETHERSCAN_KEY,
-        },
-    },
+    etherscan,
     solidity: {
         settings: {
             optimizer: {
