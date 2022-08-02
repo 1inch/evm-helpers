@@ -1,5 +1,5 @@
 const networks = {};
-const etherscan = { apiKey: {} };
+const etherscan = { apiKey: {}, customChains: [] };
 
 function register (name, chainId, url, privateKey, etherscanNetworkName, etherscanKey) {
     if (url && privateKey && etherscanKey) {
@@ -15,6 +15,13 @@ function register (name, chainId, url, privateKey, etherscanNetworkName, ethersc
     }
 }
 
+function registerCustom (name, chainId, url, privateKey, etherscanKey, apiURL, browserURL) {
+    if (url && privateKey && etherscanKey) {
+        register(name, chainId, url, privateKey, name, etherscanKey);
+        etherscan.customChains.push({ network: name, chainId, urls: { apiURL, browserURL } });
+    }
+}
+
 register('mainnet', 1, process.env.MAINNET_RPC_URL, process.env.MAINNET_PRIVATE_KEY, 'mainnet', process.env.MAINNET_ETHERSCAN_KEY);
 register('bsc', 56, process.env.BSC_RPC_URL, process.env.BSC_PRIVATE_KEY, 'bsc', process.env.BSC_ETHERSCAN_KEY);
 register('kovan', 42, process.env.KOVAN_RPC_URL, process.env.KOVAN_PRIVATE_KEY, 'kovan', process.env.KOVAN_ETHERSCAN_KEY);
@@ -27,6 +34,7 @@ register('fantom', 250, process.env.FANTOM_RPC_URL, process.env.FANTOM_PRIVATE_K
 register('aurora', 1313161554, process.env.AURORA_RPC_URL, process.env.AURORA_PRIVATE_KEY, 'aurora', process.env.AURORA_ETHERSCAN_KEY);
 // register('ropsten', 3, process.env.ROPSTEN_RPC_URL, process.env.ROPSTEN_PRIVATE_KEY);
 // register('kovan-optimistic', 69, process.env.KOVAN_OPTIMISTIC_RPC_URL, process.env.KOVAN_OPTIMISTIC_PRIVATE_KEY);
+registerCustom('klaytn', 8217, process.env.KLAYTN_RPC_URL, process.env.KLAYTN_PRIVATE_KEY, process.env.KLAYTN_ETHERSCAN_KEY, 'https://scope.klaytn.com/', 'https://scope.klaytn.com/');
 
 module.exports = {
     networks,
