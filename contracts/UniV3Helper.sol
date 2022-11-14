@@ -110,7 +110,7 @@ contract UniV3Helper {
         if (x >= 0x2) r += 1;
     }
 
-    function getBins(IJoePair pair, uint24 startBins, uint24 endBins)
+    function getBins(IJoePair pair, uint24 startBins, uint24 endBins, bool swapY)
         external
         view
         returns (
@@ -125,7 +125,7 @@ contract UniV3Helper {
         ids = new uint256[](endBins - startBins);
         reservesX = new uint256[](endBins - startBins);
         reservesY = new uint256[](endBins - startBins);
-        for (uint24 i = startBins; i < endBins; ++i) {
+        for (uint24 i = startBins; i < endBins; i = pair.findFirstNonEmptyBinId(i, swapY)) {
             (reserve0, reserve1) = pair.getBin(i);
             if (reserve0 > 0 || reserve1 > 0) {
                 ids[counter] = i;
