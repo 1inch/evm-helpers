@@ -125,7 +125,7 @@ contract UniV3Helper {
         ids = new uint256[](endBins - startBins);
         reservesX = new uint256[](endBins - startBins);
         reservesY = new uint256[](endBins - startBins);
-        for (uint24 i = startBins; i < endBins; i = pair.findFirstNonEmptyBinId(i, swapY)) {
+        for (uint24 i = startBins; i <= endBins; i = pair.findFirstNonEmptyBinId(i, swapY)) {
             (reserve0, reserve1) = pair.getBin(i);
             if (reserve0 > 0 || reserve1 > 0) {
                 ids[counter] = i;
