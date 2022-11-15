@@ -119,20 +119,19 @@ contract UniV3Helper {
             uint256[] memory reservesY
         ) 
     {
-        uint256 reserve0 = 0; 
-        uint256 reserve1 = 0;
         uint256 counter = 0;
-        ids = new uint256[](endBins - startBins);
-        reservesX = new uint256[](endBins - startBins);
-        reservesY = new uint256[](endBins - startBins);
-        for (uint24 i = startBins; i <= endBins; i = pair.findFirstNonEmptyBinId(i, swapY)) {
-            (reserve0, reserve1) = pair.getBin(i);
-            if (reserve0 > 0 || reserve1 > 0) {
-                ids[counter] = i;
-                reservesX[counter] = reserve0;
-                reservesY[counter] = reserve1;
-                ++counter;
+        uint256 length = endBins - startBins;
+        ids = new uint256[](length);
+        reservesX = new uint256[](length);
+        reservesY = new uint256[](length);
+        for (uint24 i = startBins; ;) {
+            i = pair.findFirstNonEmptyBinId(i, swapY);
+            if (i > endBins) {
+                break;
             }
+            (reservesX[counter], reservesY[counter]) = pair.getBin(i);
+            ids[counter] = i;
+            ++counter;
         }
     }
 }
