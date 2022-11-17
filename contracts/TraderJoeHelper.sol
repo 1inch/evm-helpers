@@ -30,7 +30,7 @@ contract UniV3Helper {
         }
 
         // cut array size down
-        assembly {
+        assembly {  // solhint-disable-line no-inline-assembly
             mstore(data, counter)
         }
     }
