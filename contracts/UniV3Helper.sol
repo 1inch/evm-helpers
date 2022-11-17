@@ -3,7 +3,6 @@
 pragma solidity 0.8.15;
 
 import "./interfaces/IUniswapV3.sol";
-import "./interfaces/IJoePair.sol";
 
 contract UniV3Helper {
     int24 private constant _MIN_TICK = -887272;
@@ -108,30 +107,5 @@ contract UniV3Helper {
             r += 2;
         }
         if (x >= 0x2) r += 1;
-    }
-
-    function getBins(IJoePair pair, uint24 startBins, uint24 endBins, bool swapY)
-        external
-        view
-        returns (
-            uint256[] memory ids,
-            uint256[] memory reservesX,
-            uint256[] memory reservesY
-        ) 
-    {
-        uint256 counter = 0;
-        uint256 length = endBins - startBins;
-        ids = new uint256[](length);
-        reservesX = new uint256[](length);
-        reservesY = new uint256[](length);
-        for (uint24 i = startBins; ;) {
-            i = pair.findFirstNonEmptyBinId(i, swapY);
-            if (i > endBins) {
-                break;
-            }
-            (reservesX[counter], reservesY[counter]) = pair.getBin(i);
-            ids[counter] = i;
-            ++counter;
-        }
     }
 }
