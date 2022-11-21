@@ -4,7 +4,7 @@ pragma solidity 0.8.15;
 
 import "./interfaces/IJoePair.sol";
 
-contract UniV3Helper {
+contract TraderJoeHelper {
     struct BinData {
         uint256 id;
         uint256 reserveX;

@@ -19,6 +19,18 @@ module.exports = async ({ deployments, getNamedAccounts }) => {
             address: evmHelpers.address,
         });
     }
+
+    // const traderJoeHelper = await deploy('TraderJoeHelper', {
+    //     from: deployer,
+    // });
+
+    // console.log('TraderJoeHelper deployed to:', traderJoeHelper.address);
+
+    // if (await getChainId() !== '31337') {
+    //     await hre.run('verify:verify', {
+    //         address: traderJoeHelper.address,
+    //     });
+    // }
 };
 
 module.exports.skip = async () => true;
