@@ -14,13 +14,13 @@ contract TraderJoeHelper {
     function getBins(IJoePair pair, uint24 startBin, uint24 endBin, bool swapY)
         external
         view
-        returns (BinData[] memory data)
+        returns (BinData[] memory data, uint24 i)
     {
         uint256 counter = 0;
         uint256 length = endBin - startBin;
         data = new BinData[](length);
         for (
-            uint24 i = pair.findFirstNonEmptyBinId(startBin, swapY);
+            i = pair.findFirstNonEmptyBinId(startBin, swapY);
             i < endBin;
             i = pair.findFirstNonEmptyBinId(i, swapY)
         ) {
