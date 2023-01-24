@@ -3,15 +3,15 @@
 pragma solidity >=0.7.0 <0.9.0;
 
 import "hardhat/console.sol";
-import '@openzeppelin/contracts/token/ERC20/ERC20.sol';
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 contract WombatPoolDiscoverer {
 
-    address private constant wombatMasterV3 = 0x489833311676B566f888119c29bd997Dc6C95830;
+    address private constant WOMBAT_MASTER_V3 = 0x489833311676B566f888119c29bd997Dc6C95830;
 
     function getAllPoolData() external view returns (address[] memory pools, address[][] memory tokens, address[] memory lpTokens, address[] memory underlyingTokens) {
         // poolLength is actually the number of LP tokens tracked
-        uint256 lpTokenCount = Wombat(wombatMasterV3).poolLength();
+        uint256 lpTokenCount = Wombat(WOMBAT_MASTER_V3).poolLength();
 
         // These two arrays will map all lp token addresses to their underlying token
         lpTokens = new address[](lpTokenCount);
@@ -22,7 +22,7 @@ contract WombatPoolDiscoverer {
 
         uint uniquePoolsIndex = 0;
         for (uint i=0; i<lpTokenCount; i++) {
-            (address lpToken,,,,,,,) = Wombat(wombatMasterV3).poolInfoV3(i);
+            (address lpToken,,,,,,,) = Wombat(WOMBAT_MASTER_V3).poolInfoV3(i);
             lpTokens[i] = lpToken;
             underlyingTokens[i] = WombatPool(lpToken).underlyingToken();
 
