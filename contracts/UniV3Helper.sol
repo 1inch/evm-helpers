@@ -46,7 +46,6 @@ contract UniV3Helper {
                  counter += 1;
                  bm ^= 1 << bit;
              }
-
         }
 
         ticks = new bytes[](counter);
