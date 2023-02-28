@@ -22,7 +22,7 @@ describe('AlgebraHelper', function () {
         });
     });
 
-    it.only('should show some ticks for weth-usdc pair', async function () {
+    it('should show some ticks for weth-usdc pair', async function () {
         const USDC_WETH_POOL_ADDRESS = '0x308C5B91F63307439FDB51a9fA4Dfc979E2ED6B0';
 
         const algebraHelper = await (await ethers.getContractFactory('AlgebraHelper')).deploy();
