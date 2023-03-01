@@ -8,9 +8,6 @@ require('solidity-coverage');
 const { networks, etherscan } = require('./hardhat.networks');
 
 module.exports = {
-    mocha: {
-        timeout: 100000,
-    },
     etherscan,
     solidity: {
         settings: {
