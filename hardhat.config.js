@@ -1,5 +1,5 @@
 require('@nomiclabs/hardhat-etherscan');
-require('@nomiclabs/hardhat-truffle5');
+require('@nomiclabs/hardhat-ethers');
 require('dotenv').config();
 require('hardhat-deploy');
 require('hardhat-gas-reporter');
@@ -8,6 +8,9 @@ require('solidity-coverage');
 const { networks, etherscan } = require('./hardhat.networks');
 
 module.exports = {
+    mocha: {
+        timeout: 100000,
+    },
     etherscan,
     solidity: {
         settings: {

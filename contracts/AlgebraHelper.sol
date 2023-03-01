@@ -2,11 +2,14 @@
 
 pragma solidity 0.8.15;
 
-import "./interfaces/IUniswapV3.sol";
+import "./interfaces/IAlgebra.sol";
 
-contract UniV3Helper {
+contract AlgebraHelper {
     int24 private constant _MIN_TICK = -887272;
     int24 private constant _MAX_TICK = -_MIN_TICK;
+
+    uint16 internal constant _BASE_FEE = 100;
+    int24 internal constant _TICK_SPACING = 60;
 
     struct Tick {
         uint128 liquidityGross;
@@ -19,12 +22,11 @@ contract UniV3Helper {
         int24 index; // tick index
     }
 
-    function getTicks(IUniswapV3 pool, int24 tickRange) external view returns (bytes[] memory ticks) {
-        int24 tickSpacing = pool.tickSpacing();
-        (,int24 tick,,,,,) = pool.slot0();
+    function getTicks(IAlgebra pool, int24 tickRange) external view returns (bytes[] memory ticks) {
+        (,int24 tick,,,,,) = pool.globalState();
 
-        int24 fromTick = tick - (tickSpacing * tickRange);
-        int24 toTick = tick + (tickSpacing * tickRange);
+        int24 fromTick = tick - (_TICK_SPACING * tickRange);
+        int24 toTick = tick + (_TICK_SPACING * tickRange);
         if (fromTick < _MIN_TICK) {
             fromTick = _MIN_TICK;
         }
@@ -32,17 +34,17 @@ contract UniV3Helper {
             toTick = _MAX_TICK;
         }
 
-        int24[] memory initTicks = new int24[](uint256(int256((toTick - fromTick + 1) / tickSpacing)));
+        int24[] memory initTicks = new int24[](uint256(int256((toTick - fromTick + 1) / _TICK_SPACING)));
 
         uint256 counter = 0;
-        for (int24 tickNum = (fromTick / tickSpacing * tickSpacing); tickNum <=  (toTick / tickSpacing * tickSpacing); tickNum += (256 * tickSpacing)) {
-            int16 pos = int16((tickNum / tickSpacing) >> 8);
-            uint256 bm = pool.tickBitmap(pos);
+        for (int24 tickNum = (fromTick / _TICK_SPACING * _TICK_SPACING); tickNum <= (toTick / _TICK_SPACING * _TICK_SPACING); tickNum += (256 * _TICK_SPACING)) {
+            int16 pos = int16((tickNum / _TICK_SPACING) >> 8);
+            uint256 bm = pool.tickTable(pos);
 
             while (bm != 0) {
                 uint8 bit = _mostSignificantBit(bm);
                 bm ^= 1 << bit;
-                int24 extractedTick = (int24(pos) * 256 + int24(uint24(bit))) * tickSpacing;
+                int24 extractedTick = (int24(pos) * 256 + int24(uint24(bit))) * _TICK_SPACING;
                 if (extractedTick >= fromTick && extractedTick <= toTick) {
                     initTicks[counter++] = extractedTick;
                 }
@@ -52,24 +54,24 @@ contract UniV3Helper {
         ticks = new bytes[](counter);
         for (uint256 i = 0; i < counter; i++) {
             (
-                uint128 liquidityGross,
-                int128 liquidityNet,
-                uint256 feeGrowthOutside0X128,
-                uint256 feeGrowthOutside1X128
-                , // int56 tickCumulativeOutside,
-                , // secondsPerLiquidityOutsideX128
-                , // uint32 secondsOutside
-                , // init
+                uint128 liquidityTotal,
+                int128 liquidityDelta,
+                uint256 outerFeeGrowth0Token,
+                uint256 outerFeeGrowth1Token
+                , // int56 outerTickCumulative,
+                , // uint160 outerSecondsPerLiquidity
+                , // uint32 outerSecondsSpent
+                , // bool initialized
             ) = pool.ticks(initTicks[i]);
 
              ticks[i] = abi.encodePacked(
-                 liquidityGross,
-                 liquidityNet,
-                 feeGrowthOutside0X128,
-                 feeGrowthOutside1X128,
-                 // tickCumulativeOutside,
-                 // secondsPerLiquidityOutsideX128,
-                 // secondsOutside,
+                 liquidityTotal,
+                 liquidityDelta,
+                 outerFeeGrowth0Token,
+                 outerFeeGrowth1Token,
+                 // outerTickCumulative,
+                 // outerSecondsPerLiquidity,
+                 // outerSecondsSpent,
                  initTicks[i]
              );
         }

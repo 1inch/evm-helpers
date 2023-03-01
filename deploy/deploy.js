@@ -8,17 +8,17 @@ module.exports = async ({ deployments, getNamedAccounts }) => {
     const { deploy } = deployments;
     const { deployer } = await getNamedAccounts();
 
-    const evmHelpers = await deploy('EvmHelpers', {
-        from: deployer,
-    });
+    // const evmHelpers = await deploy('EvmHelpers', {
+    //     from: deployer,
+    // });
 
-    console.log('EvmHelpers deployed to:', evmHelpers.address);
+    // console.log('EvmHelpers deployed to:', evmHelpers.address);
 
-    if (await getChainId() !== '31337') {
-        await hre.run('verify:verify', {
-            address: evmHelpers.address,
-        });
-    }
+    // if (await getChainId() !== '31337') {
+    //     await hre.run('verify:verify', {
+    //         address: evmHelpers.address,
+    //     });
+    // }
 
     // const traderJoeHelper = await deploy('TraderJoeHelper', {
     //     from: deployer,
@@ -29,6 +29,18 @@ module.exports = async ({ deployments, getNamedAccounts }) => {
     // if (await getChainId() !== '31337') {
     //     await hre.run('verify:verify', {
     //         address: traderJoeHelper.address,
+    //     });
+    // }
+
+    // const algebraHelper = await deploy('AlgebraHelper', {
+    //     from: deployer,
+    // });
+
+    // console.log('AlgebraHelper deployed to:', algebraHelper.address);
+
+    // if (await getChainId() !== '31337') {
+    //     await hre.run('verify:verify', {
+    //         address: algebraHelper.address,
     //     });
     // }
 };
