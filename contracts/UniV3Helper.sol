@@ -36,9 +36,9 @@ contract UniV3Helper {
         int24[] memory initTicks = new int24[](uint256(int256((toTick - fromTick + 1) / tickSpacing)));
 
         uint256 counter = 0;
-        int16 pos = int16((fromTick / tickSpacing) >> 8);
-        int16 endPos = int16((toTick / tickSpacing) >> 8);
-        for (; pos <= endPos; pos++) {
+        int16 pos = int16((toTick / tickSpacing) >> 8);
+        int16 endPos = int16((fromTick / tickSpacing) >> 8);
+        for (; pos >= endPos; pos--) {
             uint256 bm = pool.tickBitmap(pos);
 
             while (bm != 0) {
@@ -62,7 +62,7 @@ contract UniV3Helper {
                 , // secondsPerLiquidityOutsideX128
                 , // uint32 secondsOutside
                 , // init
-            ) = pool.ticks(initTicks[i]);
+            ) = pool.ticks(initTicks[counter - i - 1]);
 
              ticks[i] = abi.encodePacked(
                  liquidityGross,
@@ -72,7 +72,7 @@ contract UniV3Helper {
                  // tickCumulativeOutside,
                  // secondsPerLiquidityOutsideX128,
                  // secondsOutside,
-                 initTicks[i]
+                 initTicks[counter - i - 1]
              );
         }
     }
