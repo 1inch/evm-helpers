@@ -28,8 +28,8 @@ describe('AlgebraHelper', function () {
         const algebraHelper = await (await ethers.getContractFactory('AlgebraHelper')).deploy();
         await algebraHelper.deployed();
 
-        const ticks = await algebraHelper.getTicks(USDC_WETH_POOL_ADDRESS, 50);
-        console.log('ticks', ticks);
+        const ticks = await algebraHelper.getTicks(USDC_WETH_POOL_ADDRESS, 10);
+        console.log('ticks', ticks.length);
         expect(ticks.length).to.gt(0);
     });
 });

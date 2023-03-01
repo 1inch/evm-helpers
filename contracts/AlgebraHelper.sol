@@ -37,17 +37,18 @@ contract AlgebraHelper {
         int24[] memory initTicks = new int24[](uint256(int256((toTick - fromTick + 1) / _TICK_SPACING)));
 
         uint256 counter = 0;
-        for (int24 tickNum = (fromTick / _TICK_SPACING * _TICK_SPACING); tickNum <=  (toTick / _TICK_SPACING * _TICK_SPACING); tickNum += (256 * _TICK_SPACING)) {
+        for (int24 tickNum = (fromTick / _TICK_SPACING * _TICK_SPACING); tickNum <= (toTick / _TICK_SPACING * _TICK_SPACING); tickNum += (256 * _TICK_SPACING)) {
             int16 pos = int16((tickNum / _TICK_SPACING) >> 8);
             uint256 bm = pool.tickTable(pos);
 
-             while (bm != 0) {
-                 uint8 bit = _mostSignificantBit(bm);
-                 initTicks[counter] = (int24(pos) * 256 + int24(uint24(bit))) * _TICK_SPACING;
-
-                 counter += 1;
-                 bm ^= 1 << bit;
-             }
+            while (bm != 0) {
+                uint8 bit = _mostSignificantBit(bm);
+                bm ^= 1 << bit;
+                int24 extractedTick = (int24(pos) * 256 + int24(uint24(bit))) * _TICK_SPACING;
+                if (extractedTick >= fromTick && extractedTick <= toTick) {
+                    initTicks[counter++] = extractedTick;
+                }
+            }
         }
 
         ticks = new bytes[](counter);

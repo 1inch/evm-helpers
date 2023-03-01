@@ -28,8 +28,8 @@ describe('UniV3Helper', function () {
         const uniV3Helper = await (await ethers.getContractFactory('UniV3Helper')).deploy();
         await uniV3Helper.deployed();
 
-        const ticks = await uniV3Helper.getTicks(USDC_DAI_POOL_ADDRESS, 100);
-        console.log('ticks', ticks);
+        const ticks = await uniV3Helper.getTicks(USDC_DAI_POOL_ADDRESS, 20);
+        console.log('ticks', ticks.length);
         expect(ticks.length).to.gt(0);
     });
 });

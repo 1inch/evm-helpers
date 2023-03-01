@@ -39,13 +39,14 @@ contract UniV3Helper {
             int16 pos = int16((tickNum / tickSpacing) >> 8);
             uint256 bm = pool.tickBitmap(pos);
 
-             while (bm != 0) {
-                 uint8 bit = _mostSignificantBit(bm);
-                 initTicks[counter] = (int24(pos) * 256 + int24(uint24(bit))) * tickSpacing;
-
-                 counter += 1;
-                 bm ^= 1 << bit;
-             }
+            while (bm != 0) {
+                uint8 bit = _mostSignificantBit(bm);
+                bm ^= 1 << bit;
+                int24 extractedTick = (int24(pos) * 256 + int24(uint24(bit))) * tickSpacing;
+                if (extractedTick >= fromTick && extractedTick <= toTick) {
+                    initTicks[counter++] = extractedTick;
+                }
+            }
         }
 
         ticks = new bytes[](counter);
