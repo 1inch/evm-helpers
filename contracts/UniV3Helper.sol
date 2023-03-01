@@ -36,13 +36,13 @@ contract UniV3Helper {
         int24[] memory initTicks = new int24[](uint256(int256((toTick - fromTick + 1) / tickSpacing)));
 
         uint256 counter = 0;
-        int16 pos = int16((toTick / tickSpacing) >> 8);
-        int16 endPos = int16((fromTick / tickSpacing) >> 8);
-        for (; pos >= endPos; pos--) {
+        int16 pos = int16((fromTick / tickSpacing) >> 8);
+        int16 endPos = int16((toTick / tickSpacing) >> 8);
+        for (; pos <= endPos; pos++) {
             uint256 bm = pool.tickBitmap(pos);
 
             while (bm != 0) {
-                uint8 bit = _mostSignificantBit(bm);
+                uint8 bit = _smallestSignificantBit(bm);
                 bm ^= 1 << bit;
                 int24 extractedTick = ((int24(pos) << 8) | int24(uint24(bit))) * tickSpacing;
                 if (extractedTick >= fromTick && extractedTick <= toTick) {
@@ -62,7 +62,7 @@ contract UniV3Helper {
                 , // secondsPerLiquidityOutsideX128
                 , // uint32 secondsOutside
                 , // init
-            ) = pool.ticks(initTicks[counter - i - 1]);
+            ) = pool.ticks(initTicks[i]);
 
              ticks[i] = abi.encodePacked(
                  liquidityGross,
@@ -72,13 +72,14 @@ contract UniV3Helper {
                  // tickCumulativeOutside,
                  // secondsPerLiquidityOutsideX128,
                  // secondsOutside,
-                 initTicks[counter - i - 1]
+                 initTicks[i]
              );
         }
     }
 
-    function _mostSignificantBit(uint256 x) private pure returns (uint8 r) {
+    function _smallestSignificantBit(uint256 x) private pure returns (uint8 r) {
         require(x > 0, "x is 0");
+        x = x & (~x + 1);
 
         if (x >= 0x100000000000000000000000000000000) {
             x >>= 128;
