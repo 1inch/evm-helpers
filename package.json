@@ -14,7 +14,6 @@
     "@1inch/solidity-utils": "2.2.19",
     "@nomiclabs/hardhat-ethers": "2.2.1",
     "@nomiclabs/hardhat-etherscan": "3.1.2",
-    "@nomiclabs/hardhat-waffle": "^2.0.5",
     "@openzeppelin/test-helpers": "0.5.15",
     "chai": "4.3.6",
     "dotenv": "16.0.1",
