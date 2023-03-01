@@ -5,8 +5,8 @@ module.exports = async ({ deployments, getNamedAccounts }) => {
     console.log('running deploy script');
     console.log('network id ', await getChainId());
 
-    const { deploy } = deployments;
-    const { deployer } = await getNamedAccounts();
+    // const { deploy } = deployments;
+    // const { deployer } = await getNamedAccounts();
 
     // const evmHelpers = await deploy('EvmHelpers', {
     //     from: deployer,
