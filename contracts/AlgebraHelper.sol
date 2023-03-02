@@ -44,7 +44,7 @@ contract AlgebraHelper {
             uint256 bm = pool.tickTable(pos);
 
             while (bm != 0) {
-                uint8 bit = _smallestSignificantBit(bm);
+                uint8 bit = _leastSignificantBit(bm);
                 bm ^= 1 << bit;
                 int24 extractedTick = ((int24(pos) << 8) | int24(uint24(bit))) * _TICK_SPACING;
                 if (extractedTick >= fromTick && extractedTick <= toTick) {
@@ -66,20 +66,20 @@ contract AlgebraHelper {
                 , // bool initialized
             ) = pool.ticks(initTicks[i]);
 
-             ticks[i] = abi.encodePacked(
-                 liquidityTotal,
-                 liquidityDelta,
-                 outerFeeGrowth0Token,
-                 outerFeeGrowth1Token,
-                 // outerTickCumulative,
-                 // outerSecondsPerLiquidity,
-                 // outerSecondsSpent,
-                 initTicks[i]
-             );
+            ticks[i] = abi.encodePacked(
+                liquidityTotal,
+                liquidityDelta,
+                outerFeeGrowth0Token,
+                outerFeeGrowth1Token,
+                // outerTickCumulative,
+                // outerSecondsPerLiquidity,
+                // outerSecondsSpent,
+                initTicks[i]
+            );
         }
     }
 
-    function _smallestSignificantBit(uint256 x) private pure returns (uint8 r) {
+    function _leastSignificantBit(uint256 x) private pure returns (uint8 r) {
         require(x > 0, "x is 0");
         x = x & (~x + 1);
 

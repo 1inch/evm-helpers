@@ -64,16 +64,16 @@ contract UniV3Helper {
                 , // init
             ) = pool.ticks(initTicks[i]);
 
-             ticks[i] = abi.encodePacked(
-                 liquidityGross,
-                 liquidityNet,
-                 feeGrowthOutside0X128,
-                 feeGrowthOutside1X128,
-                 // tickCumulativeOutside,
-                 // secondsPerLiquidityOutsideX128,
-                 // secondsOutside,
-                 initTicks[i]
-             );
+            ticks[i] = abi.encodePacked(
+                liquidityGross,
+                liquidityNet,
+                feeGrowthOutside0X128,
+                feeGrowthOutside1X128,
+                // tickCumulativeOutside,
+                // secondsPerLiquidityOutsideX128,
+                // secondsOutside,
+                initTicks[i]
+            );
         }
     }
 
