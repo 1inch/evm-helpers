@@ -23,8 +23,9 @@ contract UniV3Helper {
         int24 tickSpacing = pool.tickSpacing();
         (,int24 tick,,,,,) = pool.slot0();
 
-        int24 fromTick = tick - (tickSpacing * tickRange);
-        int24 toTick = tick + (tickSpacing * tickRange);
+        tickRange *= tickSpacing;
+        int24 fromTick = tick - tickRange;
+        int24 toTick = tick + tickRange;
         if (fromTick < _MIN_TICK) {
             fromTick = _MIN_TICK;
         }
@@ -35,14 +36,15 @@ contract UniV3Helper {
         int24[] memory initTicks = new int24[](uint256(int256((toTick - fromTick + 1) / tickSpacing)));
 
         uint256 counter = 0;
-        for (int24 tickNum = (fromTick / tickSpacing * tickSpacing); tickNum <=  (toTick / tickSpacing * tickSpacing); tickNum += (256 * tickSpacing)) {
-            int16 pos = int16((tickNum / tickSpacing) >> 8);
+        int16 pos = int16((fromTick / tickSpacing) >> 8);
+        int16 endPos = int16((toTick / tickSpacing) >> 8);
+        for (; pos <= endPos; pos++) {
             uint256 bm = pool.tickBitmap(pos);
 
             while (bm != 0) {
-                uint8 bit = _mostSignificantBit(bm);
+                uint8 bit = _leastSignificantBit(bm);
                 bm ^= 1 << bit;
-                int24 extractedTick = (int24(pos) * 256 + int24(uint24(bit))) * tickSpacing;
+                int24 extractedTick = ((int24(pos) << 8) | int24(uint24(bit))) * tickSpacing;
                 if (extractedTick >= fromTick && extractedTick <= toTick) {
                     initTicks[counter++] = extractedTick;
                 }
@@ -62,21 +64,22 @@ contract UniV3Helper {
                 , // init
             ) = pool.ticks(initTicks[i]);
 
-             ticks[i] = abi.encodePacked(
-                 liquidityGross,
-                 liquidityNet,
-                 feeGrowthOutside0X128,
-                 feeGrowthOutside1X128,
-                 // tickCumulativeOutside,
-                 // secondsPerLiquidityOutsideX128,
-                 // secondsOutside,
-                 initTicks[i]
-             );
+            ticks[i] = abi.encodePacked(
+                liquidityGross,
+                liquidityNet,
+                feeGrowthOutside0X128,
+                feeGrowthOutside1X128,
+                // tickCumulativeOutside,
+                // secondsPerLiquidityOutsideX128,
+                // secondsOutside,
+                initTicks[i]
+            );
         }
     }
 
-    function _mostSignificantBit(uint256 x) private pure returns (uint8 r) {
+    function _leastSignificantBit(uint256 x) private pure returns (uint8 r) {
         require(x > 0, "x is 0");
+        x = x & (~x + 1);
 
         if (x >= 0x100000000000000000000000000000000) {
             x >>= 128;

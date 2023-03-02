@@ -25,8 +25,9 @@ contract AlgebraHelper {
     function getTicks(IAlgebra pool, int24 tickRange) external view returns (bytes[] memory ticks) {
         (,int24 tick,,,,,) = pool.globalState();
 
-        int24 fromTick = tick - (_TICK_SPACING * tickRange);
-        int24 toTick = tick + (_TICK_SPACING * tickRange);
+        tickRange *= _TICK_SPACING;
+        int24 fromTick = tick - tickRange;
+        int24 toTick = tick + tickRange;
         if (fromTick < _MIN_TICK) {
             fromTick = _MIN_TICK;
         }
@@ -37,14 +38,15 @@ contract AlgebraHelper {
         int24[] memory initTicks = new int24[](uint256(int256((toTick - fromTick + 1) / _TICK_SPACING)));
 
         uint256 counter = 0;
-        for (int24 tickNum = (fromTick / _TICK_SPACING * _TICK_SPACING); tickNum <= (toTick / _TICK_SPACING * _TICK_SPACING); tickNum += (256 * _TICK_SPACING)) {
-            int16 pos = int16((tickNum / _TICK_SPACING) >> 8);
+        int16 pos = int16((fromTick / _TICK_SPACING) >> 8);
+        int16 endPos = int16((toTick / _TICK_SPACING) >> 8);
+        for (; pos <= endPos; pos++) {
             uint256 bm = pool.tickTable(pos);
 
             while (bm != 0) {
-                uint8 bit = _mostSignificantBit(bm);
+                uint8 bit = _leastSignificantBit(bm);
                 bm ^= 1 << bit;
-                int24 extractedTick = (int24(pos) * 256 + int24(uint24(bit))) * _TICK_SPACING;
+                int24 extractedTick = ((int24(pos) << 8) | int24(uint24(bit))) * _TICK_SPACING;
                 if (extractedTick >= fromTick && extractedTick <= toTick) {
                     initTicks[counter++] = extractedTick;
                 }
@@ -64,21 +66,22 @@ contract AlgebraHelper {
                 , // bool initialized
             ) = pool.ticks(initTicks[i]);
 
-             ticks[i] = abi.encodePacked(
-                 liquidityTotal,
-                 liquidityDelta,
-                 outerFeeGrowth0Token,
-                 outerFeeGrowth1Token,
-                 // outerTickCumulative,
-                 // outerSecondsPerLiquidity,
-                 // outerSecondsSpent,
-                 initTicks[i]
-             );
+            ticks[i] = abi.encodePacked(
+                liquidityTotal,
+                liquidityDelta,
+                outerFeeGrowth0Token,
+                outerFeeGrowth1Token,
+                // outerTickCumulative,
+                // outerSecondsPerLiquidity,
+                // outerSecondsSpent,
+                initTicks[i]
+            );
         }
     }
 
-    function _mostSignificantBit(uint256 x) private pure returns (uint8 r) {
+    function _leastSignificantBit(uint256 x) private pure returns (uint8 r) {
         require(x > 0, "x is 0");
+        x = x & (~x + 1);
 
         if (x >= 0x100000000000000000000000000000000) {
             x >>= 128;
