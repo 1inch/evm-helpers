@@ -42,7 +42,7 @@ contract UniV3Helper {
             uint256 bm = pool.tickBitmap(pos);
 
             while (bm != 0) {
-                uint8 bit = _smallestSignificantBit(bm);
+                uint8 bit = _leastSignificantBit(bm);
                 bm ^= 1 << bit;
                 int24 extractedTick = ((int24(pos) << 8) | int24(uint24(bit))) * tickSpacing;
                 if (extractedTick >= fromTick && extractedTick <= toTick) {
@@ -77,7 +77,7 @@ contract UniV3Helper {
         }
     }
 
-    function _smallestSignificantBit(uint256 x) private pure returns (uint8 r) {
+    function _leastSignificantBit(uint256 x) private pure returns (uint8 r) {
         require(x > 0, "x is 0");
         x = x & (~x + 1);
 
