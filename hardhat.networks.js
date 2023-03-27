@@ -16,16 +16,16 @@ function register (name, chainId, url, privateKey, etherscanNetworkName, ethersc
 }
 
 if (process.env.ZKSYNC_PRIVATE_KEY) {
-    networks['zksync'] = {
+    networks.zksync = {
         url: 'https://mainnet.era.zksync.io',
         ethNetwork: 'mainnet',
         zksync: true,
         verifyURL: 'https://zksync2-mainnet-explorer.zksync.io/contract_verification',
         accounts: [process.env.ZKSYNC_PRIVATE_KEY],
     };
-    console.log(`Network 'zksync' registered`);
+    console.log('Network \'zksync\' registered');
 } else {
-    console.log(`Network 'zksync' not registered`);
+    console.log('Network \'zksync\' not registered');
 }
 
 function registerCustom (name, chainId, url, privateKey, etherscanKey, apiURL, browserURL) {

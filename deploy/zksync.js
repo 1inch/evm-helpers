@@ -28,7 +28,7 @@ module.exports = async (hre) => {
     if (await hre.getChainId() !== '31337') {
         await hre.run('verify:verify', {
             address: leftoverExchanger.address,
-            constructorArguments: [OWNER]
+            constructorArguments: [OWNER],
         });
     }
 };
