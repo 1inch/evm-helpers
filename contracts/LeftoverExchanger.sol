@@ -18,6 +18,7 @@ contract LeftoverExchanger is Ownable {
         transferOwnership(owner_);
     }
 
+    // solhint-disable-next-line no-empty-blocks
     receive() external payable {}
 
     // payable for paths with 0x
