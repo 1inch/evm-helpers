@@ -18,10 +18,7 @@ contract LeftoverExchanger is Ownable {
         transferOwnership(owner_);
     }
 
-    receive() external payable {
-        // solhint-disable-next-line avoid-tx-origin
-        require(msg.sender != tx.origin, "ETH deposit rejected");
-    }
+    receive() external payable {}
 
     // payable for paths with 0x
     function makeCallsNoThrow(Call[] calldata calls) external payable onlyOwner {
@@ -33,8 +30,8 @@ contract LeftoverExchanger is Ownable {
         }
         uint256 gasRefund = (startGas - gasleft() + 21000 + (msg.data.length * 7) + 2000) * tx.gasprice;
         if (address(this).balance >= gasRefund) {
-            // solhint-disable-next-line avoid-tx-origin
-            payable(tx.origin).transfer(gasRefund);
+            (bool ok,) = payable(owner()).call{value: gasRefund}("");
+            require(ok, "refund failed");
         }
     }
 

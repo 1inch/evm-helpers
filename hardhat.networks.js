@@ -1,4 +1,12 @@
-const networks = {};
+const networks = {
+    zksync: {
+        url: 'https://mainnet.era.zksync.io',
+        ethNetwork: 'mainnet',
+        zksync: true,
+        verifyURL: 'https://zksync2-mainnet-explorer.zksync.io/contract_verification',
+        accounts: [process.env.ZKSYNC_PRIVATE_KEY],
+    },
+};
 const etherscan = { apiKey: {}, customChains: [] };
 
 function register (name, chainId, url, privateKey, etherscanNetworkName, etherscanKey) {
