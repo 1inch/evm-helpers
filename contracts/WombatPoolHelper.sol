@@ -38,7 +38,7 @@ contract WombatPoolHelper {
         }
 
         // cut array size down to uniquePoolsSize
-        assembly {  // solhint-disable-line no-inline-assembly
+        assembly ("memory-safe") {  // solhint-disable-line no-inline-assembly
             mstore(pools, uniquePoolsSize)
         }
 
