@@ -38,7 +38,7 @@ contract TraderJoeHelper {
             i = 0;
         }
         // cut array size down
-        assembly {  // solhint-disable-line no-inline-assembly
+        assembly ("memory-safe") {  // solhint-disable-line no-inline-assembly
             mstore(data, counter)
         }
     }
