@@ -30,7 +30,6 @@ describe('TraderJoeHelper_v2_1', function () {
 
         const { data, i } = await traderJoeHelperV2dot1.getBins(USDC_DAI_E_POOL_ADDRESS, 0, 10);
         console.log('bins length', data.length);
-        console.log('data', data);
         console.log('i', i);
         expect(data.length).to.gt(0);
     });

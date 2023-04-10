@@ -29,7 +29,6 @@ describe('TraderJoeHelper', function () {
         await traderJoeHelper.deployed();
 
         const { data, i } = await traderJoeHelper.getBins(USDC_USDC_E_POOL_ADDRESS, 0, 10);
-        console.log('binsData', data);
         console.log('bins length', data.length);
         console.log('i', i);
         expect(data.length).to.gt(0);
