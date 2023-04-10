@@ -43,6 +43,18 @@ module.exports = async ({ deployments, getNamedAccounts }) => {
     //         address: algebraHelper.address,
     //     });
     // }
+
+    // const taderJoeHelperV2dot1 = await deploy('TraderJoeHelper_v2_1', {
+    //     from: deployer,
+    // });
+
+    // console.log('TraderJoeHelper_v2_1 deployed to:', taderJoeHelperV2dot1.address);
+
+    // if (await getChainId() !== '31337') {
+    //     await hre.run('verify:verify', {
+    //         address: taderJoeHelperV2dot1.address,
+    //     });
+    // }
 };
 
 module.exports.skip = async () => true;
