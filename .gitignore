@@ -6,6 +6,7 @@ node_modules
 coverage
 coverage.json
 build
+solcinputs
 .coverage_contracts
 .coverage_artifacts
 .idea
