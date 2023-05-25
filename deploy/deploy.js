@@ -55,6 +55,18 @@ module.exports = async ({ deployments, getNamedAccounts }) => {
     //         address: taderJoeHelperV2dot1.address,
     //     });
     // }
+
+    // const kyberHelper = await deploy('KyberHelper', {
+    //     from: deployer,
+    // });
+
+    // console.log('kyberHelper deployed to:', kyberHelper.address);
+
+    // if (await getChainId() !== '31337') {
+    //     await hre.run('verify:verify', {
+    //         address: kyberHelper.address,
+    //     });
+    // }
 };
 
 module.exports.skip = async () => true;
