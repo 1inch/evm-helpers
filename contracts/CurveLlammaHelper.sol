@@ -2,8 +2,6 @@ pragma solidity 0.8.19;
 
 contract CurveLlammaHelper {
     function get(address pool) public view returns(bytes memory) {
-        int256 m = type(int256).min;
-
         assembly {
             let pos := 0x120
             let min
@@ -57,7 +55,7 @@ contract CurveLlammaHelper {
                 revert(in, 0x04)
             }
 
-            for { let i := min } or(gt(i, m), lt(i, max)) { i := add(i, 1) } {
+            for { let i := min } slt(i, max) { i := add(i, 1) } {
                 let c := and(i, 0x00ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff)
                 let p := pos
 
