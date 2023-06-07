@@ -63,12 +63,33 @@ contract LeftoverExchanger is Ownable, IERC1271 {
         }
     }
 
+    function approve(IERC20 token, address to) external onlyOwner {
+        token.forceApprove(to, type(uint256).max);
+    }
+
+    function transfer(IERC20 token, address to, uint256 amount) external onlyOwner {
+        token.safeTransfer(to, amount);
+    }
+
     function batchApprove(bytes calldata data) external onlyOwner {
         unchecked {
             uint256 length = data.length;
             if (length % 40 != 0) revert InvalidLength();
             for (uint256 i = 0; i < length; i += 40) {
                 IERC20(address(bytes20(data[i:i+20]))).forceApprove(address(bytes20(data[i+20:i+40])), type(uint256).max);
+            }
+        }
+    }
+
+    function batchTransfer(bytes calldata data) external onlyOwner {
+        unchecked {
+            uint256 length = data.length;
+            if (length % 72 != 0) revert InvalidLength();
+            for (uint256 i = 0; i < length; i += 72) {
+                IERC20 token = IERC20(address(bytes20(data[i:i+20])));
+                address target = address(bytes20(data[i+20:i+40]));
+                uint256 amount = uint256(bytes32(data[i+40:i+72]));
+                token.safeTransfer(target, amount);
             }
         }
     }
