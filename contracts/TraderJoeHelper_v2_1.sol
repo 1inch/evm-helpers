@@ -4,6 +4,8 @@ pragma solidity 0.8.19;
 
 import "./interfaces/ILBPair.sol";
 
+
+// solhint-disable-next-line contract-name-camelcase
 contract TraderJoeHelper_v2_1 {
     struct BinData {
         uint256 id;
