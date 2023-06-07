@@ -25,10 +25,11 @@ contract LeftoverExchanger is Ownable, IERC1271 {
     error InvalidLength();
     error EstimationResults(bool[] statuses, bytes[] results);
 
-    address private immutable _creator = msg.sender;
+    address private immutable _creator;
 
-    constructor(address owner_) {
+    constructor(address owner_, address creator_) {
         transferOwnership(owner_);
+        _creator = creator_;
     }
 
     // solhint-disable-next-line no-empty-blocks
