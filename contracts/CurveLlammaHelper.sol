@@ -14,7 +14,8 @@ contract CurveLlammaHelper {
     uint256 private constant _MASK_WITHOUT_TWO_TOP_BITS = 0x3fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff;
 
     function get(address pool) external view returns(bytes memory res) {
-        assembly {
+        // solhint-disable-next-line no-inline-assembly
+        assembly ("memory-safe") {
             let ptr := mload(0x40)
             res := add(ptr, 0x40)
             let resPtr := add(res, 0x20)
