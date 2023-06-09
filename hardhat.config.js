@@ -7,6 +7,7 @@ require('dotenv').config();
 require('hardhat-deploy');
 require('hardhat-gas-reporter');
 require('solidity-coverage');
+require('hardhat-tracer');
 
 const { networks, etherscan } = require('./hardhat.networks');
 
