@@ -1,0 +1,60 @@
+{
+  "address": "0xb52C1ce530ad6F651bc01C234f11F91517970aC9",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "pool",
+          "type": "address"
+        }
+      ],
+      "name": "get",
+      "outputs": [
+        {
+          "internalType": "bytes",
+          "name": "res",
+          "type": "bytes"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "transactionHash": "0xd35dd1dd23342c86669cc46a4f5157a6adbbf51536f71454863458ac6f8ba014",
+  "receipt": {
+    "to": null,
+    "from": "0x11799622F4D98A24514011E8527B969f7488eF47",
+    "contractAddress": "0xb52C1ce530ad6F651bc01C234f11F91517970aC9",
+    "transactionIndex": 86,
+    "gasUsed": "235740",
+    "logsBloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "blockHash": "0xf1d90ebce3feaaee9cdf9d02044a7f02b19beecd5963b43cd1b92017a9aa666e",
+    "transactionHash": "0xd35dd1dd23342c86669cc46a4f5157a6adbbf51536f71454863458ac6f8ba014",
+    "logs": [],
+    "blockNumber": 17429511,
+    "cumulativeGasUsed": "9565466",
+    "status": 1,
+    "byzantium": true
+  },
+  "args": [],
+  "numDeployments": 1,
+  "solcInputHash": "9a9d44857e0eedeb260db4e985dcbfcb",
+  "metadata": "{\"compiler\":{\"version\":\"0.8.19+commit.7dd6d404\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"pool\",\"type\":\"address\"}],\"name\":\"get\",\"outputs\":[{\"internalType\":\"bytes\",\"name\":\"res\",\"type\":\"bytes\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/CurveLlammaHelper.sol\":\"CurveLlammaHelper\"},\"evmVersion\":\"paris\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\",\"useLiteralContent\":true},\"optimizer\":{\"enabled\":true,\"runs\":1000000},\"remappings\":[],\"viaIR\":true},\"sources\":{\"contracts/CurveLlammaHelper.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n\\npragma solidity 0.8.19;\\n\\n\\ncontract CurveLlammaHelper {\\n    // concat of [active_band(), min_band(), max_band(), price_oracle(), dynamic_fee(), admin_fee(), p_oracle_up()]\\n    bytes32 private constant _SELECTORS = 0x8f8654c5ca72a821aaa615fc86fc88d377c34594fee3f7f92eb858e700000000;\\n    bytes4 private constant _BANDS_X_SELECTOR = 0xebcb0067;\\n    bytes4 private constant _BANDS_Y_SELECTOR = 0x31f7e306;\\n    uint256 private constant _255_BIT_MASK = 0x8000000000000000000000000000000000000000000000000000000000000000;\\n    uint256 private constant _254_BIT_MASK = 0x4000000000000000000000000000000000000000000000000000000000000000;\\n    uint256 private constant _TWO_TOP_BITS_MASK = 0xc000000000000000000000000000000000000000000000000000000000000000;\\n    uint256 private constant _MASK_WITHOUT_TWO_TOP_BITS = 0x3fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff;\\n\\n    function get(address pool) external view returns(bytes memory res) {\\n        assembly {\\n            let ptr := mload(0x40)\\n            res := add(ptr, 0x40)\\n            let resPtr := add(res, 0x20)\\n            mstore(ptr, _SELECTORS)\\n\\n            // call active_band()\\n            if iszero(staticcall(gas(), pool, ptr, 0x04, resPtr, 0x20)) { revert(ptr, 0x04) }\\n\\n            // copy result to p_oracle_up arg\\n            mstore(add(ptr, 28), mload(resPtr))\\n\\n            resPtr := add(resPtr, 0x20)\\n\\n            // call p_oracle_up(active_band)\\n            if iszero(staticcall(gas(), pool, add(ptr, 24), 0x24, resPtr, 0x20)) { revert(add(ptr, 24), 0x24) }\\n\\n            resPtr := add(resPtr, 0x20)\\n\\n            // call min_band()\\n            if iszero(staticcall(gas(), pool, add(ptr, 4), 0x04, resPtr, 0x20)) { revert(add(ptr, 4), 0x04) }\\n\\n            let minBand := mload(resPtr)\\n\\n            resPtr := add(resPtr, 0x20)\\n\\n            // call max_band()\\n            if iszero(staticcall(gas(), pool, add(ptr, 8), 0x04, resPtr, 0x20)) { revert(add(ptr, 8), 0x04) }\\n\\n            let maxBand := mload(resPtr)\\n\\n            resPtr := add(resPtr, 0x20)\\n\\n            // call price_oracle()\\n            if iszero(staticcall(gas(), pool, add(ptr, 12), 0x04, resPtr, 0x20)) { revert(add(ptr, 12), 0x04) }\\n\\n            resPtr := add(resPtr, 0x20)\\n\\n            // call dynamic_fee()\\n            if iszero(staticcall(gas(), pool, add(ptr, 16), 0x04, resPtr, 0x20)) { revert(add(ptr, 16), 0x04) }\\n\\n            resPtr := add(resPtr, 0x20)\\n\\n            // call admin_fee()\\n            if iszero(staticcall(gas(), pool, add(ptr, 20), 0x04, resPtr, 0x20)) { revert(add(ptr, 20), 0x04) }\\n\\n            resPtr := add(resPtr, 0x20)\\n\\n            for { let i := minBand } slt(i, maxBand) { i := add(i, 1) } {\\n                let dataPtr := add(resPtr, 0x20)\\n                let c := and(i, _MASK_WITHOUT_TWO_TOP_BITS)\\n\\n                mstore(ptr, _BANDS_X_SELECTOR)\\n                mstore(add(ptr, 4), i)\\n                // call bands_x(i)\\n                if iszero(staticcall(gas(), pool, ptr, 0x24, dataPtr, 0x20)) { revert(ptr, 0x24) }\\n\\n                if mload(dataPtr) {\\n                    dataPtr := add(dataPtr, 0x20)\\n                    c := or(c, _255_BIT_MASK)\\n                }\\n\\n                mstore(ptr, _BANDS_Y_SELECTOR)\\n                mstore(add(ptr, 4), i)\\n                // call bands_y(i)\\n                if iszero(staticcall(gas(), pool, ptr, 0x24, dataPtr, 0x20)) { revert(ptr, 0x24) }\\n\\n                if mload(dataPtr) {\\n                    dataPtr := add(dataPtr, 0x20)\\n                    c := or(c, _254_BIT_MASK)\\n                }\\n\\n                if and(c, _TWO_TOP_BITS_MASK) {\\n                    mstore(resPtr, c)\\n                    resPtr := dataPtr\\n                }\\n            }\\n\\n            mstore(res, sub(sub(resPtr, res), 0x20))\\n        }\\n    }\\n}\\n\",\"keccak256\":\"0x502b75575a04b03792bdcab2e1e8e8a343895b53be63195bb079922d649b07cc\",\"license\":\"MIT\"}},\"version\":1}",
+  "bytecode": "0x6080806040523461001657610354908161001c8239f35b600080fdfe60806040908082526004908136101561001757600080fd5b600091823560e01c63c2bc2efc1461002e57600080fd5b346102b557602091827ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc3601126102b15781359373ffffffffffffffffffffffffffffffffffffffff851685036102ae575060e07f8f8654c5ca72a821aaa615fc86fc88d377c34594fee3f7f92eb858e700000000825283818484885afa156102ab5751609c5260249280610100856098885afa156102a657608491610120828186868a5afa156102a15751956101408381876088855afa1561029c5751948361016082608c855afa156102985783610180826090855afa1561029457836101a0826094855afa1561029057506101c0965b85811261015d57887fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff20890160c0525180610159816102b9565b0390f35b8388017f3fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff82167febcb006700000000000000000000000000000000000000000000000000000000855282875285828a87875afa15610260578151610264575b7f31f7e30600000000000000000000000000000000000000000000000000000000855282875285828a87875afa1561026057858251610234575b507fc0000000000000000000000000000000000000000000000000000000000000008116610229575b5050600101610120565b90985260013861021f565b7f40000000000000000000000000000000000000000000000000000000000000009192019117856101f6565b8885fd5b898b0191507f8000000000000000000000000000000000000000000000000000000000000000176101bc565b6094fd5b6090fd5b608cfd5b856088fd5b505050fd5b836098fd5b50fd5b80fd5b8380fd5b8280fd5b9060209182815260c05192838183015260005b84811061030b5750507fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe0601f8460006040809697860101520116010190565b60e08101518382016040015281016102cc56fea2646970667358221220722fb875ec8596ec5b45c5f38317b998c68377120030f3ca2457ce30c2b8da8a64736f6c63430008130033",
+  "deployedBytecode": "0x60806040908082526004908136101561001757600080fd5b600091823560e01c63c2bc2efc1461002e57600080fd5b346102b557602091827ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc3601126102b15781359373ffffffffffffffffffffffffffffffffffffffff851685036102ae575060e07f8f8654c5ca72a821aaa615fc86fc88d377c34594fee3f7f92eb858e700000000825283818484885afa156102ab5751609c5260249280610100856098885afa156102a657608491610120828186868a5afa156102a15751956101408381876088855afa1561029c5751948361016082608c855afa156102985783610180826090855afa1561029457836101a0826094855afa1561029057506101c0965b85811261015d57887fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff20890160c0525180610159816102b9565b0390f35b8388017f3fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff82167febcb006700000000000000000000000000000000000000000000000000000000855282875285828a87875afa15610260578151610264575b7f31f7e30600000000000000000000000000000000000000000000000000000000855282875285828a87875afa1561026057858251610234575b507fc0000000000000000000000000000000000000000000000000000000000000008116610229575b5050600101610120565b90985260013861021f565b7f40000000000000000000000000000000000000000000000000000000000000009192019117856101f6565b8885fd5b898b0191507f8000000000000000000000000000000000000000000000000000000000000000176101bc565b6094fd5b6090fd5b608cfd5b856088fd5b505050fd5b836098fd5b50fd5b80fd5b8380fd5b8280fd5b9060209182815260c05192838183015260005b84811061030b5750507fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe0601f8460006040809697860101520116010190565b60e08101518382016040015281016102cc56fea2646970667358221220722fb875ec8596ec5b45c5f38317b998c68377120030f3ca2457ce30c2b8da8a64736f6c63430008130033",
+  "devdoc": {
+    "kind": "dev",
+    "methods": {},
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {},
+    "version": 1
+  },
+  "storageLayout": {
+    "storage": [],
+    "types": null
+  }
+}
