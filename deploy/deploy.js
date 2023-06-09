@@ -60,11 +60,23 @@ module.exports = async ({ deployments, getNamedAccounts }) => {
     //     from: deployer,
     // });
 
-    // console.log('kyberHelper deployed to:', kyberHelper.address);
+    // console.log('KyberHelper deployed to:', kyberHelper.address);
 
     // if (await getChainId() !== '31337') {
     //     await hre.run('verify:verify', {
     //         address: kyberHelper.address,
+    //     });
+    // }
+
+    // const сurveLlammaHelper = await deploy('CurveLlammaHelper', {
+    //     from: deployer,
+    // });
+
+    // console.log('CurveLlammaHelper deployed to:', сurveLlammaHelper.address);
+
+    // if (await getChainId() !== '31337') {
+    //     await hre.run('verify:verify', {
+    //         address: сurveLlammaHelper.address,
     //     });
     // }
 };
