@@ -4,10 +4,13 @@ pragma solidity 0.8.19;
 
 import "./interfaces/IUniswapV3.sol";
 
+/// @title UniV3Helper
+/// @dev Helper contract to interact with Uniswap V3 pool contracts.
 contract UniV3Helper {
     int24 private constant _MIN_TICK = -887272;
     int24 private constant _MAX_TICK = -_MIN_TICK;
 
+    /// @dev Structure to hold information about a tick.
     struct Tick {
         uint128 liquidityGross;
         int128 liquidityNet;
@@ -18,6 +21,13 @@ contract UniV3Helper {
         uint32 secondsOutside;
         int24 index; // tick index
     }
+
+
+    /// @notice Retrieves information about ticks in a Uniswap V3 pool.
+    /// @dev Iterates over ticks of a pool in a certain range and collects data.
+    /// @param pool The IUniswapV3 contract to retrieve tick data from.
+    /// @param tickRange The range (both positive and negative) from the current tick to retrieve data from.
+    /// @return ticks An array of byte strings each representing a tick with its data packed.
 
     function getTicks(IUniswapV3 pool, int24 tickRange) external view returns (bytes[] memory ticks) {
         int24 tickSpacing = pool.tickSpacing();
@@ -77,6 +87,10 @@ contract UniV3Helper {
         }
     }
 
+    /// @notice Gets the index of the least significant bit set in a number.
+    /// @dev The least significant bit is considered the rightmost bit.
+    /// @param x The number to find the least significant bit in.
+    /// @return r The index of the least significant bit set in the number. Indexes start from 0.
     function _leastSignificantBit(uint256 x) private pure returns (uint8 r) {
         require(x > 0, "x is 0");
         x = x & (~x + 1);
