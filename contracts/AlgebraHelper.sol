@@ -31,10 +31,17 @@ contract AlgebraHelper {
         int24 index; // tick index
     }
 
-    /// @notice Returns the state of the ticks in a range around the current tick.
-    /// @param pool The pool from which to fetch tick data.
-    /// @param tickRange The range of ticks to fetch. This is multiplied by the tick spacing to determine the range.
-    /// @return ticks An array of bytes containing the tick data.
+    /**
+     * @notice Fetches tick data for a specified range from an Algebra pool.
+     * @dev The function returns an array of bytes each containing packed data about each tick in the specified range.
+     * The returned tick data includes the total liquidity, liquidity delta, outer fee growth for the two tokens, and
+     * the tick value itself. The tick range is centered around the current tick of the pool and spans tickRange*2.
+     * The tick range is constrained by the global min and max tick values.
+     * If there are no initialized ticks in the range, the function returns an empty array.
+     * @param pool The Algebra pool from which to fetch tick data.
+     * @param tickRange The range (either side of the current tick) within which to fetch tick data.
+     * @return ticks An array of bytes each containing packed data about each tick in the specified range.
+     */
     function getTicks(IAlgebra pool, int24 tickRange) external view returns (bytes[] memory ticks) {
         (,int24 tick,,,,,) = pool.globalState();
 
@@ -92,12 +99,13 @@ contract AlgebraHelper {
         }
     }
 
-}
-
-    /// @notice Computes the least significant bit of a number.
-    /// @dev Throws if the input number is 0.
-    /// @param x The number to compute the least significant bit of.
-    /// @return r The least significant bit.
+    /**
+     * @notice Determines the position of the least significant bit in the given number.
+     * @dev The function works by repeatedly halving the number and keeping track of the number of operations
+     * performed until the number is less than 2.
+     * @param x The input number for which the least significant bit position is to be found.
+     * @return r The position of the least significant bit in the given number.
+     */
     function _leastSignificantBit(uint256 x) private pure returns (uint8 r) {
         require(x > 0, "x is 0");
         x = x & (~x + 1);
@@ -131,6 +139,5 @@ contract AlgebraHelper {
             r += 2;
         }
         if (x >= 0x2) r += 1;
-
     }
 }
