@@ -6,17 +6,18 @@ pragma solidity 0.8.19;
 /// @dev A contract for batching multiple contract function calls into a single transaction.
 contract MultiCall {
 
-    /// @notice A struct representing a call to a contract function.
+    /// @dev A struct representing a single call to a contract function.
     struct Call {
-        address to;
-        bytes data;
+        address to; // The address of the contract to call.
+        bytes data; // The calldata to send with the call.
     }
 
-    /// @notice Calls multiple contract functions in a single transaction.
-    /// @dev This function is not gas-limited and may revert due to out of gas errors.
-    /// @param calls An array of Call structs, each representing a function call.
-    /// @return results An array of raw bytes, each entry being the result of the respective function call.
-
+    /**
+     * @notice Executes multiple calls in a single transaction.
+     * @dev The function is not gas-limited and may revert due to out of gas errors.
+     * @param calls An array of Call structs, each representing a function call.
+     * @return results An array of bytes, each entry being the result of the respective function call.
+     */
    function multicall(Call[] memory calls) public returns (bytes[] memory results) {
         results = new bytes[](calls.length);
         for (uint i = 0; i < calls.length; i++) {
@@ -24,14 +25,15 @@ contract MultiCall {
         }
     }
 
-
-    /// @notice Calls multiple contract functions in a single transaction, with gas limitation.
-    /// @dev This function will stop making calls when the remaining gas is less than `gasBuffer`.
-    /// @dev Be careful with calls.length == 0
-    /// @param calls An array of Call structs, each representing a function call.
-    /// @param gasBuffer The amount of gas that should remain after the last function call.
-    /// @return results An array of raw bytes, each entry being the result of the respective function call.
-    /// @return lastSuccessIndex The index of the last successfully executed function call.
+    /**
+     * @notice Executes multiple calls in a single transaction with gas limitations.
+     * @dev The function will stop making calls when the remaining gas is less than `gasBuffer`.
+     * Passing emtpy calls array (calls.length == 0) will result in having lastSuccessIndex = uint256.max.
+     * @param calls An array of Call struct instances representing each call.
+     * @param gasBuffer The amount of gas that should remain after the last function call.
+     * @return results An array of bytes. Each entry represents the return data of each call.
+     * @return lastSuccessIndex The index of the last successful call in the `calls` array.
+     */
     function multicallWithGasLimitation(Call[] memory calls, uint256 gasBuffer) public returns (bytes[] memory results, uint256 lastSuccessIndex) {
         results = new bytes[](calls.length);
         for (uint i = 0; i < calls.length; i++) {
@@ -43,13 +45,13 @@ contract MultiCall {
         return (results, calls.length - 1);
     }
 
-
-    /// @notice Calls multiple contract functions in a single transaction and returns the gas used by each call.
-    /// @dev This function is not gas-limited and may revert due to out of gas errors.
-    /// @param calls An array of Call structs, each representing a function call.
-    /// @return results An array of raw bytes, each entry being the result of the respective function call.
-    /// @return gasUsed An array of gas amounts used by each function call.
-
+    /**
+     * @notice Executes multiple calls in a single transaction and measures the gas used by each call.
+     * @dev This function is not gas-limited and may revert due to out of gas errors.
+     * @param calls An array of Call struct instances representing each call.
+     * @return results An array of bytes. Each entry represents the return data of each call.
+     * @return gasUsed An array of uint256. Each entry represents the amount of gas used by the corresponding call.
+     */
    function multicallWithGas(Call[] memory calls) public returns (bytes[] memory results, uint256[] memory gasUsed) {
         results = new bytes[](calls.length);
         gasUsed = new uint256[](calls.length);
@@ -61,13 +63,13 @@ contract MultiCall {
     }
 
     /// @notice Fetches the block gas limit.
-    /// @return The block gas limit.
+    /// @return result The block gas limit.
     function gaslimit() external view returns (uint256) {
         return block.gaslimit;
     }
 
     /// @notice Fetches the remaining gas available for the current transaction.
-    /// @return The remaining gas.
+    /// @return result The remaining gas.
     function gasLeft() external view returns (uint256) {
         return gasleft();
     }
