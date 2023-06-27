@@ -8,14 +8,14 @@ import "./interfaces/IKyber.sol";
 /// @dev A contract that includes helper functions for the Kyber protocol.
 contract KyberHelper {
 
-    /// @notice Fetches and returns initialized ticks from a Kyber pool.
-    /// @dev This function will fetch a number of ticks up to maxTickNum.
-    /// It will start at the current tick and move in both directions (previous and next).
-    /// For each tick it encounters, it fetches its state including gross liquidity and net liquidity.
-    /// Finally, it returns the fetched data as an array of raw bytes, where each entry corresponds to a tick and contains the encoded state.
-    /// @param pool The IKyber instance representing the pool to fetch data from.
-    /// @param maxTickNum The maximum number of ticks to fetch.
-    /// @return ticks An array of raw bytes, where each entry corresponds to a tick and contains the encoded state.
+    /**
+     * @notice Fetches initialized ticks from a given Kyber pool.
+     * @dev The function gets the current state of the pool and fetches the ticks by moving in both directions
+     * (previous and next) from the current tick. The number of fetched ticks is limited by `maxTickNum`.
+     * @param pool The address of the Kyber pool to fetch the ticks from.
+     * @param maxTickNum The maximum number of ticks to fetch.
+     * @return ticks The bytes array containing the fetched ticks data.
+     */
    function getTicks(IKyber pool, uint maxTickNum) external view returns (bytes[] memory ticks) {
         (,,int24 tick,) = pool.getPoolState();
 
@@ -82,7 +82,3 @@ contract KyberHelper {
         }
     }
 }
-
-   
-
-
