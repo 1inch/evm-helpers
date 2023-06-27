@@ -5,7 +5,7 @@ pragma solidity 0.8.19;
 /// @title CurveLlammaHelper
 /// @dev A contract that includes helper functions for the CurveLlamma protocol.
 contract CurveLlammaHelper {
-    // Concat of [active_band(), min_band(), max_band(), price_oracle(), dynamic_fee(), admin_fee(), p_oracle_up()].
+    // concat of [active_band(), min_band(), max_band(), price_oracle(), dynamic_fee(), admin_fee(), p_oracle_up()]
     bytes32 private constant _SELECTORS = 0x8f8654c5ca72a821aaa615fc86fc88d377c34594fee3f7f92eb858e700000000;
     bytes4 private constant _BANDS_X_SELECTOR = 0xebcb0067;
     bytes4 private constant _BANDS_Y_SELECTOR = 0x31f7e306;
@@ -31,29 +31,44 @@ contract CurveLlammaHelper {
             let resPtr := add(res, 0x20)
             mstore(ptr, _SELECTORS)
 
+            // call active_band()
             if iszero(staticcall(gas(), pool, ptr, 0x04, resPtr, 0x20)) { revert(ptr, 0x04) }
+
+            // copy result to p_oracle_up arg
             mstore(add(ptr, 28), mload(resPtr))
 
             resPtr := add(resPtr, 0x20)
+
+            // call p_oracle_up(active_band)
             if iszero(staticcall(gas(), pool, add(ptr, 24), 0x24, resPtr, 0x20)) { revert(add(ptr, 24), 0x24) }
             
             resPtr := add(resPtr, 0x20)
+
+            // call min_band()
             if iszero(staticcall(gas(), pool, add(ptr, 4), 0x04, resPtr, 0x20)) { revert(add(ptr, 4), 0x04) }
 
             let minBand := mload(resPtr)
 
             resPtr := add(resPtr, 0x20)
+
+            // call max_band()
             if iszero(staticcall(gas(), pool, add(ptr, 8), 0x04, resPtr, 0x20)) { revert(add(ptr, 8), 0x04) }
 
             let maxBand := mload(resPtr)
 
             resPtr := add(resPtr, 0x20)
+
+            // call price_oracle()
             if iszero(staticcall(gas(), pool, add(ptr, 12), 0x04, resPtr, 0x20)) { revert(add(ptr, 12), 0x04) }
 
             resPtr := add(resPtr, 0x20)
+
+            // call dynamic_fee()
             if iszero(staticcall(gas(), pool, add(ptr, 16), 0x04, resPtr, 0x20)) { revert(add(ptr, 16), 0x04) }
 
             resPtr := add(resPtr, 0x20)
+
+            // call admin_fee()
             if iszero(staticcall(gas(), pool, add(ptr, 20), 0x04, resPtr, 0x20)) { revert(add(ptr, 20), 0x04) }
 
             resPtr := add(resPtr, 0x20)
@@ -64,6 +79,7 @@ contract CurveLlammaHelper {
 
                 mstore(ptr, _BANDS_X_SELECTOR)
                 mstore(add(ptr, 4), i)
+                // call bands_x(i)
                 if iszero(staticcall(gas(), pool, ptr, 0x24, dataPtr, 0x20)) { revert(ptr, 0x24) }
 
                 if mload(dataPtr) {
@@ -73,6 +89,7 @@ contract CurveLlammaHelper {
 
                 mstore(ptr, _BANDS_Y_SELECTOR)
                 mstore(add(ptr, 4), i)
+                // call bands_y(i)
                 if iszero(staticcall(gas(), pool, ptr, 0x24, dataPtr, 0x20)) { revert(ptr, 0x24) }
 
                 if mload(dataPtr) {
