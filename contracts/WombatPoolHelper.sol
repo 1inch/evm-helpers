@@ -4,11 +4,9 @@ pragma solidity 0.8.19;
 
 import "./interfaces/IMasterWombatV3.sol";
 
-
 /// @title WombatPoolHelper
 /// @notice A helper contract to fetch data about all Wombat pools.
 contract WombatPoolHelper {
-
     IMasterWombatV3 private constant _WOMBAT_MASTER_V3 = IMasterWombatV3(0x489833311676B566f888119c29bd997Dc6C95830);
 
     /**
