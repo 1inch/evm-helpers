@@ -22,13 +22,17 @@ contract UniV3Helper {
         int24 index; // tick index
     }
 
-
-    /// @notice Retrieves information about ticks in a Uniswap V3 pool.
-    /// @dev Iterates over ticks of a pool in a certain range and collects data.
-    /// @param pool The IUniswapV3 contract to retrieve tick data from.
-    /// @param tickRange The range (both positive and negative) from the current tick to retrieve data from.
-    /// @return ticks An array of byte strings each representing a tick with its data packed.
-
+    /**
+     * @notice Fetches tick data for a specified range from a Uniswap V3 pool.
+     * @dev The function returns an array of bytes each containing packed data about each tick in the specified range.
+     * The returned tick data includes the total liquidity, liquidity delta, outer fee growth for the two tokens, and
+     * the tick value itself. The tick range is centered around the current tick of the pool and spans tickRange*2.
+     * The tick range is constrained by the global min and max tick values.
+     * If there are no initialized ticks in the range, the function returns an empty array.
+     * @param pool The Uniswap V3 pool from which to fetch tick data.
+     * @param tickRange The range (either side of the current tick) within which to fetch tick data.
+     * @return ticks An array of bytes each containing packed data about each tick in the specified range.
+     */
     function getTicks(IUniswapV3 pool, int24 tickRange) external view returns (bytes[] memory ticks) {
         int24 tickSpacing = pool.tickSpacing();
         (,int24 tick,,,,,) = pool.slot0();
@@ -87,10 +91,13 @@ contract UniV3Helper {
         }
     }
 
-    /// @notice Gets the index of the least significant bit set in a number.
-    /// @dev The least significant bit is considered the rightmost bit.
-    /// @param x The number to find the least significant bit in.
-    /// @return r The index of the least significant bit set in the number. Indexes start from 0.
+    /**
+     * @notice Determines the position of the least significant bit in the given number.
+     * @dev The function works by repeatedly halving the number and keeping track of the number of operations
+     * performed until the number is less than 2.
+     * @param x The input number for which the least significant bit position is to be found.
+     * @return r The position of the least significant bit in the given number.
+     */
     function _leastSignificantBit(uint256 x) private pure returns (uint8 r) {
         require(x > 0, "x is 0");
         x = x & (~x + 1);
