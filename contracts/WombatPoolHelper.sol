@@ -6,19 +6,18 @@ import "./interfaces/IMasterWombatV3.sol";
 
 
 /// @title WombatPoolHelper
-/// @dev Helper contract to interact with the Master Wombat V3 contract and fetch information about the various pools.
+/// @notice A helper contract to fetch data about all Wombat pools.
 contract WombatPoolHelper {
 
-    /// @dev Instance of the IMasterWombatV3 interface.
     IMasterWombatV3 private constant _WOMBAT_MASTER_V3 = IMasterWombatV3(0x489833311676B566f888119c29bd997Dc6C95830);
 
-    /// @notice Returns an array of information about all pools.
-    /// @dev Iterates over all LP tokens and pools, fetches and returns arrays of related information.
-    /// @return pools An array of pool addresses.
-    /// @return poolTokens A two-dimensional array where each element is an array of token addresses for a specific pool.
-    /// @return lpTokens An array of all LP token addresses.
-    /// @return underlyingTokens An array of all underlying token addresses associated with the LP tokens.
-
+    /**
+     * @notice Fetches data about all pools.
+     * @return pools An array of the addresses of all unique pools.
+     * @return poolTokens A 2D-array of the addresses of the tokens for the specific pools.
+     * @return lpTokens An array of all LP token addresses.
+     * @return underlyingTokens An array of all underlying token addresses associated with the LP tokens.
+     */
     function getAllPoolData() external view returns (address[] memory pools, address[][] memory poolTokens, address[] memory lpTokens, address[] memory underlyingTokens) {
         // poolLength is actually the number of LP tokens tracked
         uint256 lpTokenCount = _WOMBAT_MASTER_V3.poolLength();
