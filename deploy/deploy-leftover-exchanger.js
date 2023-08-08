@@ -38,4 +38,4 @@ module.exports = async ({ getNamedAccounts }) => {
     }
 };
 
-module.exports.skip = async () => false;
+module.exports.skip = async () => true;
