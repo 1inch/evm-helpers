@@ -21,7 +21,7 @@ contract UniV3Helper {
 
     function getTicks(IUniswapV3 pool, int24 tickRange) external view returns (bytes[] memory ticks) {
         int24 tickSpacing = pool.tickSpacing();
-        (,int24 tick,,,,,) = pool.slot0();
+        (,int24 tick) = pool.slot0();
 
         tickRange *= tickSpacing;
         int24 fromTick = tick - tickRange;
