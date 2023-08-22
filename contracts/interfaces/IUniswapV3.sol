@@ -11,12 +11,8 @@ interface IUniswapV3 {
         view
         returns (
             uint160 sqrtPriceX96,
-            int24 tick,
-            uint16 observationIndex,
-            uint16 observationCardinality,
-            uint16 observationCardinalityNext,
-            uint8 feeProtocol,
-            bool unlocked
+            int24 tick
+            // the rest is ignored
         );
 
     function feeGrowthGlobal0X128() external view returns (uint256);

@@ -9,6 +9,9 @@ describe('UniV3Helper', function () {
                 {
                     forking: {
                         jsonRpcUrl: process.env.MAINNET_RPC_URL,
+                        httpHeaders: {
+                            'auth-key': process.env.RPC_AUTH_HEADER,
+                        },
                     },
                 },
             ],
