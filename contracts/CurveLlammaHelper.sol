@@ -41,7 +41,6 @@ contract CurveLlammaHelper {
 
             // call p_oracle_up(active_band)
             if iszero(staticcall(gas(), pool, add(ptr, 24), 0x24, resPtr, 0x20)) { revert(add(ptr, 24), 0x24) }
-            
             resPtr := add(resPtr, 0x20)
 
             // call min_band()
