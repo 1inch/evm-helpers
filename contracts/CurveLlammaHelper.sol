@@ -2,7 +2,8 @@
 
 pragma solidity 0.8.19;
 
-
+/// @title CurveLlammaHelper
+/// @dev A contract that includes helper functions for the CurveLlamma protocol.
 contract CurveLlammaHelper {
     // concat of [active_band(), min_band(), max_band(), price_oracle(), dynamic_fee(), admin_fee(), p_oracle_up()]
     bytes32 private constant _SELECTORS = 0x8f8654c5ca72a821aaa615fc86fc88d377c34594fee3f7f92eb858e700000000;
@@ -13,6 +14,15 @@ contract CurveLlammaHelper {
     uint256 private constant _TWO_TOP_BITS_MASK = 0xc000000000000000000000000000000000000000000000000000000000000000;
     uint256 private constant _MASK_WITHOUT_TWO_TOP_BITS = 0x3fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff;
 
+    /**
+     * @notice Fetches and returns various parameters and state data from the given Curve pool.
+     * @dev The function calls sequientially a CurveLlamma pool functions: 
+     * `active_band()`, `min_band()`, `max_band()`, `price_oracle()`, `dynamic_fee()`, `admin_fee()`, `p_oracle_up()` 
+     * For each call, it validates if the call was successful and if not, and reverts the transaction if not.
+     * Finally, it returns the fetched data as a raw bytes array.
+     * @param pool The address of the CurveLlama pool to fetch data from.
+     * @return res The bytes containing the fetched data.
+     */
     function get(address pool) external view returns(bytes memory res) {
         // solhint-disable-next-line no-inline-assembly
         assembly ("memory-safe") {
@@ -31,7 +41,6 @@ contract CurveLlammaHelper {
 
             // call p_oracle_up(active_band)
             if iszero(staticcall(gas(), pool, add(ptr, 24), 0x24, resPtr, 0x20)) { revert(add(ptr, 24), 0x24) }
-
             resPtr := add(resPtr, 0x20)
 
             // call min_band()

@@ -4,9 +4,19 @@ pragma solidity ^0.8.0;
 
 import "./interfaces/IKyber.sol";
 
+/// @title KyberHelper
+/// @dev A contract that includes helper functions for the Kyber protocol.
 contract KyberHelper {
 
-    function getTicks(IKyber pool, uint maxTickNum) external view returns (bytes[] memory ticks) {
+    /**
+     * @notice Fetches initialized ticks from a given Kyber pool.
+     * @dev The function gets the current state of the pool and fetches the ticks by moving in both directions
+     * (previous and next) from the current tick. The number of fetched ticks is limited by `maxTickNum`.
+     * @param pool The address of the Kyber pool to fetch the ticks from.
+     * @param maxTickNum The maximum number of ticks to fetch.
+     * @return ticks The bytes array containing the fetched ticks data.
+     */
+   function getTicks(IKyber pool, uint maxTickNum) external view returns (bytes[] memory ticks) {
         (,,int24 tick,) = pool.getPoolState();
 
         int24[] memory initTicks = new int24[](maxTickNum);
@@ -71,5 +81,4 @@ contract KyberHelper {
              );
         }
     }
-
 }

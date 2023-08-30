@@ -4,13 +4,22 @@ pragma solidity 0.8.19;
 
 import "./interfaces/IAlgebra.sol";
 
+/// @title AlgebraHelper
+/// @dev This contract includes helper functions for the Algebra protocol.
 contract AlgebraHelper {
+    /// @dev Minimum allowed tick value.
     int24 private constant _MIN_TICK = -887272;
+    
+    /// @dev Maximum allowed tick value.
     int24 private constant _MAX_TICK = -_MIN_TICK;
 
+    /// @dev Base fee for transactions.
     uint16 internal constant _BASE_FEE = 100;
+    
+    /// @dev Spacing between ticks.
     int24 internal constant _TICK_SPACING = 60;
 
+    /// @dev The Tick struct represents the state of a tick.
     struct Tick {
         uint128 liquidityGross;
         int128 liquidityNet;
@@ -22,6 +31,17 @@ contract AlgebraHelper {
         int24 index; // tick index
     }
 
+    /**
+     * @notice Fetches tick data for a specified range from an Algebra pool.
+     * @dev The function returns an array of bytes each containing packed data about each tick in the specified range.
+     * The returned tick data includes the total liquidity, liquidity delta, outer fee growth for the two tokens, and
+     * the tick value itself. The tick range is centered around the current tick of the pool and spans tickRange*2.
+     * The tick range is constrained by the global min and max tick values.
+     * If there are no initialized ticks in the range, the function returns an empty array.
+     * @param pool The Algebra pool from which to fetch tick data.
+     * @param tickRange The range (either side of the current tick) within which to fetch tick data.
+     * @return ticks An array of bytes each containing packed data about each tick in the specified range.
+     */
     function getTicks(IAlgebra pool, int24 tickRange) external view returns (bytes[] memory ticks) {
         (,int24 tick,,,,,) = pool.globalState();
 
@@ -79,6 +99,13 @@ contract AlgebraHelper {
         }
     }
 
+    /**
+     * @notice Determines the position of the least significant bit in the given number.
+     * @dev The function works by repeatedly halving the number and keeping track of the number of operations
+     * performed until the number is less than 2.
+     * @param x The input number for which the least significant bit position is to be found.
+     * @return r The position of the least significant bit in the given number.
+     */
     function _leastSignificantBit(uint256 x) private pure returns (uint8 r) {
         require(x > 0, "x is 0");
         x = x & (~x + 1);
