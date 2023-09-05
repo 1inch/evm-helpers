@@ -8,6 +8,7 @@ import "./interfaces/ILBPair.sol";
 /// @dev Helper contract for interacting with TraderJoe pair contracts.
 // solhint-disable-next-line contract-name-camelcase
 contract TraderJoeHelper_v2_1 {
+    /// @dev Represents data about a bin in a Trader Joe pair.
     struct BinData {
         uint256 id;
         uint256 reserveX;
@@ -27,18 +28,17 @@ contract TraderJoeHelper_v2_1 {
         uint24 offset,
         uint24 size
     ) external view returns (BinData[] memory data, uint24 i) {
+        uint24 lastBin = pair.getNextNonEmptyBin(true, type(uint24).max);
+        if (lastBin == type(uint24).max) {
+            return (data, 0);
+        }
         uint256 counter = 0;
         data = new BinData[](size);
-        uint24 lastBin = pair.getNextNonEmptyBin(true, type(uint24).max);
-        uint24 prevId = lastBin;
         for (
             i = offset;
             i < lastBin && counter < size;
             i = pair.getNextNonEmptyBin(false, i)
         ) {
-            if (prevId == i) {
-                break;
-            }
             (uint256 x, uint256 y) = pair.getBin(i);
             if (x > 0 || y > 0) {
                 (data[counter].reserveX, data[counter].reserveY) = (x, y);
@@ -47,7 +47,6 @@ contract TraderJoeHelper_v2_1 {
                     ++counter;
                 }
             }
-            prevId = i;
         }
         if (i == lastBin && counter < size) {
             (data[counter].reserveX, data[counter].reserveY) = pair.getBin(i);
@@ -57,9 +56,10 @@ contract TraderJoeHelper_v2_1 {
             }
             i = 0;
         }
+
         // cut array size down
+        // solhint-disable-next-line no-inline-assembly
         assembly ("memory-safe") {
-        // solhint-disable-line no-inline-assembly
             mstore(data, counter)
         }
     }
