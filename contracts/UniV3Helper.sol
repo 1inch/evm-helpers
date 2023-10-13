@@ -83,11 +83,11 @@ contract UniV3Helper {
      * @notice Determines the position of the least significant bit in the given number.
      * @dev The function works by repeatedly halving the number and keeping track of the number of operations
      * performed until the number is less than 2.
+     * @dev Parameter `x` should be greater than 0, but it is never equal to 0 in this contract.
      * @param x The input number for which the least significant bit position is to be found.
      * @return r The position of the least significant bit in the given number.
      */
     function _leastSignificantBit(uint256 x) private pure returns (uint8 r) {
-        require(x > 0, "x is 0");
         x = x & (~x + 1);
 
         if (x >= 0x100000000000000000000000000000000) {
