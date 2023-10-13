@@ -2,59 +2,17 @@
 
 pragma solidity 0.8.19;
 
-pragma abicoder v2;
-
-interface ISolidlyV3 {
-
-    function tickSpacing() external view returns (int24);
-
-    function slot0()
-        external
-        view
-        returns (
-            uint160 sqrtPriceX96,
-            int24 tick,
-            uint24 fee,
-            bool unlocked
-        );
-
-    // function protocolFees() external view returns (uint128 token0, uint128 token1);
-
-    function liquidity() external view returns (uint128);
-
-    function ticks(int24 tick)
-        external
-        view
-        returns (
-            uint128 liquidityGross,
-            int128 liquidityNet,
-            bool initialized
-        );
-
-    function tickBitmap(int16 wordPosition) external view returns (uint256);
-
-    function positions(bytes32 key)
-        external
-        view
-        returns (
-            uint128 _liquidity,
-            uint128 tokensOwed0,
-            uint128 tokensOwed1
-        );
-}
-
+import "./interfaces/IUniswapV3.sol";
 
 contract SolidlyV3Helper {
-
     error ZeroInputError();
 
     int24 private constant _MIN_TICK = -887272;
     int24 private constant _MAX_TICK = -_MIN_TICK;
 
-    function getTicks(ISolidlyV3 pool, int24 tickRange) external view returns (bytes[] memory ticks) {
-
+    function getTicks(IUniswapV3 pool, int24 tickRange) external view returns (bytes[] memory ticks) {
         int24 tickSpacing = pool.tickSpacing();
-        (,int24 tick,,) = pool.slot0();
+        (,int24 tick) = pool.slot0();
 
         int24 fromTick = tick - (tickSpacing * tickRange);
         int24 toTick = tick + (tickSpacing * tickRange);
@@ -68,14 +26,13 @@ contract SolidlyV3Helper {
         int24[] memory initTicks = new int24[](uint256(int256(toTick - fromTick + 1) / int256(tickSpacing)));
 
         uint counter = 0;
-        for (int24 tickNum = (fromTick / tickSpacing * tickSpacing); tickNum <=  (toTick / tickSpacing * tickSpacing); tickNum += (256 * tickSpacing)) {
+        for (int24 tickNum = (fromTick / tickSpacing * tickSpacing); tickNum <= (toTick / tickSpacing * tickSpacing); tickNum += (256 * tickSpacing)) {
             int16 pos = int16((tickNum / tickSpacing) >> 8);
             uint256 bm = pool.tickBitmap(pos);
 
             while (bm != 0) {
                 uint8 bit = _mostSignificantBit(bm);
                 initTicks[counter] = (int24(pos) * 256 + int24(int256(uint256(bit)))) * tickSpacing;
-
                 counter += 1;
                 bm ^= 1 << bit;
             }
