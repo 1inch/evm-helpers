@@ -5,8 +5,6 @@ pragma solidity 0.8.19;
 import "./interfaces/IUniswapV3.sol";
 
 contract SolidlyV3Helper {
-    error ZeroInputError();
-
     int24 private constant _MIN_TICK = -887272;
     int24 private constant _MAX_TICK = -_MIN_TICK;
 
@@ -44,9 +42,8 @@ contract SolidlyV3Helper {
         }
     }
 
+    // @dev Parameter `x` should be greater than 0, but it is never equal to 0 in this contract.
     function _mostSignificantBit(uint256 x) private pure returns (uint8 r) {
-        if (x == 0) revert ZeroInputError();
-
         if (x >= 0x100000000000000000000000000000000) {
             x >>= 128;
             r += 128;
