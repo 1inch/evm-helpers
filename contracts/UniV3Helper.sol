@@ -2,6 +2,7 @@
 
 pragma solidity 0.8.19;
 
+import "@uniswap/v3-core/contracts/libraries/BitMath.sol";
 import "./interfaces/IUniswapV3.sol";
 
 /// @title UniV3Helper
@@ -44,7 +45,7 @@ contract UniV3Helper {
             uint256 bm = pool.tickBitmap(pos);
 
             while (bm != 0) {
-                uint8 bit = _leastSignificantBit(bm);
+                uint8 bit = BitMath.leastSignificantBit(bm);
                 bm ^= 1 << bit;
                 int24 extractedTick = ((int24(pos) << 8) | int24(uint24(bit))) * tickSpacing;
                 if (extractedTick >= fromTick && extractedTick <= toTick) {
@@ -77,47 +78,5 @@ contract UniV3Helper {
                 initTicks[i]
             );
         }
-    }
-
-    /**
-     * @notice Determines the position of the least significant bit in the given number.
-     * @dev The function works by repeatedly halving the number and keeping track of the number of operations
-     * performed until the number is less than 2.
-     * @param x The input number for which the least significant bit position is to be found.
-     * @return r The position of the least significant bit in the given number.
-     */
-    function _leastSignificantBit(uint256 x) private pure returns (uint8 r) {
-        require(x > 0, "x is 0");
-        x = x & (~x + 1);
-
-        if (x >= 0x100000000000000000000000000000000) {
-            x >>= 128;
-            r += 128;
-        }
-        if (x >= 0x10000000000000000) {
-            x >>= 64;
-            r += 64;
-        }
-        if (x >= 0x100000000) {
-            x >>= 32;
-            r += 32;
-        }
-        if (x >= 0x10000) {
-            x >>= 16;
-            r += 16;
-        }
-        if (x >= 0x100) {
-            x >>= 8;
-            r += 8;
-        }
-        if (x >= 0x10) {
-            x >>= 4;
-            r += 4;
-        }
-        if (x >= 0x4) {
-            x >>= 2;
-            r += 2;
-        }
-        if (x >= 0x2) r += 1;
     }
 }
