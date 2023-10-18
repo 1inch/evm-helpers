@@ -10,7 +10,6 @@ module.exports = async ({ deployments, getNamedAccounts }) => {
     const { deployer } = await getNamedAccounts();
     await deployAndGetContract({
         contractName: CONTRACT_HELPER_NAME,
-        constructorArgs: [],
         deployments,
         deployer,
     });
