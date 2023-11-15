@@ -73,4 +73,10 @@ contract MultiCall {
     function gasLeft() external view returns (uint256) {
         return gasleft();
     }
+
+    /// @notice Fetches the block timestamp.
+    /// @return result timestamp of the block.
+    function getCurrentBlockTimestamp() external view returns (uint256) {
+        return block.timestamp;
+    }
 }
