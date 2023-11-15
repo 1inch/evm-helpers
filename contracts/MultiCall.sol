@@ -77,6 +77,7 @@ contract MultiCall {
     /// @notice Fetches the block timestamp.
     /// @return result timestamp of the block.
     function getCurrentBlockTimestamp() external view returns (uint256) {
+        // solhint-disable-next-line not-rely-on-time
         return block.timestamp;
     }
 }
