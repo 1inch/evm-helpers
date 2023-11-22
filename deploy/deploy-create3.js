@@ -22,7 +22,7 @@ module.exports = async () => {
 
     console.log(`EvmHelpers deployed to: ${evmHelpersAddress}`);
 
-    await new Promise(r => setTimeout(r, 3000));
+    await new Promise(resolve => setTimeout(resolve, 3000));
 
     if (await getChainId() !== '31337') {
         await hre.run('verify:verify', { address: evmHelpersAddress });
