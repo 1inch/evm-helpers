@@ -26,7 +26,7 @@ describe('TraderJoeHelper_v2_1', function () {
         const USDC_DAI_E_POOL_ADDRESS = '0x2f1DA4bafd5f2508EC2e2E425036063A374993B6';
 
         const traderJoeHelperV2dot1 = await (await ethers.getContractFactory('TraderJoeHelper_v2_1')).deploy();
-        await traderJoeHelperV2dot1.deployed();
+        await traderJoeHelperV2dot1.waitForDeployment();
 
         const { data, i } = await traderJoeHelperV2dot1.getBins(USDC_DAI_E_POOL_ADDRESS, 0, 10);
         console.log('bins length', data.length);

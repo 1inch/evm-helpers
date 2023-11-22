@@ -29,7 +29,7 @@ describe('SolidlyV3Helper', function () {
         const USDC_WETH_POOL_ADDRESS = '0xafed85453681dc387ee0e87b542614722ee2cfed';
 
         const solidlyV3Helper = await (await ethers.getContractFactory('SolidlyV3Helper')).deploy();
-        await solidlyV3Helper.deployed();
+        await solidlyV3Helper.waitForDeployment();
 
         const ticks = await solidlyV3Helper.getTicks(USDC_WETH_POOL_ADDRESS, 20);
         console.log('ticks', ticks.length);
