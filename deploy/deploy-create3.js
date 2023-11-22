@@ -3,7 +3,7 @@ const { getChainId, ethers } = hre;
 
 const CREATE3_DEPLOYER_CONTRACT = '0x65B3Db8bAeF0215A1F9B14c506D2a3078b2C84AE';
 
-const EVM_HELPERS_SALT = ethers.utils.keccak256(ethers.utils.toUtf8Bytes('EvmHelpers-new'));
+const EVM_HELPERS_SALT = ethers.keccak256(ethers.toUtf8Bytes('EvmHelpers-new'));
 
 module.exports = async () => {
     console.log('running deploy script');
@@ -13,7 +13,7 @@ module.exports = async () => {
 
     const EvmHelpersFactory = await ethers.getContractFactory('EvmHelpers');
 
-    const deployData = EvmHelpersFactory.getDeployTransaction().data;
+    const deployData = (await EvmHelpersFactory.getDeployTransaction()).data;
 
     const deployTxn = await create3Deployer.deploy(EVM_HELPERS_SALT, deployData, { gasLimit: 5000000 });
     await deployTxn.wait();
