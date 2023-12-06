@@ -29,7 +29,7 @@ describe('UniV3Helper', function () {
         const USDC_DAI_POOL_ADDRESS = '0x6c6Bc977E13Df9b0de53b251522280BB72383700';
 
         const uniV3Helper = await (await ethers.getContractFactory('UniV3Helper')).deploy();
-        await uniV3Helper.deployed();
+        await uniV3Helper.waitForDeployment();
 
         const ticks = await uniV3Helper.getTicks(USDC_DAI_POOL_ADDRESS, 20);
         console.log('ticks', ticks.length);

@@ -2,7 +2,7 @@ require('@matterlabs/hardhat-zksync-deploy');
 require('@matterlabs/hardhat-zksync-solc');
 require('@matterlabs/hardhat-zksync-verify');
 require('@nomicfoundation/hardhat-verify');
-require('@nomiclabs/hardhat-ethers');
+require('@nomicfoundation/hardhat-ethers');
 require('dotenv').config();
 require('hardhat-deploy');
 require('hardhat-gas-reporter');
@@ -30,7 +30,7 @@ module.exports = {
     },
     networks,
     zksolc: {
-        version: '1.3.13',
+        version: '1.3.17',
         compilerSource: 'binary',
         settings: {},
     },

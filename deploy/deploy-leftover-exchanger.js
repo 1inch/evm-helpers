@@ -4,7 +4,7 @@ const { getChainId, ethers } = hre;
 const OWNER = '0xa3bf91a131fccfecc43999c9ff4612a25a572859';
 const CREATE3_DEPLOYER_CONTRACT = '0x65B3Db8bAeF0215A1F9B14c506D2a3078b2C84AE';
 
-const LEFTOVER_EXCHANGER_SALT = ethers.utils.keccak256(ethers.utils.toUtf8Bytes('LeftoverExchanger'));
+const LEFTOVER_EXCHANGER_SALT = ethers.keccak256(ethers.toUtf8Bytes('LeftoverExchanger'));
 
 module.exports = async ({ getNamedAccounts }) => {
     console.log('running deploy script');
@@ -23,16 +23,16 @@ module.exports = async ({ getNamedAccounts }) => {
 
     console.log('LeftoverExchanger destroyed');
 
-    const deployData = LeftoverExchangerFactory.getDeployTransaction(OWNER, deployer).data;
+    const deployData = (await LeftoverExchangerFactory.getDeployTransaction(OWNER, deployer)).data;
 
     const deployTxn = await create3Deployer.deploy(LEFTOVER_EXCHANGER_SALT, deployData);
     await deployTxn.wait();
 
-    console.log(`LeftoverExchanger deployed to: ${leftoverExchanger.address}`);
+    console.log(`LeftoverExchanger deployed to: ${await leftoverExchanger.getAddress()}`);
 
     if (await getChainId() !== '31337') {
         await hre.run('verify:verify', {
-            address: leftoverExchanger.address,
+            address: await leftoverExchanger.getAddress(),
             constructorArguments: [OWNER, deployer],
         });
     }

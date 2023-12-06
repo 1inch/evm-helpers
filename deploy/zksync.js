@@ -15,19 +15,19 @@ module.exports = async (hre) => {
 
     const EvmHelpers = await deployer.loadArtifact('EvmHelpers');
     const evmHelpers = await deployer.deploy(EvmHelpers);
-    console.log(`${EvmHelpers.contractName} was deployed to ${evmHelpers.address}`);
+    console.log(`${EvmHelpers.contractName} was deployed to ${await evmHelpers.getAddress()}`);
     if (await hre.getChainId() !== '31337') {
         await hre.run('verify:verify', {
-            address: evmHelpers.address,
+            address: await evmHelpers.getAddress(),
         });
     }
 
     const LeftoverExchanger = await deployer.loadArtifact('LeftoverExchanger');
     const leftoverExchanger = await deployer.deploy(LeftoverExchanger, [OWNER]);
-    console.log(`${LeftoverExchanger.contractName} was deployed to ${leftoverExchanger.address}`);
+    console.log(`${LeftoverExchanger.contractName} was deployed to ${await leftoverExchanger.getAddress()}`);
     if (await hre.getChainId() !== '31337') {
         await hre.run('verify:verify', {
-            address: leftoverExchanger.address,
+            address: await leftoverExchanger.getAddress(),
             constructorArguments: [OWNER],
         });
     }

@@ -28,7 +28,7 @@ describe('CurveLlammaHelper', function () {
         const SFRX_CRVUSD_POOL_ADDRESS = '0x136e783846ef68C8Bd00a3369F787dF8d683a696';
 
         const curveLlammaHelper = await (await ethers.getContractFactory('CurveLlammaHelper')).deploy();
-        await curveLlammaHelper.deployed();
+        await curveLlammaHelper.waitForDeployment();
 
         const data = await curveLlammaHelper.get(SFRX_CRVUSD_POOL_ADDRESS);
         console.log(data);
