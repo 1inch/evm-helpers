@@ -19,10 +19,10 @@ module.exports = {
                     "gvf" +                        // Run full inliner
                     "CTUca[r]LSsTFOtfDnca[r]Ilc" + // SSA plus simplify
                 "]" +
-                "jml[jl] VcTOcl jml",
+                "jml[jl] VcTOcl jml : fDnTOcm",
         },
     },
     skipFiles: [
-        'mocks'
+        'mocks', 'interfaces'
     ]
 }
