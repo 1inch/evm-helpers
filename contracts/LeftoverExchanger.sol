@@ -24,6 +24,7 @@ contract LeftoverExchanger is Ownable, IERC1271 {
     error CallFailed(uint256 i, bytes result);
     error InvalidLength();
     error EstimationResults(bool[] statuses, bytes[] results);
+    error NotEnoughProfit();
 
     address private immutable _creator;
 
@@ -55,13 +56,19 @@ contract LeftoverExchanger is Ownable, IERC1271 {
         }
     }
 
-    function makeCalls(Call[] calldata calls) external payable onlyOwner {
+    function makeCalls(Call[] calldata calls) public payable onlyOwner {
         unchecked {
             for (uint256 i = 0; i < calls.length; i++) {
                 (bool ok, bytes memory result) = calls[i].to.call{value : calls[i].value}(calls[i].data);
                 if (!ok) revert CallFailed(i, result);
             }
         }
+    }
+
+    function makeCallsWithEthCheck(Call[] calldata calls, uint256 minReturn) external payable {
+        uint256 balanceBefore = msg.sender.balance;
+        makeCalls(calls);
+        if (msg.sender.balance - balanceBefore < minReturn) revert NotEnoughProfit();
     }
 
     function approve(IERC20 token, address to) external onlyOwner {
