@@ -26,10 +26,10 @@ contract LeftoverExchanger is Ownable, IERC1271 {
     error EstimationResults(bool[] statuses, bytes[] results);
     error NotEnoughProfit();
 
-    address private immutable _creator;
+    address private immutable _CREATOR;
 
     constructor(address owner_, address creator_) Ownable(owner_) {
-        _creator = creator_;
+        _CREATOR = creator_;
     }
 
     // solhint-disable-next-line no-empty-blocks
@@ -106,7 +106,7 @@ contract LeftoverExchanger is Ownable, IERC1271 {
     }
 
     function destroy() external {
-        if (msg.sender != _creator) revert OnlyCreator();
+        if (msg.sender != _CREATOR) revert OnlyCreator();
         selfdestruct(payable(msg.sender));
     }
 }
