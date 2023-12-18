@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity 0.8.19;
+pragma solidity 0.8.23;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/interfaces/IERC1271.sol";
@@ -28,8 +28,7 @@ contract LeftoverExchanger is Ownable, IERC1271 {
 
     address private immutable _creator;
 
-    constructor(address owner_, address creator_) {
-        transferOwnership(owner_);
+    constructor(address owner_, address creator_) Ownable(owner_) {
         _creator = creator_;
     }
 

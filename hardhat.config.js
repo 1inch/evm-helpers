@@ -21,7 +21,7 @@ module.exports = {
             },
             viaIR: true,
         },
-        version: '0.8.19',
+        version: '0.8.23',
     },
     namedAccounts: {
         deployer: {
