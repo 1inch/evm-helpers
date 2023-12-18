@@ -108,7 +108,7 @@ contract LeftoverExchanger is Ownable, IERC1271 {
 
     function destroy() external {
         if (msg.sender != _creator) revert OnlyCreator();
-        selfdestruct(payable(this));
+        selfdestruct(payable(msg.sender));
     }
 }
 
