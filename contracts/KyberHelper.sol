@@ -16,12 +16,12 @@ contract KyberHelper {
      * @param maxTickNum The maximum number of ticks to fetch.
      * @return ticks The bytes array containing the fetched ticks data.
      */
-   function getTicks(IKyber pool, uint maxTickNum) external view returns (bytes[] memory ticks) {
+   function getTicks(IKyber pool, uint256 maxTickNum) external view returns (bytes[] memory ticks) {
         (,,int24 tick,) = pool.getPoolState();
 
         int24[] memory initTicks = new int24[](maxTickNum);
 
-        uint counter = 1;
+        uint256 counter = 1;
         initTicks[0] = tick;
 
         (int24 previous, int24 next) = pool.initializedTicks(tick);
@@ -67,7 +67,7 @@ contract KyberHelper {
         }
 
         ticks = new bytes[](counter);
-        for (uint i = 0; i < counter; i++) {
+        for (uint256 i = 0; i < counter; i++) {
             (
                 uint128 liquidityGross,
                 int128 liquidityNet,

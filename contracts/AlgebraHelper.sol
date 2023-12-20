@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity 0.8.19;
+pragma solidity 0.8.23;
 
 import "@uniswap/v3-core/contracts/libraries/BitMath.sol";
 import "./interfaces/IAlgebra.sol";

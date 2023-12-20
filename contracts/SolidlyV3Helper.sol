@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity 0.8.19;
+pragma solidity 0.8.23;
 
 import "@uniswap/v3-core/contracts/libraries/BitMath.sol";
 import "./interfaces/IUniswapV3.sol";
@@ -24,7 +24,7 @@ contract SolidlyV3Helper {
 
         int24[] memory initTicks = new int24[](uint256(int256(toTick - fromTick + 1) / int256(tickSpacing)));
 
-        uint counter = 0;
+        uint256 counter = 0;
         for (int24 tickNum = (fromTick / tickSpacing * tickSpacing); tickNum <= (toTick / tickSpacing * tickSpacing); tickNum += (256 * tickSpacing)) {
             int16 pos = int16((tickNum / tickSpacing) >> 8);
             uint256 bm = pool.tickBitmap(pos);
@@ -38,7 +38,7 @@ contract SolidlyV3Helper {
         }
 
         ticks = new bytes[](counter);
-        for (uint i = 0; i < counter; i++) {
+        for (uint256 i = 0; i < counter; i++) {
              ticks[i] = abi.encodePacked(initTicks[i]);
         }
     }

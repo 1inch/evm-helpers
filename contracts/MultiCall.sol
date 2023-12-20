@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity 0.8.19;
+pragma solidity 0.8.23;
 
 /// @title MultiCall
 /// @dev A contract for batching multiple contract function calls into a single transaction.
@@ -20,7 +20,7 @@ contract MultiCall {
      */
    function multicall(Call[] memory calls) public returns (bytes[] memory results) {
         results = new bytes[](calls.length);
-        for (uint i = 0; i < calls.length; i++) {
+        for (uint256 i = 0; i < calls.length; i++) {
             (, results[i]) = calls[i].to.call(calls[i].data);  // solhint-disable-line avoid-low-level-calls
         }
     }
@@ -36,7 +36,7 @@ contract MultiCall {
      */
     function multicallWithGasLimitation(Call[] memory calls, uint256 gasBuffer) public returns (bytes[] memory results, uint256 lastSuccessIndex) {
         results = new bytes[](calls.length);
-        for (uint i = 0; i < calls.length; i++) {
+        for (uint256 i = 0; i < calls.length; i++) {
             (, results[i]) = calls[i].to.call(calls[i].data);  // solhint-disable-line avoid-low-level-calls
             if (gasleft() < gasBuffer) {
                 return (results, i);
@@ -55,7 +55,7 @@ contract MultiCall {
    function multicallWithGas(Call[] memory calls) public returns (bytes[] memory results, uint256[] memory gasUsed) {
         results = new bytes[](calls.length);
         gasUsed = new uint256[](calls.length);
-        for (uint i = 0; i < calls.length; i++) {
+        for (uint256 i = 0; i < calls.length; i++) {
             uint256 initialGas = gasleft();
             (, results[i]) = calls[i].to.call(calls[i].data);  // solhint-disable-line avoid-low-level-calls
             gasUsed[i] = initialGas - gasleft();
