@@ -2,14 +2,14 @@
 
 pragma solidity 0.8.23;
 
-import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/interfaces/IERC1271.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@1inch/solidity-utils/contracts/libraries/SafeERC20.sol";
 import "@1inch/solidity-utils/contracts/libraries/ECDSA.sol";
 
 /* solhint-disable avoid-low-level-calls */
-contract LeftoverExchanger is Ownable, IERC1271 {
+
+contract LeftoverExchanger is IERC1271 {
     using SafeERC20 for IERC20;
 
     struct Call {
@@ -20,16 +20,21 @@ contract LeftoverExchanger is Ownable, IERC1271 {
 
     event CallFailure(uint256 i, bytes result);
 
-    error OnlyCreator();
+    error OnlyOwner(address owner);
     error CallFailed(uint256 i, bytes result);
     error InvalidLength();
     error EstimationResults(bool[] statuses, bytes[] results);
     error NotEnoughProfit();
 
-    address private immutable _CREATOR;
+    address private immutable _OWNER;
 
-    constructor(address owner_, address creator_) Ownable(owner_) {
-        _CREATOR = creator_;
+    constructor(address owner) {
+        _OWNER = owner;
+    }
+
+    modifier onlyOwner() {
+        if(msg.sender != _OWNER) revert OnlyOwner(_OWNER);
+        _;
     }
 
     // solhint-disable-next-line no-empty-blocks
@@ -102,12 +107,7 @@ contract LeftoverExchanger is Ownable, IERC1271 {
     }
 
     function isValidSignature(bytes32 hash, bytes calldata signature) external view returns (bytes4 magicValue) {
-        if (ECDSA.recover(hash, signature) == owner()) magicValue = this.isValidSignature.selector;
-    }
-
-    function destroy() external {
-        if (msg.sender != _CREATOR) revert OnlyCreator();
-        selfdestruct(payable(msg.sender));
+        if (ECDSA.recover(hash, signature) == _OWNER) magicValue = this.isValidSignature.selector;
     }
 }
 
