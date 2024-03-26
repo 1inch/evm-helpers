@@ -18,7 +18,7 @@
     "@matterlabs/hardhat-zksync-verify": "1.2.1",
     "@nomicfoundation/hardhat-ethers": "3.0.5",
     "@nomicfoundation/hardhat-verify": "2.0.2",
-    "chai": "4.3.10",
+    "chai": "4.4.0",
     "dotenv": "16.3.1",
     "eslint": "8.56.0",
     "eslint-config-standard": "17.1.0",
@@ -33,7 +33,7 @@
     "hardhat-tracer": "2.7.0",
     "rimraf": "5.0.5",
     "solhint": "4.0.0",
-    "solidity-coverage": "0.8.5",
+    "solidity-coverage": "0.8.7",
     "zksync-web3": "0.17.1",
     "zksync-ethers": "6.0.0"
   },
