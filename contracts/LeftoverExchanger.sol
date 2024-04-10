@@ -11,6 +11,7 @@ import "@1inch/solidity-utils/contracts/libraries/ECDSA.sol";
 
 contract LeftoverExchanger is IERC1271 {
     using SafeERC20 for IERC20;
+    using SafeERC20 for IWETH;
 
     struct Call {
         address to;
@@ -25,10 +26,13 @@ contract LeftoverExchanger is IERC1271 {
     error InvalidLength();
     error EstimationResults(bool[] statuses, bytes[] results);
     error NotEnoughProfit();
+    error LengthMismatch();
 
     address private immutable _OWNER;
+    IWETH internal immutable _WETH;
 
-    constructor(address owner) {
+    constructor(IWETH weth, address owner) {
+        _WETH = weth;
         _OWNER = owner;
     }
 
@@ -40,6 +44,7 @@ contract LeftoverExchanger is IERC1271 {
     // solhint-disable-next-line no-empty-blocks
     receive() external payable {}
 
+    // TODO: deprecated
     function estimateMakeCalls(Call[] calldata calls) external payable onlyOwner {
         unchecked {
             bool[] memory statuses = new bool[](calls.length);
@@ -51,6 +56,7 @@ contract LeftoverExchanger is IERC1271 {
         }
     }
 
+    // TODO: deprecated
     function makeCallsNoThrow(Call[] calldata calls) external payable onlyOwner {
         unchecked {
             for (uint256 i = 0; i < calls.length; i++) {
@@ -60,6 +66,7 @@ contract LeftoverExchanger is IERC1271 {
         }
     }
 
+    // TODO: deprecated
     function makeCalls(Call[] calldata calls) public payable onlyOwner {
         unchecked {
             for (uint256 i = 0; i < calls.length; i++) {
@@ -69,10 +76,41 @@ contract LeftoverExchanger is IERC1271 {
         }
     }
 
+    // TODO: deprecated
     function makeCallsWithEthCheck(Call[] calldata calls, uint256 minReturn) external payable {
         uint256 balanceBefore = msg.sender.balance;
         makeCalls(calls);
         if (msg.sender.balance - balanceBefore < minReturn) revert NotEnoughProfit();
+    }
+
+    function arbitraryCalls(address[] calldata targets, bytes[] calldata arguments) public onlyOwner {
+        unchecked {
+            uint256 length = targets.length;
+            if (targets.length != arguments.length) revert LengthMismatch();
+            for (uint256 i = 0; i < length; ++i) {
+                // solhint-disable-next-line avoid-low-level-calls
+                (bool success,) = targets[i].call(arguments[i]);
+                if (!success) RevertReasonForwarder.reRevert();
+            }
+        }
+    }
+
+    function arbitraryCallsWithEthCheck(address[] calldata targets, bytes[] calldata arguments, uint256 minReturn) external {
+        uint256 balanceBefore = msg.sender.balance;
+        arbitraryCalls(targets, arguments);
+        if (msg.sender.balance - balanceBefore < minReturn) revert NotEnoughProfit();
+    }
+
+    function estimateArbitraryCalls(address[] calldata targets, bytes[] calldata arguments) external onlyOwner {
+        unchecked {
+            bool[] memory statuses = new bool[](targets.length);
+            bytes[] memory results = new bytes[](targets.length);
+            for (uint256 i = 0; i < targets.length; i++) {
+                // solhint-disable-next-line avoid-low-level-calls
+                (statuses[i], results[i]) = targets[i].call(arguments[i]);
+            }
+            revert EstimationResults(statuses, results);
+        }
     }
 
     function approve(IERC20 token, address to) external onlyOwner {
@@ -104,6 +142,14 @@ contract LeftoverExchanger is IERC1271 {
                 token.safeTransfer(target, amount);
             }
         }
+    }
+
+    function unwrapTo(address payable receiver, uint256 amount) external onlyOwner {
+        _WETH.safeWithdrawTo(amount, receiver);
+    }
+
+    function rescueEther() external onlyOwner {
+        payable(msg.sender).transfer(address(this).balance);
     }
 
     function isValidSignature(bytes32 hash, bytes calldata signature) external view returns (bytes4 magicValue) {
