@@ -101,6 +101,12 @@ contract LeftoverExchanger is IERC1271 {
         if (msg.sender.balance - balanceBefore < minReturn) revert NotEnoughProfit();
     }
 
+    function arbitraryCallsWithTokenCheck(address[] calldata targets, bytes[] calldata arguments, IERC20 token, uint256 minReturn) external {
+        uint256 balanceBefore = token.balanceOf(msg.sender);
+        arbitraryCalls(targets, arguments);
+        if (token.balanceOf(msg.sender) - balanceBefore < minReturn) revert NotEnoughProfit();
+    }
+
     function estimateArbitraryCalls(address[] calldata targets, bytes[] calldata arguments) external onlyOwner {
         unchecked {
             bool[] memory statuses = new bool[](targets.length);
