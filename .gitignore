@@ -5,6 +5,7 @@ cache-zk
 node_modules
 coverage
 hardhat-dependency-compiler
+deployments/hardhat
 coverage.json
 build
 solcinputs
