@@ -3,6 +3,7 @@
 pragma solidity 0.8.23;
 
 import { IWETH } from "@1inch/solidity-utils/contracts/interfaces/IWETH.sol";
+import { ECDSA } from "@1inch/solidity-utils/contracts/libraries/ECDSA.sol";
 
 import { BalanceManager } from "./BalanceManager.sol";
 
@@ -15,12 +16,20 @@ contract LeftoverExchanger is BalanceManager {
         bytes data;
     }
 
+    address private immutable _OWNER;
+
     event CallFailure(uint256 i, bytes result);
 
     error CallFailed(uint256 i, bytes result);
 
-    constructor(IWETH weth, address owner) BalanceManager(weth, owner) {}
+    constructor(IWETH weth, address owner) BalanceManager(weth) {
+        _OWNER = owner;
+    }
 
+    modifier onlyOwner() override {
+        if(msg.sender != _OWNER) revert OnlyOwner(_OWNER);
+        _;
+    }
 
     // TODO: deprecated
     function estimateMakeCalls(Call[] calldata calls) external payable onlyOwner {
@@ -59,6 +68,10 @@ contract LeftoverExchanger is BalanceManager {
         uint256 balanceBefore = msg.sender.balance;
         makeCalls(calls);
         if (msg.sender.balance - balanceBefore < minReturn) revert NotEnoughProfit();
+    }
+
+    function isValidSignature(bytes32 hash, bytes calldata signature) external view override returns (bytes4 magicValue) {
+        if (ECDSA.recover(hash, signature) == _OWNER) magicValue = this.isValidSignature.selector;
     }
 }
 

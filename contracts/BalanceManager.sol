@@ -5,7 +5,6 @@ pragma solidity 0.8.23;
 import { IERC1271 } from "@openzeppelin/contracts/interfaces/IERC1271.sol";
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import { IWETH } from "@1inch/solidity-utils/contracts/interfaces/IWETH.sol";
-import { ECDSA } from "@1inch/solidity-utils/contracts/libraries/ECDSA.sol";
 import { RevertReasonForwarder } from "@1inch/solidity-utils/contracts/libraries/RevertReasonForwarder.sol";
 import { SafeERC20 } from "@1inch/solidity-utils/contracts/libraries/SafeERC20.sol";
 
@@ -17,18 +16,13 @@ abstract contract BalanceManager is IERC1271, IBalanceManager {
     using SafeERC20 for IERC20;
     using SafeERC20 for IWETH;
 
-    address private immutable _OWNER;
     IWETH internal immutable _WETH;
 
-    constructor(IWETH weth, address owner) {
+    constructor(IWETH weth) {
         _WETH = weth;
-        _OWNER = owner;
     }
 
-    modifier onlyOwner() {
-        if(msg.sender != _OWNER) revert OnlyOwner(_OWNER);
-        _;
-    }
+    modifier onlyOwner() virtual;
 
     receive() external payable {} // solhint-disable-line no-empty-blocks;
 
@@ -148,9 +142,7 @@ abstract contract BalanceManager is IERC1271, IBalanceManager {
     /**
      * @notice See {IERC1271-isValidSignature}.
      */
-    function isValidSignature(bytes32 hash, bytes calldata signature) external view returns (bytes4 magicValue) {
-        if (ECDSA.recover(hash, signature) == _OWNER) magicValue = this.isValidSignature.selector;
-    }
+    function isValidSignature(bytes32 hash, bytes calldata signature) external view virtual returns (bytes4 magicValue);
 }
 
 /* solhint-enable avoid-low-level-calls */
