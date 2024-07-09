@@ -138,11 +138,6 @@ abstract contract BalanceManager is IERC1271, IBalanceManager {
         (bool success, ) = payable(msg.sender).call{value: address(this).balance}("");
         if (!success) revert ETHTransferFailed();
     }
-
-    /**
-     * @notice See {IERC1271-isValidSignature}.
-     */
-    function isValidSignature(bytes32 hash, bytes calldata signature) external view virtual returns (bytes4 magicValue);
 }
 
 /* solhint-enable avoid-low-level-calls */
