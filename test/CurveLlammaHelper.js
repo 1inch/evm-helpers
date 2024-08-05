@@ -1,27 +1,13 @@
+const { resetHardhatNetworkFork } = require('@1inch/solidity-utils/hardhat-setup');
 const { ethers, network } = require('hardhat');
 
 describe('CurveLlammaHelper', function () {
     before(async function () {
-        await network.provider.request({ // take mainnet fork
-            method: 'hardhat_reset',
-            params: [
-                {
-                    forking: {
-                        jsonRpcUrl: process.env.MAINNET_RPC_URL,
-                        httpHeaders: {
-                            'auth-key': process.env.RPC_AUTH_HEADER,
-                        },
-                    },
-                },
-            ],
-        });
+        await resetHardhatNetworkFork(network, 'mainnet');
     });
 
     after(async function () {
-        await network.provider.request({ // reset back to local network
-            method: 'hardhat_reset',
-            params: [],
-        });
+        await resetHardhatNetworkFork(network, 'hardhat');
     });
 
     it('should show some ticks for sFRX-crvUSD pair', async function () {
