@@ -1,25 +1,14 @@
 const { ethers, network } = require('hardhat');
 const { expect } = require('@1inch/solidity-utils');
+const { resetHardhatNetworkFork } = require('@1inch/solidity-utils/hardhat-setup');
 
 describe('TraderJoeHelper', function () {
     before(async function () {
-        await network.provider.request({ // take avalanch fork
-            method: 'hardhat_reset',
-            params: [
-                {
-                    forking: {
-                        jsonRpcUrl: process.env.AVAX_RPC_URL,
-                    },
-                },
-            ],
-        });
+        await resetHardhatNetworkFork(network, 'avax');
     });
 
     after(async function () {
-        await network.provider.request({ // reset back to local network
-            method: 'hardhat_reset',
-            params: [],
-        });
+        await resetHardhatNetworkFork(network, 'hardhat');
     });
 
     it('should show some bins for usdc-usdc.e pair', async function () {

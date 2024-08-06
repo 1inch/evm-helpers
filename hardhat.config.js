@@ -1,7 +1,5 @@
 require('@matterlabs/hardhat-zksync-deploy');
 require('@matterlabs/hardhat-zksync-solc');
-require('@matterlabs/hardhat-zksync-verify');
-require('@nomicfoundation/hardhat-verify');
 require('@nomicfoundation/hardhat-ethers');
 require('dotenv').config();
 require('hardhat-deploy');
@@ -10,7 +8,13 @@ require('solidity-coverage');
 require('hardhat-tracer');
 const { Networks, getNetwork } = require('@1inch/solidity-utils/hardhat-setup');
 
-const { networks, etherscan } = (new Networks()).registerAll();
+if (getNetwork().indexOf('zksync') !== -1) {
+    require('@matterlabs/hardhat-zksync-verify');
+} else {
+    require('@nomicfoundation/hardhat-verify');
+}
+
+const { networks, etherscan } = (new Networks(true, 'mainnet', true)).registerAll();
 
 module.exports = {
     etherscan,
