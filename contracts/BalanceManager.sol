@@ -29,7 +29,7 @@ abstract contract BalanceManager is IERC1271, IBalanceManager {
     /**
      * @notice See {IBalanceManager-arbitraryCalls}.
      */
-    function arbitraryCalls(address[] calldata targets, bytes[] calldata arguments) external {
+    function arbitraryCalls(address[] calldata targets, bytes[] calldata arguments) public {
         uint256[] calldata values;
         // solhint-disable-next-line no-inline-assembly
         assembly ("memory-safe") {
