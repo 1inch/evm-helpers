@@ -27,7 +27,7 @@ contract LeftoverExchanger is BalanceManager {
     }
 
     modifier onlyOwner() override {
-        if(msg.sender != _OWNER) revert OnlyOwner(_OWNER);
+        if(msg.sender != _OWNER) revert OnlyOwner();
         _;
     }
 

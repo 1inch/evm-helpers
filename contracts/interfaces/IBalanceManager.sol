@@ -13,7 +13,7 @@ interface IBalanceManager{
     error InvalidLength();
     error LengthMismatch();
     error NotEnoughProfit();
-    error OnlyOwner(address owner);
+    error OnlyOwner();
 
     /**
      * @notice Execute arbitrary calls.
