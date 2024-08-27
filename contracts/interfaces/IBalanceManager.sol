@@ -23,12 +23,34 @@ interface IBalanceManager{
     function arbitraryCalls(address[] calldata targets, bytes[] calldata arguments) external;
 
     /**
+     * @notice Execute arbitrary calls.
+     * @param targets Addresses of the contracts to call.
+     * @param arguments Data to send to each contract.
+     * @param values Values to send to each contract.
+     */
+    function arbitraryCalls(address[] calldata targets, bytes[] calldata arguments, uint256[] calldata values) external;
+
+    /**
      * @notice Execute arbitrary calls and check the ETH balance after.
      * @param targets Addresses of the contracts to call.
      * @param arguments Data to send to each contract.
      * @param minReturn Minimum amount of ETH balance after all calls.
      */
     function arbitraryCallsWithEthCheck(address[] calldata targets, bytes[] calldata arguments, uint256 minReturn) external;
+
+    /**
+     * @notice Execute arbitrary calls and check the ETH balance after.
+     * @param targets Addresses of the contracts to call.
+     * @param arguments Data to send to each contract.
+     * @param values Values to send to each contract.
+     * @param minReturn Minimum amount of ETH balance after all calls.
+     */
+    function arbitraryCallsWithEthCheck(
+        address[] calldata targets,
+        bytes[] calldata arguments,
+        uint256[] calldata values,
+        uint256 minReturn
+    ) external;
 
     /**
      * @notice Execute arbitrary calls and check the token balance after.
@@ -45,12 +67,37 @@ interface IBalanceManager{
     ) external;
 
     /**
+     * @notice Execute arbitrary calls and check the token balance after.
+     * @param targets Addresses of the contracts to call.
+     * @param arguments Data to send to each contract.
+     * @param values Values to send to each contract.
+     * @param token Token to check the balance of.
+     * @param minReturn Minimum amount of token balance after all calls.
+     */
+    function arbitraryCallsWithTokenCheck(
+        address[] calldata targets,
+        bytes[] calldata arguments,
+        uint256[] calldata values,
+        IERC20 token,
+        uint256 minReturn
+    ) external;
+
+    /**
      * @notice Estimate the results of arbitrary calls.
      * @param targets Addresses of the contracts to call.
      * @param arguments Data to send to each contract.
      * @dev This function reverts results with `EstimationResults` error.
      */
     function estimateArbitraryCalls(address[] calldata targets, bytes[] calldata arguments) external;
+
+    /**
+     * @notice Estimate the results of arbitrary calls.
+     * @param targets Addresses of the contracts to call.
+     * @param arguments Data to send to each contract.
+     * @param values Values to send to each contract.
+     * @dev This function reverts results with `EstimationResults` error.
+     */
+    function estimateArbitraryCalls(address[] calldata targets, bytes[] calldata arguments, uint256[] calldata values) external;
 
     /**
      * @notice Approves a spender to spend an infinite amount of tokens.
