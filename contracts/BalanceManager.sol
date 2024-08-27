@@ -29,13 +29,25 @@ abstract contract BalanceManager is IERC1271, IBalanceManager {
     /**
      * @notice See {IBalanceManager-arbitraryCalls}.
      */
-    function arbitraryCalls(address[] calldata targets, bytes[] calldata arguments) public onlyOwner {
+    function arbitraryCalls(address[] calldata targets, bytes[] calldata arguments) external {
+        uint256[] calldata values;
+        assembly {
+            values.offset := calldatasize()
+            values.length := arguments.length
+        }
+        arbitraryCalls(targets, arguments, values);
+    }
+
+    /**
+     * @notice See {IBalanceManager-arbitraryCalls}.
+     */
+    function arbitraryCalls(address[] calldata targets, bytes[] calldata arguments, uint256[] calldata values) public onlyOwner {
         unchecked {
             uint256 length = targets.length;
             if (length != arguments.length) revert LengthMismatch();
             for (uint256 i = 0; i < length; ++i) {
                 // solhint-disable-next-line avoid-low-level-calls
-                (bool success,) = targets[i].call(arguments[i]);
+                (bool success,) = targets[i].call{value: values[i]}(arguments[i]);
                 if (!success) RevertReasonForwarder.reRevert();
             }
         }
@@ -45,8 +57,25 @@ abstract contract BalanceManager is IERC1271, IBalanceManager {
      * @notice See {IBalanceManager-arbitraryCallsWithEthCheck}.
      */
     function arbitraryCallsWithEthCheck(address[] calldata targets, bytes[] calldata arguments, uint256 minReturn) external {
+        uint256[] calldata values;
+        assembly {
+            values.offset := calldatasize()
+            values.length := arguments.length
+        }
+        arbitraryCallsWithEthCheck(targets, arguments, values, minReturn);
+    }
+
+    /**
+     * @notice See {IBalanceManager-arbitraryCallsWithEthCheck}.
+     */
+    function arbitraryCallsWithEthCheck(
+        address[] calldata targets,
+        bytes[] calldata arguments,
+        uint256[] calldata values,
+        uint256 minReturn
+    ) public {
         uint256 balanceBefore = msg.sender.balance;
-        arbitraryCalls(targets, arguments);
+        arbitraryCalls(targets, arguments, values);
         if (msg.sender.balance - balanceBefore < minReturn) revert NotEnoughProfit();
     }
 
@@ -59,15 +88,45 @@ abstract contract BalanceManager is IERC1271, IBalanceManager {
         IERC20 token,
         uint256 minReturn
     ) external {
+        uint256[] calldata values;
+        assembly {
+            values.offset := calldatasize()
+            values.length := arguments.length
+        }
+        arbitraryCallsWithTokenCheck(targets, arguments, values, token, minReturn);
+    }
+
+    /**
+     * @notice See {IBalanceManager-arbitraryCallsWithTokenCheck}.
+     */
+    function arbitraryCallsWithTokenCheck(
+        address[] calldata targets,
+        bytes[] calldata arguments,
+        uint256[] calldata values,
+        IERC20 token,
+        uint256 minReturn
+    ) public {
         uint256 balanceBefore = token.balanceOf(msg.sender);
-        arbitraryCalls(targets, arguments);
+        arbitraryCalls(targets, arguments, values);
         if (token.balanceOf(msg.sender) - balanceBefore < minReturn) revert NotEnoughProfit();
     }
 
     /**
      * @notice See {IBalanceManager-estimateArbitraryCalls}.
      */
-    function estimateArbitraryCalls(address[] calldata targets, bytes[] calldata arguments) external onlyOwner {
+    function estimateArbitraryCalls(address[] calldata targets, bytes[] calldata arguments) external {
+        uint256[] calldata values;
+        assembly {
+            values.offset := calldatasize()
+            values.length := arguments.length
+        }
+        estimateArbitraryCalls(targets, arguments, values);
+    }
+
+    /**
+     * @notice See {IBalanceManager-estimateArbitraryCalls}.
+     */
+    function estimateArbitraryCalls(address[] calldata targets, bytes[] calldata arguments, uint256[] calldata values) public onlyOwner {
         unchecked {
             uint256 length = targets.length;
             if (length != arguments.length) revert LengthMismatch();
@@ -75,7 +134,7 @@ abstract contract BalanceManager is IERC1271, IBalanceManager {
             bytes[] memory results = new bytes[](length);
             for (uint256 i = 0; i < length; i++) {
                 // solhint-disable-next-line avoid-low-level-calls
-                (statuses[i], results[i]) = targets[i].call(arguments[i]);
+                (statuses[i], results[i]) = targets[i].call{value: values[i]}(arguments[i]);
             }
             revert EstimationResults(statuses, results);
         }
