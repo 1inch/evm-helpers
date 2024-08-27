@@ -42,6 +42,7 @@ interface IBalanceManager{
      * @notice Execute arbitrary calls and check the ETH balance after.
      * @param targets Addresses of the contracts to call.
      * @param arguments Data to send to each contract.
+     * @param values Values to send to each contract.
      * @param minReturn Minimum amount of ETH balance after all calls.
      */
     function arbitraryCallsWithEthCheck(
@@ -69,6 +70,7 @@ interface IBalanceManager{
      * @notice Execute arbitrary calls and check the token balance after.
      * @param targets Addresses of the contracts to call.
      * @param arguments Data to send to each contract.
+     * @param values Values to send to each contract.
      * @param token Token to check the balance of.
      * @param minReturn Minimum amount of token balance after all calls.
      */
@@ -92,6 +94,7 @@ interface IBalanceManager{
      * @notice Estimate the results of arbitrary calls.
      * @param targets Addresses of the contracts to call.
      * @param arguments Data to send to each contract.
+     * @param values Values to send to each contract.
      * @dev This function reverts results with `EstimationResults` error.
      */
     function estimateArbitraryCalls(address[] calldata targets, bytes[] calldata arguments, uint256[] calldata values) external;
