@@ -31,7 +31,8 @@ abstract contract BalanceManager is IERC1271, IBalanceManager {
      */
     function arbitraryCalls(address[] calldata targets, bytes[] calldata arguments) external {
         uint256[] calldata values;
-        assembly {
+        // solhint-disable-next-line no-inline-assembly
+        assembly ("memory-safe") {
             values.offset := calldatasize()
             values.length := arguments.length
         }
@@ -58,7 +59,8 @@ abstract contract BalanceManager is IERC1271, IBalanceManager {
      */
     function arbitraryCallsWithEthCheck(address[] calldata targets, bytes[] calldata arguments, uint256 minReturn) external {
         uint256[] calldata values;
-        assembly {
+        // solhint-disable-next-line no-inline-assembly
+        assembly ("memory-safe") {
             values.offset := calldatasize()
             values.length := arguments.length
         }
@@ -89,7 +91,8 @@ abstract contract BalanceManager is IERC1271, IBalanceManager {
         uint256 minReturn
     ) external {
         uint256[] calldata values;
-        assembly {
+        // solhint-disable-next-line no-inline-assembly
+        assembly ("memory-safe") {
             values.offset := calldatasize()
             values.length := arguments.length
         }
@@ -116,7 +119,8 @@ abstract contract BalanceManager is IERC1271, IBalanceManager {
      */
     function estimateArbitraryCalls(address[] calldata targets, bytes[] calldata arguments) external {
         uint256[] calldata values;
-        assembly {
+        // solhint-disable-next-line no-inline-assembly
+        assembly ("memory-safe") {
             values.offset := calldatasize()
             values.length := arguments.length
         }
