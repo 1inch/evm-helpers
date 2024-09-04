@@ -204,7 +204,7 @@ abstract contract BalanceManager is IERC1271, IBalanceManager {
         if (!success) revert ETHTransferFailed();
     }
 
-    function targetToCheck() internal view virtual returns (address);
+    function _targetToCheck() internal view virtual returns (address);
 }
 
 /* solhint-enable avoid-low-level-calls */

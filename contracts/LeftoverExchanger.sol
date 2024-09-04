@@ -74,7 +74,7 @@ contract LeftoverExchanger is BalanceManager {
         if (ECDSA.recover(hash, signature) == _OWNER) magicValue = this.isValidSignature.selector;
     }
 
-    function targetToCheck() internal view override returns(address) {
+    function _targetToCheck() internal view override returns(address) {
         return msg.sender;
     }
 }
