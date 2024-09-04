@@ -20,7 +20,7 @@ interface IBalanceManager{
      * @param targets Addresses of the contracts to call.
      * @param arguments Data to send to each contract.
      */
-    function arbitraryCalls(address[] calldata targets, bytes[] calldata arguments) external;
+    function arbitraryCalls(address[] calldata targets, bytes[] calldata arguments) external payable;
 
     /**
      * @notice Execute arbitrary calls.
@@ -28,7 +28,7 @@ interface IBalanceManager{
      * @param arguments Data to send to each contract.
      * @param values Values to send to each contract.
      */
-    function arbitraryCalls(address[] calldata targets, bytes[] calldata arguments, uint256[] calldata values) external;
+    function arbitraryCalls(address[] calldata targets, bytes[] calldata arguments, uint256[] calldata values) external payable;
 
     /**
      * @notice Execute arbitrary calls and check the ETH balance after.
@@ -36,7 +36,7 @@ interface IBalanceManager{
      * @param arguments Data to send to each contract.
      * @param minReturn Minimum amount of ETH balance after all calls.
      */
-    function arbitraryCallsWithEthCheck(address[] calldata targets, bytes[] calldata arguments, uint256 minReturn) external;
+    function arbitraryCallsWithEthCheck(address[] calldata targets, bytes[] calldata arguments, uint256 minReturn) external payable;
 
     /**
      * @notice Execute arbitrary calls and check the ETH balance after.
@@ -50,7 +50,7 @@ interface IBalanceManager{
         bytes[] calldata arguments,
         uint256[] calldata values,
         uint256 minReturn
-    ) external;
+    ) external payable;
 
     /**
      * @notice Execute arbitrary calls and check the token balance after.
@@ -64,7 +64,7 @@ interface IBalanceManager{
         bytes[] calldata arguments,
         IERC20 token,
         uint256 minReturn
-    ) external;
+    ) external payable;
 
     /**
      * @notice Execute arbitrary calls and check the token balance after.
@@ -80,7 +80,7 @@ interface IBalanceManager{
         uint256[] calldata values,
         IERC20 token,
         uint256 minReturn
-    ) external;
+    ) external payable;
 
     /**
      * @notice Estimate the results of arbitrary calls.
@@ -88,7 +88,7 @@ interface IBalanceManager{
      * @param arguments Data to send to each contract.
      * @dev This function reverts results with `EstimationResults` error.
      */
-    function estimateArbitraryCalls(address[] calldata targets, bytes[] calldata arguments) external;
+    function estimateArbitraryCalls(address[] calldata targets, bytes[] calldata arguments) external payable;
 
     /**
      * @notice Estimate the results of arbitrary calls.
@@ -97,7 +97,7 @@ interface IBalanceManager{
      * @param values Values to send to each contract.
      * @dev This function reverts results with `EstimationResults` error.
      */
-    function estimateArbitraryCalls(address[] calldata targets, bytes[] calldata arguments, uint256[] calldata values) external;
+    function estimateArbitraryCalls(address[] calldata targets, bytes[] calldata arguments, uint256[] calldata values) external payable;
 
     /**
      * @notice Approves a spender to spend an infinite amount of tokens.

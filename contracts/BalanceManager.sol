@@ -29,7 +29,7 @@ abstract contract BalanceManager is IERC1271, IBalanceManager {
     /**
      * @notice See {IBalanceManager-arbitraryCalls}.
      */
-    function arbitraryCalls(address[] calldata targets, bytes[] calldata arguments) public {
+    function arbitraryCalls(address[] calldata targets, bytes[] calldata arguments) public payable {
         uint256[] calldata values;
         // solhint-disable-next-line no-inline-assembly
         assembly ("memory-safe") {
@@ -42,7 +42,7 @@ abstract contract BalanceManager is IERC1271, IBalanceManager {
     /**
      * @notice See {IBalanceManager-arbitraryCalls}.
      */
-    function arbitraryCalls(address[] calldata targets, bytes[] calldata arguments, uint256[] calldata values) public onlyOwner {
+    function arbitraryCalls(address[] calldata targets, bytes[] calldata arguments, uint256[] calldata values) public payable onlyOwner {
         unchecked {
             uint256 length = targets.length;
             if (length != arguments.length) revert LengthMismatch();
@@ -57,7 +57,7 @@ abstract contract BalanceManager is IERC1271, IBalanceManager {
     /**
      * @notice See {IBalanceManager-arbitraryCallsWithEthCheck}.
      */
-    function arbitraryCallsWithEthCheck(address[] calldata targets, bytes[] calldata arguments, uint256 minReturn) external {
+    function arbitraryCallsWithEthCheck(address[] calldata targets, bytes[] calldata arguments, uint256 minReturn) external payable {
         uint256[] calldata values;
         // solhint-disable-next-line no-inline-assembly
         assembly ("memory-safe") {
@@ -75,7 +75,7 @@ abstract contract BalanceManager is IERC1271, IBalanceManager {
         bytes[] calldata arguments,
         uint256[] calldata values,
         uint256 minReturn
-    ) public {
+    ) public payable {
         uint256 balanceBefore = msg.sender.balance;
         arbitraryCalls(targets, arguments, values);
         if (msg.sender.balance - balanceBefore < minReturn) revert NotEnoughProfit();
@@ -89,7 +89,7 @@ abstract contract BalanceManager is IERC1271, IBalanceManager {
         bytes[] calldata arguments,
         IERC20 token,
         uint256 minReturn
-    ) external {
+    ) external payable {
         uint256[] calldata values;
         // solhint-disable-next-line no-inline-assembly
         assembly ("memory-safe") {
@@ -108,7 +108,7 @@ abstract contract BalanceManager is IERC1271, IBalanceManager {
         uint256[] calldata values,
         IERC20 token,
         uint256 minReturn
-    ) public {
+    ) public payable {
         uint256 balanceBefore = token.balanceOf(msg.sender);
         arbitraryCalls(targets, arguments, values);
         if (token.balanceOf(msg.sender) - balanceBefore < minReturn) revert NotEnoughProfit();
@@ -117,7 +117,7 @@ abstract contract BalanceManager is IERC1271, IBalanceManager {
     /**
      * @notice See {IBalanceManager-estimateArbitraryCalls}.
      */
-    function estimateArbitraryCalls(address[] calldata targets, bytes[] calldata arguments) external {
+    function estimateArbitraryCalls(address[] calldata targets, bytes[] calldata arguments) external payable {
         uint256[] calldata values;
         // solhint-disable-next-line no-inline-assembly
         assembly ("memory-safe") {
@@ -130,7 +130,7 @@ abstract contract BalanceManager is IERC1271, IBalanceManager {
     /**
      * @notice See {IBalanceManager-estimateArbitraryCalls}.
      */
-    function estimateArbitraryCalls(address[] calldata targets, bytes[] calldata arguments, uint256[] calldata values) public onlyOwner {
+    function estimateArbitraryCalls(address[] calldata targets, bytes[] calldata arguments, uint256[] calldata values) public payable onlyOwner {
         unchecked {
             uint256 length = targets.length;
             if (length != arguments.length) revert LengthMismatch();
