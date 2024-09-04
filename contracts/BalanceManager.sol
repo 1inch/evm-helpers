@@ -76,9 +76,10 @@ abstract contract BalanceManager is IERC1271, IBalanceManager {
         uint256[] calldata values,
         uint256 minReturn
     ) public payable {
-        uint256 balanceBefore = msg.sender.balance;
+        address target = targetToCheck();
+        uint256 balanceBefore = target.balance;
         arbitraryCalls(targets, arguments, values);
-        if (msg.sender.balance - balanceBefore < minReturn) revert NotEnoughProfit();
+        if (target.balance - balanceBefore < minReturn) revert NotEnoughProfit();
     }
 
     /**
@@ -109,9 +110,10 @@ abstract contract BalanceManager is IERC1271, IBalanceManager {
         IERC20 token,
         uint256 minReturn
     ) public payable {
-        uint256 balanceBefore = token.balanceOf(msg.sender);
+        address target = targetToCheck();
+        uint256 balanceBefore = token.balanceOf(target);
         arbitraryCalls(targets, arguments, values);
-        if (token.balanceOf(msg.sender) - balanceBefore < minReturn) revert NotEnoughProfit();
+        if (token.balanceOf(target) - balanceBefore < minReturn) revert NotEnoughProfit();
     }
 
     /**
@@ -201,6 +203,8 @@ abstract contract BalanceManager is IERC1271, IBalanceManager {
         (bool success, ) = payable(msg.sender).call{value: address(this).balance}("");
         if (!success) revert ETHTransferFailed();
     }
+
+    function targetToCheck() internal view virtual returns (address);
 }
 
 /* solhint-enable avoid-low-level-calls */

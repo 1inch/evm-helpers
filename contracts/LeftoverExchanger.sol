@@ -73,6 +73,10 @@ contract LeftoverExchanger is BalanceManager {
     function isValidSignature(bytes32 hash, bytes calldata signature) external view override returns (bytes4 magicValue) {
         if (ECDSA.recover(hash, signature) == _OWNER) magicValue = this.isValidSignature.selector;
     }
+
+    function targetToCheck() internal view override returns(address) {
+        return msg.sender;
+    }
 }
 
 /* solhint-enable avoid-low-level-calls */
