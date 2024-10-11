@@ -16,7 +16,7 @@ const WETH = {
     31337: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2', // Hardhat
 };
 
-const OWNER = '0xa3bf91a131fccfecc43999c9ff4612a25a572859';
+const OWNER = '0x2d2d58933e62ed68794d3c337a4d3bc24809ceb2';
 const CREATE3_DEPLOYER_CONTRACT = '0x65B3Db8bAeF0215A1F9B14c506D2a3078b2C84AE';
 
 const LEFTOVER_EXCHANGER_SALT = ethers.keccak256(ethers.toUtf8Bytes('LeftoverExchanger'));
