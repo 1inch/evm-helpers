@@ -1,0 +1,129 @@
+{
+  "address": "0x1666EF2e729daB497a6798a4221D0e041111DcD4",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "contract Pool",
+          "name": "pool",
+          "type": "address"
+        },
+        {
+          "internalType": "int32",
+          "name": "limit",
+          "type": "int32"
+        }
+      ],
+      "name": "get",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint128",
+              "name": "reserveA",
+              "type": "uint128"
+            },
+            {
+              "internalType": "uint128",
+              "name": "reserveB",
+              "type": "uint128"
+            },
+            {
+              "internalType": "int64",
+              "name": "lastTwaD8",
+              "type": "int64"
+            },
+            {
+              "internalType": "int64",
+              "name": "lastLogPriceD8",
+              "type": "int64"
+            },
+            {
+              "internalType": "uint40",
+              "name": "lastTimestamp",
+              "type": "uint40"
+            },
+            {
+              "internalType": "int32",
+              "name": "activeTick",
+              "type": "int32"
+            },
+            {
+              "internalType": "bool",
+              "name": "isLocked",
+              "type": "bool"
+            },
+            {
+              "internalType": "uint32",
+              "name": "binCounter",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint8",
+              "name": "protocolFeeRatioD3",
+              "type": "uint8"
+            }
+          ],
+          "internalType": "struct Pool.State",
+          "name": "state",
+          "type": "tuple"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint128",
+              "name": "reserveA",
+              "type": "uint128"
+            },
+            {
+              "internalType": "uint128",
+              "name": "reserveB",
+              "type": "uint128"
+            }
+          ],
+          "internalType": "struct Maverick2TickHelper.Tick[]",
+          "name": "reserves",
+          "type": "tuple[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "transactionHash": "0xc537bf53d5be72f5a25ceea6d1c5fc9a469057dee5534120bbb849b9e1a9ad57",
+  "receipt": {
+    "to": null,
+    "from": "0x11799622F4D98A24514011E8527B969f7488eF47",
+    "contractAddress": "0x1666EF2e729daB497a6798a4221D0e041111DcD4",
+    "transactionIndex": 60,
+    "gasUsed": "470231",
+    "logsBloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "blockHash": "0x7257897f0e593ba65e5bb2f31266cfb897cc6d4b31a87a5ff83a08b86197f738",
+    "transactionHash": "0xc537bf53d5be72f5a25ceea6d1c5fc9a469057dee5534120bbb849b9e1a9ad57",
+    "logs": [],
+    "blockNumber": 20972601,
+    "cumulativeGasUsed": "3767762",
+    "status": 1,
+    "byzantium": true
+  },
+  "args": [],
+  "numDeployments": 1,
+  "solcInputHash": "327b212d1cebf2aa947b75e5b3f23528",
+  "metadata": "{\"compiler\":{\"version\":\"0.8.23+commit.f704f362\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"contract Pool\",\"name\":\"pool\",\"type\":\"address\"},{\"internalType\":\"int32\",\"name\":\"limit\",\"type\":\"int32\"}],\"name\":\"get\",\"outputs\":[{\"components\":[{\"internalType\":\"uint128\",\"name\":\"reserveA\",\"type\":\"uint128\"},{\"internalType\":\"uint128\",\"name\":\"reserveB\",\"type\":\"uint128\"},{\"internalType\":\"int64\",\"name\":\"lastTwaD8\",\"type\":\"int64\"},{\"internalType\":\"int64\",\"name\":\"lastLogPriceD8\",\"type\":\"int64\"},{\"internalType\":\"uint40\",\"name\":\"lastTimestamp\",\"type\":\"uint40\"},{\"internalType\":\"int32\",\"name\":\"activeTick\",\"type\":\"int32\"},{\"internalType\":\"bool\",\"name\":\"isLocked\",\"type\":\"bool\"},{\"internalType\":\"uint32\",\"name\":\"binCounter\",\"type\":\"uint32\"},{\"internalType\":\"uint8\",\"name\":\"protocolFeeRatioD3\",\"type\":\"uint8\"}],\"internalType\":\"struct Pool.State\",\"name\":\"state\",\"type\":\"tuple\"},{\"components\":[{\"internalType\":\"uint128\",\"name\":\"reserveA\",\"type\":\"uint128\"},{\"internalType\":\"uint128\",\"name\":\"reserveB\",\"type\":\"uint128\"}],\"internalType\":\"struct Maverick2TickHelper.Tick[]\",\"name\":\"reserves\",\"type\":\"tuple[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/Maverick2.sol\":\"Maverick2TickHelper\"},\"evmVersion\":\"shanghai\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\",\"useLiteralContent\":true},\"optimizer\":{\"enabled\":true,\"runs\":1000000},\"remappings\":[],\"viaIR\":true},\"sources\":{\"contracts/Maverick2.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n\\npragma solidity 0.8.23;\\n\\ninterface Pool {\\n    struct TickState {\\n        uint128 reserveA;\\n        uint128 reserveB;\\n        uint128 totalSupply;\\n        uint32[4] binIdsByTick;\\n    }\\n    struct State {\\n        uint128 reserveA;\\n        uint128 reserveB;\\n        int64 lastTwaD8;\\n        int64 lastLogPriceD8;\\n        uint40 lastTimestamp;\\n        int32 activeTick;\\n        bool isLocked;\\n        uint32 binCounter;\\n        uint8 protocolFeeRatioD3;\\n    }\\n\\n    function getTick(int32 tick) external view returns (TickState memory _tick);\\n    function getState() external view returns (State memory);\\n}\\n\\ncontract Maverick2TickHelper {\\n    struct Tick {\\n        uint128 reserveA;\\n        uint128 reserveB;\\n    }\\n\\n    function get(Pool pool, int32 limit) public view returns(Pool.State memory state, Tick[] memory reserves) {\\n        state = pool.getState();\\n        uint32 len = uint32(limit*2+1);\\n        reserves = new Tick[](len);\\n        for (uint32 i = 0; i < len; i++) {\\n            Pool.TickState memory tick = pool.getTick(state.activeTick-limit+int32(i));\\n            reserves[i].reserveA = tick.reserveA;\\n            reserves[i].reserveB = tick.reserveB;\\n        }\\n    }\\n}\\n\",\"keccak256\":\"0x86f5d2b0c8d2ec5cb8b1882d50f6ccbb72a0cc1190771ded8366d0a91f3c956a\",\"license\":\"MIT\"}},\"version\":1}",
+  "bytecode": "0x6080806040523461001657610790908161001b8239f35b5f80fdfe6080806040526004361015610012575f80fd5b5f3560e01c63cd81f23014610025575f80fd5b346103ac5760407ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc3601126103ac576004359073ffffffffffffffffffffffffffffffffffffffff821682036103ac57602435908160030b82036103ac57610100816100915f9361064b565b8281528260208201528260408201528260608201528260808201528260a08201528260c08201528260e08201520152604051907f1865c57d0000000000000000000000000000000000000000000000000000000082526101208260048173ffffffffffffffffffffffffffffffffffffffff87165afa9182156103b8575f92610563575b508060030b60011b8060030b9081036103c357600101917fffffffffffffffffffffffffffffffffffffffffffffffffffffffff800000008312637fffffff8413176103c35761016a63ffffffff8416610701565b916101786040519384610684565b63ffffffff841680845261018b90610701565b5f5b7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe0820181106104d85750505f5b63ffffffff851663ffffffff821610156103f0578160030b60a084015160030b03637fffffff81137fffffffffffffffffffffffffffffffffffffffffffffffffffffffff800000008212176103c35763ffffffff821660030b9060030b017fffffffffffffffffffffffffffffffffffffffffffffffffffffffff800000008112637fffffff8213176103c357604051907f3256cfa900000000000000000000000000000000000000000000000000000000825260030b600482015260e08160248173ffffffffffffffffffffffffffffffffffffffff8b165afa9081156103b8575f916102f2575b50600163ffffffff92839260206fffffffffffffffffffffffffffffffff91828151166102d38786168c610719565b515201511660206102e68584168a610719565b510152011690506101ba565b60e091503d82116103b0575b6103088282610684565b60e08183810103126103ac576040519161032183610668565b61032a826106c5565b8352610338602083016106c5565b6020840152610349604083016106c5565b6040840152808201607f830112156103ac576040519161036883610668565b8291810160e08201116103ac5760608101915b60e08201831061039457505050606082015260016102a4565b602080916103a1856106f0565b81520192019161037b565b5f80fd5b3d91506102fe565b6040513d5f823e3d90fd5b7f4e487b71000000000000000000000000000000000000000000000000000000005f52601160045260245ffd5b83836040519182916101408084019060ff6101006fffffffffffffffffffffffffffffffff94858151168852856020820151166020890152604081015160070b6040890152606081015160070b606089015264ffffffffff608082015116608089015260a081015160030b60a089015260c0810151151560c089015263ffffffff60e08201511660e08901520151166101008601526101208501528251809152602061016085019301915f905b8282106104ac57505050500390f35b91938395506040602091848360019597518281511684520151168382015201950192018594939161049d565b60405180604081011067ffffffffffffffff604083011117610536577fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe091816040602093016040525f81525f8382015282828901015201905061018d565b7f4e487b71000000000000000000000000000000000000000000000000000000005f52604160045260245ffd5b909150610120813d61012011610643575b816105826101209383610684565b810103126103ac57604051906105978261064b565b6105a0816106c5565b82526105ae602082016106c5565b60208301526105bf604082016106e2565b60408301526105d0606082016106e2565b6060830152608081015164ffffffffff811681036103ac57608083015260a08101518060030b81036103ac5760a083015260c08101519081151582036103ac576101009160c084015261062560e082016106f0565b60e0840152015160ff811681036103ac57610100820152905f610115565b3d9150610574565b610120810190811067ffffffffffffffff82111761053657604052565b6080810190811067ffffffffffffffff82111761053657604052565b90601f7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe0910116810190811067ffffffffffffffff82111761053657604052565b51906fffffffffffffffffffffffffffffffff821682036103ac57565b51908160070b82036103ac57565b519063ffffffff821682036103ac57565b67ffffffffffffffff81116105365760051b60200190565b805182101561072d5760209160051b010190565b7f4e487b71000000000000000000000000000000000000000000000000000000005f52603260045260245ffdfea264697066735822122005ebc56cb70cbb2a917b3269161876f6c8e8f0c00cf68e6d8f86590d9970df9f64736f6c63430008170033",
+  "deployedBytecode": "0x6080806040526004361015610012575f80fd5b5f3560e01c63cd81f23014610025575f80fd5b346103ac5760407ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc3601126103ac576004359073ffffffffffffffffffffffffffffffffffffffff821682036103ac57602435908160030b82036103ac57610100816100915f9361064b565b8281528260208201528260408201528260608201528260808201528260a08201528260c08201528260e08201520152604051907f1865c57d0000000000000000000000000000000000000000000000000000000082526101208260048173ffffffffffffffffffffffffffffffffffffffff87165afa9182156103b8575f92610563575b508060030b60011b8060030b9081036103c357600101917fffffffffffffffffffffffffffffffffffffffffffffffffffffffff800000008312637fffffff8413176103c35761016a63ffffffff8416610701565b916101786040519384610684565b63ffffffff841680845261018b90610701565b5f5b7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe0820181106104d85750505f5b63ffffffff851663ffffffff821610156103f0578160030b60a084015160030b03637fffffff81137fffffffffffffffffffffffffffffffffffffffffffffffffffffffff800000008212176103c35763ffffffff821660030b9060030b017fffffffffffffffffffffffffffffffffffffffffffffffffffffffff800000008112637fffffff8213176103c357604051907f3256cfa900000000000000000000000000000000000000000000000000000000825260030b600482015260e08160248173ffffffffffffffffffffffffffffffffffffffff8b165afa9081156103b8575f916102f2575b50600163ffffffff92839260206fffffffffffffffffffffffffffffffff91828151166102d38786168c610719565b515201511660206102e68584168a610719565b510152011690506101ba565b60e091503d82116103b0575b6103088282610684565b60e08183810103126103ac576040519161032183610668565b61032a826106c5565b8352610338602083016106c5565b6020840152610349604083016106c5565b6040840152808201607f830112156103ac576040519161036883610668565b8291810160e08201116103ac5760608101915b60e08201831061039457505050606082015260016102a4565b602080916103a1856106f0565b81520192019161037b565b5f80fd5b3d91506102fe565b6040513d5f823e3d90fd5b7f4e487b71000000000000000000000000000000000000000000000000000000005f52601160045260245ffd5b83836040519182916101408084019060ff6101006fffffffffffffffffffffffffffffffff94858151168852856020820151166020890152604081015160070b6040890152606081015160070b606089015264ffffffffff608082015116608089015260a081015160030b60a089015260c0810151151560c089015263ffffffff60e08201511660e08901520151166101008601526101208501528251809152602061016085019301915f905b8282106104ac57505050500390f35b91938395506040602091848360019597518281511684520151168382015201950192018594939161049d565b60405180604081011067ffffffffffffffff604083011117610536577fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe091816040602093016040525f81525f8382015282828901015201905061018d565b7f4e487b71000000000000000000000000000000000000000000000000000000005f52604160045260245ffd5b909150610120813d61012011610643575b816105826101209383610684565b810103126103ac57604051906105978261064b565b6105a0816106c5565b82526105ae602082016106c5565b60208301526105bf604082016106e2565b60408301526105d0606082016106e2565b6060830152608081015164ffffffffff811681036103ac57608083015260a08101518060030b81036103ac5760a083015260c08101519081151582036103ac576101009160c084015261062560e082016106f0565b60e0840152015160ff811681036103ac57610100820152905f610115565b3d9150610574565b610120810190811067ffffffffffffffff82111761053657604052565b6080810190811067ffffffffffffffff82111761053657604052565b90601f7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe0910116810190811067ffffffffffffffff82111761053657604052565b51906fffffffffffffffffffffffffffffffff821682036103ac57565b51908160070b82036103ac57565b519063ffffffff821682036103ac57565b67ffffffffffffffff81116105365760051b60200190565b805182101561072d5760209160051b010190565b7f4e487b71000000000000000000000000000000000000000000000000000000005f52603260045260245ffdfea264697066735822122005ebc56cb70cbb2a917b3269161876f6c8e8f0c00cf68e6d8f86590d9970df9f64736f6c63430008170033",
+  "devdoc": {
+    "kind": "dev",
+    "methods": {},
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {},
+    "version": 1
+  },
+  "storageLayout": {
+    "storage": [],
+    "types": null
+  }
+}

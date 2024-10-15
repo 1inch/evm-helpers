@@ -36,7 +36,7 @@ module.exports = {
     },
     networks,
     zksolc: {
-        version: '1.3.19',
+        version: '1.5.4',
         compilerSource: 'binary',
         settings: {},
     },
