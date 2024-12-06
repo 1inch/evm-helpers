@@ -46,6 +46,7 @@ abstract contract BalanceManager is IERC1271, IBalanceManager {
         unchecked {
             uint256 length = targets.length;
             if (length != arguments.length) revert LengthMismatch();
+            if (length != values.length) revert LengthMismatch();
             for (uint256 i = 0; i < length; ++i) {
                 // solhint-disable-next-line avoid-low-level-calls
                 (bool success,) = targets[i].call{value: values[i]}(arguments[i]);
