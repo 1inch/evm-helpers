@@ -79,7 +79,7 @@ abstract contract BalanceManager is IERC1271, IBalanceManager {
         address target = _targetToCheck();
         uint256 balanceBefore = target.balance;
         arbitraryCalls(targets, arguments, values);
-        if (target.balance - balanceBefore < minReturn) revert NotEnoughProfit();
+        if (target.balance < minReturn + balanceBefore) revert NotEnoughProfit();
     }
 
     /**
@@ -113,7 +113,7 @@ abstract contract BalanceManager is IERC1271, IBalanceManager {
         address target = _targetToCheck();
         uint256 balanceBefore = token.balanceOf(target);
         arbitraryCalls(targets, arguments, values);
-        if (token.balanceOf(target) - balanceBefore < minReturn) revert NotEnoughProfit();
+        if (token.balanceOf(target) < minReturn + balanceBefore) revert NotEnoughProfit();
     }
 
     /**
