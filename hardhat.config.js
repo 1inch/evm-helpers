@@ -2,6 +2,7 @@ require('@matterlabs/hardhat-zksync-deploy');
 require('@matterlabs/hardhat-zksync-solc');
 require('@nomicfoundation/hardhat-ethers');
 require('dotenv').config();
+require('hardhat-dependency-compiler');
 require('hardhat-deploy');
 require('hardhat-gas-reporter');
 require('solidity-coverage');
@@ -35,6 +36,11 @@ module.exports = {
         },
     },
     networks,
+    dependencyCompiler: {
+        paths: [
+            '@openzeppelin/contracts/proxy/transparent/ProxyAdmin.sol',
+        ],
+    },
     zksolc: {
         version: '1.5.4',
         compilerSource: 'binary',
