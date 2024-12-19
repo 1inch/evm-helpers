@@ -12,6 +12,8 @@ contract FeeCollector is BalanceManager {
     address private immutable _LIMIT_ORDER_PROTOCOL;
 
     constructor(IWETH weth, address lop, address owner) BalanceManager(weth) {
+        if (owner == address(0) || lop == address(0)) revert ZeroAddress();
+
         _OWNER = owner;
         _LIMIT_ORDER_PROTOCOL = lop;
     }

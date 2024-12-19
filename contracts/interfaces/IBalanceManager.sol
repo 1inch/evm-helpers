@@ -14,6 +14,7 @@ interface IBalanceManager{
     error LengthMismatch();
     error NotEnoughProfit();
     error OnlyOwner();
+    error ZeroAddress();
 
     /**
      * @notice Execute arbitrary calls.
