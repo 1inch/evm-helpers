@@ -2,12 +2,13 @@ const { ethers } = require('hardhat');
 const { expect } = require('@1inch/solidity-utils');
 
 const WETH = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
+const LOP = '0x111111125421cA6dc452d289314280a0f8842A65';
 
 describe('FeeCollector', function () {
     it('arbitrary call should work', async function () {
         const [alice] = await ethers.getSigners();
 
-        const feeCollectorImpl = await (await ethers.getContractFactory('FeeCollector')).deploy(WETH, alice);
+        const feeCollectorImpl = await (await ethers.getContractFactory('FeeCollector')).deploy(WETH, LOP, alice);
         await feeCollectorImpl.waitForDeployment();
 
         const feeCollectorFactory = await (await ethers.getContractFactory('FeeCollectorFactory')).deploy(await feeCollectorImpl.getAddress(), alice);
