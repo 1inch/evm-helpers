@@ -9,9 +9,11 @@ import { BalanceManager } from "./BalanceManager.sol";
 
 contract FeeCollector is BalanceManager {
     address private immutable _OWNER;
+    address private immutable _LIMIT_ORDER_PROTOCOL;
 
-    constructor(IWETH weth, address owner) BalanceManager(weth) {
+    constructor(IWETH weth, address lop, address owner) BalanceManager(weth) {
         _OWNER = owner;
+        _LIMIT_ORDER_PROTOCOL = lop;
     }
 
     modifier onlyOwner() override {
@@ -20,7 +22,14 @@ contract FeeCollector is BalanceManager {
     }
 
     function isValidSignature(bytes32 hash, bytes calldata signature) external view override returns (bytes4 magicValue) {
-        if (ECDSA.recover(hash, signature) == _OWNER) magicValue = this.isValidSignature.selector;
+        address signer;
+        if (msg.sender == _LIMIT_ORDER_PROTOCOL) {
+            signer = ECDSA.recover(hash, signature);
+        } else {
+            signer = ECDSA.recover(keccak256(abi.encodePacked(hash, address(this))), signature);
+        }
+
+        if (signer == _OWNER) magicValue = this.isValidSignature.selector;
     }
 
     function _targetToCheck() internal view override returns(address) {
