@@ -20,7 +20,7 @@ describe('FeeCollector', function () {
         
         const value = 10000000n;
 
-        await alice.sendTransaction({to: feeCollectorAddr, value});
+        await alice.sendTransaction({ to: feeCollectorAddr, value });
 
         expect(await ethers.provider.getBalance(feeCollectorAddr)).to.eq(value);
 

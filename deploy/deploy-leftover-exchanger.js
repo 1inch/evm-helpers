@@ -31,7 +31,7 @@ const ADMIN_OWNER = {
     8453: '0xa4659995DC39d891C1bA9131Aaf5F000E5B57224', // Base
     59144: '0x9cCf4d6B76976Ab11CF9f9219A38BA28983A9a27', // Linea
     31337: '0x9F8102b1bB05785BaD2874f2C7B1aaea4c6D976a', // Hardhat
-}
+};
 
 const CREATE3_DEPLOYER_CONTRACT = '0x65B3Db8bAeF0215A1F9B14c506D2a3078b2C84AE';
 const ADMIN_SLOT = '0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103';
@@ -41,7 +41,7 @@ const LEFTOVER_EXCHANGER_SALT = ethers.keccak256(ethers.toUtf8Bytes('LeftoverExc
 const FEE_COLLECTOR_SAFE_OWNER = '0xa98f85f55f259ef41548251c93409f1d60e804e4';
 const FEE_COLLECTOR_SAFE_SALT = ethers.keccak256(ethers.toUtf8Bytes('FeeCollectorSafe'));
 
-async function deployLeftoverExchanger(deployer, deploy, chainId, owner, salt, name, contract) {
+async function deployLeftoverExchanger (deployer, deploy, chainId, owner, salt, name, contract) {
     const contractImpl = await deploy(`${name}Impl`, { args: [WETH[chainId], owner], from: deployer, contract });
     console.log(`${name}Impl deployed to:`, contractImpl.address);
 
@@ -94,8 +94,8 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     const { deployer } = await getNamedAccounts();
     const { deploy } = deployments;
 
-    // await deployLeftoverExchanger(deployer, deploy, chainId, LEFTOVER_EXCHANGER_OWNER, LEFTOVER_EXCHANGER_SALT, 'LeftoverExchanger', 'LeftoverExchanger');
-    // await deployLeftoverExchanger(deployer, deploy, chainId, FEE_COLLECTOR_SAFE_OWNER, FEE_COLLECTOR_SAFE_SALT, 'FeeCollectorSafe', 'FeeCollector');
+    await deployLeftoverExchanger(deployer, deploy, chainId, LEFTOVER_EXCHANGER_OWNER, LEFTOVER_EXCHANGER_SALT, 'LeftoverExchanger', 'LeftoverExchanger');
+    await deployLeftoverExchanger(deployer, deploy, chainId, FEE_COLLECTOR_SAFE_OWNER, FEE_COLLECTOR_SAFE_SALT, 'FeeCollectorSafe', 'FeeCollector');
 };
 
 module.exports.skip = async () => true;
