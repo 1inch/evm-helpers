@@ -17,74 +17,12 @@ const WETH = {
     31337: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2', // Hardhat
 };
 
-const ADMIN_OWNER = {
-    1: '0x9F8102b1bB05785BaD2874f2C7B1aaea4c6D976a', // Mainnet
-    56: '0x7a4C2f97069f874A355607eBC52aEfCc4eAc9202', // BSC
-    137: '0xA154B43EEa8905Ef684995424fF476656ab50A61', // Matic
-    42161: '0x0f6E3fB5D73AFd2e594AC4b962E57E603E650875', // Arbitrum
-    10: '0x5B18c756F4D9B54255a17BF120da2cF74743247f', // Optimistic
-    43114: '0x3b26f6325868Ddd8CB223Ac766cE02a2906653A5', // Avalanche
-    100: '0x9e05fA5A389D782C17369a76d8e59A268973275F', // xDAI
-    250: '0x0dBa0Da8C5642Db20fEAc06b7A6E9e08e6E501C6', // FTM
-    1313161554: '0x0e9292Ff8be5bA8075bE05F5F155E10422AE8017', // Aurora
-    // 8217: '', // no Safe on Klaytn
-    8453: '0xa4659995DC39d891C1bA9131Aaf5F000E5B57224', // Base
-    59144: '0x9cCf4d6B76976Ab11CF9f9219A38BA28983A9a27', // Linea
-    31337: '0x9F8102b1bB05785BaD2874f2C7B1aaea4c6D976a', // Hardhat
-};
-
+const OWNER = '0x2d2d58933e62ed68794d3c337a4d3bc24809ceb2';
 const CREATE3_DEPLOYER_CONTRACT = '0x65B3Db8bAeF0215A1F9B14c506D2a3078b2C84AE';
-const ADMIN_SLOT = '0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103';
 
-const LEFTOVER_EXCHANGER_OWNER = '0x2d2d58933e62ed68794d3c337a4d3bc24809ceb2';
 const LEFTOVER_EXCHANGER_SALT = ethers.keccak256(ethers.toUtf8Bytes('LeftoverExchanger'));
-const FEE_COLLECTOR_SAFE_OWNER = '0xa98f85f55f259ef41548251c93409f1d60e804e4';
-const FEE_COLLECTOR_SAFE_SALT = ethers.keccak256(ethers.toUtf8Bytes('FeeCollectorSafe'));
 
-async function deployLeftoverExchanger (deployer, deploy, chainId, owner, salt, name, contract) {
-    const contractImpl = await deploy(`${name}Impl`, { args: [WETH[chainId], owner], from: deployer, contract });
-    console.log(`${name}Impl deployed to:`, contractImpl.address);
-
-    const create3Deployer = await ethers.getContractAt('ICreate3Deployer', CREATE3_DEPLOYER_CONTRACT);
-
-    const TransparentProxyFactory = await ethers.getContractFactory('TransparentUpgradeableProxy');
-
-    const deployData = (await TransparentProxyFactory.getDeployTransaction(
-        contractImpl.address,
-        ADMIN_OWNER[chainId],
-        '0x',
-    )).data;
-
-    const deployTxn = await create3Deployer.deploy(salt, deployData);
-    await deployTxn.wait();
-
-    console.log(`${name} proxy deployed to: ${await create3Deployer.addressOf(salt)}`);
-
-    if (await getChainId() !== '31337') {
-        await hre.run('verify:verify', {
-            address: await create3Deployer.addressOf(salt),
-            constructorArguments: [contractImpl.address, ADMIN_OWNER[chainId], '0x'],
-        });
-        
-        await hre.run('verify:verify', {
-            address: contractImpl.address,
-            constructorArguments: [WETH[chainId], owner],
-        });
-
-        const proxyAdminBytes32 = await ethers.provider.send('eth_getStorageAt', [
-            await create3Deployer.addressOf(salt),
-            ADMIN_SLOT,
-            'latest',
-        ]);
-
-        const admin = await ethers.getContractAt('ProxyAdmin', '0x' + proxyAdminBytes32.substring(26, 66));
-
-        await hre.run('verify:verify', {
-            address: await admin.getAddress(),
-            constructorArguments: [ADMIN_OWNER[chainId]],
-        });
-    }
-}
+const ADMIN_SLOT = '0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103';
 
 module.exports = async ({ getNamedAccounts, deployments }) => {
     console.log('running deploy script');
@@ -94,8 +32,46 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     const { deployer } = await getNamedAccounts();
     const { deploy } = deployments;
 
-    await deployLeftoverExchanger(deployer, deploy, chainId, LEFTOVER_EXCHANGER_OWNER, LEFTOVER_EXCHANGER_SALT, 'LeftoverExchanger', 'LeftoverExchanger');
-    await deployLeftoverExchanger(deployer, deploy, chainId, FEE_COLLECTOR_SAFE_OWNER, FEE_COLLECTOR_SAFE_SALT, 'FeeCollectorSafe', 'FeeCollector');
+    const leftoverExchangerImpl = await deploy('LeftoverExchangerImpl', { args: [WETH[chainId], OWNER], from: deployer, contract: 'LeftoverExchanger' });
+    console.log('LeftoverExchangerImpl deployed to:', leftoverExchangerImpl.address);
+
+    const create3Deployer = await ethers.getContractAt('ICreate3Deployer', CREATE3_DEPLOYER_CONTRACT);
+
+    const TransparentProxyFactory = await ethers.getContractFactory('TransparentUpgradeableProxy');
+
+    const deployData = (await TransparentProxyFactory.getDeployTransaction(
+        leftoverExchangerImpl.address,
+        deployer,
+        '0x',
+    )).data;
+
+    const deployTxn = await create3Deployer.deploy(LEFTOVER_EXCHANGER_SALT, deployData);
+    await deployTxn.wait();
+
+    console.log(`LeftoverExchanger proxy deployed to: ${await create3Deployer.addressOf(LEFTOVER_EXCHANGER_SALT)}`);
+
+    if (await getChainId() !== '31337') {
+        await hre.run('verify:verify', {
+            address: await create3Deployer.addressOf(LEFTOVER_EXCHANGER_SALT),
+            constructorArguments: [leftoverExchangerImpl.address, deployer, '0x'],
+        });
+
+        await hre.run('verify:verify', {
+            address: leftoverExchangerImpl.address,
+            constructorArguments: [WETH[chainId], OWNER],
+        });
+
+        const proxyAdminBytes32 = await ethers.provider.send('eth_getStorageAt', [
+            await create3Deployer.addressOf(LEFTOVER_EXCHANGER_SALT),
+            ADMIN_SLOT,
+            'latest',
+        ]);
+
+        await hre.run('verify:verify', {
+            address: '0x' + proxyAdminBytes32.substring(26, 66),
+            constructorArguments: [deployer],
+        });
+    }
 };
 
 module.exports.skip = async () => true;
