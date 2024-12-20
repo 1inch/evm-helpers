@@ -15,7 +15,7 @@ const LOP = '0x6fd4383cB451173D5f9304F041C7BCBf27d561fF';
 
 const FEE_COLLECTOR_OWNER = '0xa98f85f55f259ef41548251c93409f1d60e804e4';
 
-module.exports = async () => {
+module.exports = async ({ getNamedAccounts, deployments }) => {
     console.log('running deploy script');
     const chainId = await getChainId();
     console.log('network id ', chainId);
