@@ -13,9 +13,9 @@
     "@uniswap/v3-core": "1.0.1"
   },
   "devDependencies": {
-    "@matterlabs/hardhat-zksync-deploy": "1.1.1",
-    "@matterlabs/hardhat-zksync-solc": "1.0.5",
-    "@matterlabs/hardhat-zksync-verify": "1.2.1",
+    "@matterlabs/hardhat-zksync-deploy": "1.6.0",
+    "@matterlabs/hardhat-zksync-solc": "1.2.5",
+    "@matterlabs/hardhat-zksync-verify": "1.7.0",
     "@nomicfoundation/hardhat-ethers": "3.0.8",
     "@nomicfoundation/hardhat-verify": "2.0.12",
     "chai": "4.5.0",
@@ -35,7 +35,6 @@
     "rimraf": "6.0.1",
     "solhint": "5.0.3",
     "solidity-coverage": "0.8.14",
-    "zksync-web3": "0.17.1",
     "zksync-ethers": "6.15.0"
   },
   "scripts": {

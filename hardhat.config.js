@@ -16,6 +16,7 @@ if (getNetwork().indexOf('zksync') !== -1) {
 }
 
 const { networks, etherscan } = (new Networks(true, 'mainnet', true)).registerAll();
+etherscan.apiKey.zksyncmainnet = process.env.ZKSYNC_ETHERSCAN_KEY;
 
 module.exports = {
     etherscan,
@@ -42,7 +43,7 @@ module.exports = {
         ],
     },
     zksolc: {
-        version: '1.5.4',
+        version: '1.4.1',
         compilerSource: 'binary',
         settings: {},
     },

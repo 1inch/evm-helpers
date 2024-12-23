@@ -19,6 +19,8 @@ abstract contract BalanceManager is IERC1271, IBalanceManager {
     IWETH internal immutable _WETH;
 
     constructor(IWETH weth) {
+        if (address(weth) == address(0)) revert ZeroAddress();
+
         _WETH = weth;
     }
 
