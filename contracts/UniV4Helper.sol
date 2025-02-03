@@ -4,24 +4,20 @@ pragma solidity 0.8.23;
 
 import "@uniswap/v3-core/contracts/libraries/BitMath.sol";
 
-interface IHooks {} // solhint-disable-line no-empty-blocks
-
 interface IPosManager {
     struct PoolKey {
         address currency0;
         address currency1;
         uint24 fee;
         int24 tickSpacing;
-        IHooks hooks;
     }
     function poolKeys(bytes25 poolId) external  view returns(PoolKey memory poolKey);
 }
 
 interface IStateView {
-        type PoolId is bytes32;
-        function getSlot0(PoolId poolId) external view returns (uint160 sqrtPriceX96, int24 tick, uint24 protocolFee, uint24 lpFee);
-        function getTickBitmap(PoolId poolId, int16 tick) external view returns (uint256 tickBitmap);
-        function getTickInfo(PoolId poolId, int24 tick) external view returns (
+        function getSlot0(bytes32 poolId) external view returns (uint160 sqrtPriceX96, int24 tick, uint24 protocolFee, uint24 lpFee);
+        function getTickBitmap(bytes32 poolId, int16 tick) external view returns (uint256 tickBitmap);
+        function getTickInfo(bytes32 poolId, int24 tick) external view returns (
             uint128 liquidityGross,
             int128 liquidityNet,
             uint256 feeGrowthOutside0X128,
@@ -50,14 +46,14 @@ contract UniV4Helper {
         _POS_MANAGER = _posManager;
     }
 
-    function _getTickInfoSlot(IStateView.PoolId poolId, int24 tick) internal pure returns (bytes32) {
-        bytes32 stateSlot = keccak256(abi.encodePacked(IStateView.PoolId.unwrap(poolId), _POOLS_SLOT));
+    function _getTickInfoSlot(bytes32 poolId, int24 tick) internal pure returns (bytes32) {
+        bytes32 stateSlot = keccak256(abi.encodePacked(poolId, _POOLS_SLOT));
         bytes32 ticksMappingSlot = bytes32(uint256(stateSlot) + _TICKS_OFFSET);
         return keccak256(abi.encodePacked(int256(tick), ticksMappingSlot));
     }
 
-    function getTicks(IStateView.PoolId poolId, int24 tickRange) external view returns (bytes[] memory ticks) {
-        int24 tickSpacing = _POS_MANAGER.poolKeys(bytes25(IStateView.PoolId.unwrap(poolId))).tickSpacing;
+    function getTicks(bytes32 poolId, int24 tickRange) external view returns (bytes[] memory ticks) {
+        int24 tickSpacing = _POS_MANAGER.poolKeys(bytes25(poolId)).tickSpacing;
         (,int24 tick,,) = _STATE_VIEW.getSlot0(poolId);
 
         tickRange *= tickSpacing;
