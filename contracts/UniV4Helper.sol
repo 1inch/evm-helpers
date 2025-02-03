@@ -4,13 +4,12 @@ pragma solidity 0.8.23;
 
 import "@uniswap/v3-core/contracts/libraries/BitMath.sol";
 
-interface IHooks {}
+interface IHooks {} // solhint-disable-line no-empty-blocks
 
 interface IPosManager {
-    type Currency is address;
     struct PoolKey {
-        Currency currency0;
-        Currency currency1;
+        address currency0;
+        address currency1;
         uint24 fee;
         int24 tickSpacing;
         IHooks hooks;
@@ -35,31 +34,31 @@ interface IPoolManager {
 }
 
 contract UniV4Helper {
-    uint256 private constant TICKS_OFFSET = 4;
-    bytes32 private constant POOLS_SLOT = bytes32(uint256(6));
+    uint256 private constant _TICKS_OFFSET = 4;
+    bytes32 private constant _POOLS_SLOT = bytes32(uint256(6));
 
     int24 private constant _MIN_TICK = -887272;
     int24 private constant _MAX_TICK = -_MIN_TICK;
 
-    IPoolManager private immutable poolManager;
-    IStateView private immutable stateView;
-    IPosManager private immutable posManager;
+    IPoolManager private immutable _POOL_MANAGER;
+    IStateView private immutable _STATE_VIEW;
+    IPosManager private immutable _POS_MANAGER;
 
     constructor(IPoolManager _poolManager, IStateView _stateView, IPosManager _posManager) {
-        poolManager = _poolManager;
-        stateView = _stateView;
-        posManager = _posManager;
+        _POOL_MANAGER = _poolManager;
+        _STATE_VIEW = _stateView;
+        _POS_MANAGER = _posManager;
     }
 
     function _getTickInfoSlot(IStateView.PoolId poolId, int24 tick) internal pure returns (bytes32) {
-        bytes32 stateSlot = keccak256(abi.encodePacked(IStateView.PoolId.unwrap(poolId), POOLS_SLOT));
-        bytes32 ticksMappingSlot = bytes32(uint256(stateSlot) + TICKS_OFFSET);
+        bytes32 stateSlot = keccak256(abi.encodePacked(IStateView.PoolId.unwrap(poolId), _POOLS_SLOT));
+        bytes32 ticksMappingSlot = bytes32(uint256(stateSlot) + _TICKS_OFFSET);
         return keccak256(abi.encodePacked(int256(tick), ticksMappingSlot));
     }
 
     function getTicks(IStateView.PoolId poolId, int24 tickRange) external view returns (bytes[] memory ticks) {
-        int24 tickSpacing = posManager.poolKeys(bytes25(IStateView.PoolId.unwrap(poolId))).tickSpacing;
-        (,int24 tick,,) = stateView.getSlot0(poolId);
+        int24 tickSpacing = _POS_MANAGER.poolKeys(bytes25(IStateView.PoolId.unwrap(poolId))).tickSpacing;
+        (,int24 tick,,) = _STATE_VIEW.getSlot0(poolId);
 
         tickRange *= tickSpacing;
         int24 fromTick = tick - tickRange;
@@ -78,7 +77,7 @@ contract UniV4Helper {
         int16 endPos = int16((toTick / tickSpacing) >> 8);
 
         for (; pos <= endPos; pos++) {
-            uint256 bm = stateView.getTickBitmap(poolId, pos);
+            uint256 bm = _STATE_VIEW.getTickBitmap(poolId, pos);
 
             while (bm != 0) {
                 uint8 bit = BitMath.leastSignificantBit(bm);
@@ -93,7 +92,7 @@ contract UniV4Helper {
         ticks = new bytes[](counter);
         for (uint256 i = 0; i < counter; i++) {
             bytes32 slot = _getTickInfoSlot(poolId, initTicks[i]);
-            bytes32[] memory data = poolManager.extsload(slot, 3);
+            bytes32[] memory data = _POOL_MANAGER.extsload(slot, 3);
             ticks[i] = abi.encodePacked(data[0], data[1], data[2], initTicks[i]);
         }
         return(ticks);
