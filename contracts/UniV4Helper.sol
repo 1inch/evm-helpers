@@ -5,13 +5,7 @@ pragma solidity 0.8.23;
 import "@uniswap/v3-core/contracts/libraries/BitMath.sol";
 
 interface IPosManager {
-    struct PoolKey {
-        address currency0;
-        address currency1;
-        uint24 fee;
-        int24 tickSpacing;
-    }
-    function poolKeys(bytes25 poolId) external  view returns(PoolKey memory poolKey);
+    function poolKeys(bytes25 poolId) external  view returns (address currency0, address currency1, uint24 fee, int24 tickSpacing);
 }
 
 interface IStateView {
@@ -53,7 +47,7 @@ contract UniV4Helper {
     }
 
     function getTicks(bytes32 poolId, int24 tickRange) external view returns (bytes[] memory ticks) {
-        int24 tickSpacing = _POS_MANAGER.poolKeys(bytes25(poolId)).tickSpacing;
+        (,,,int24 tickSpacing) = _POS_MANAGER.poolKeys(bytes25(poolId));
         (,int24 tick,,) = _STATE_VIEW.getSlot0(poolId);
 
         tickRange *= tickSpacing;
