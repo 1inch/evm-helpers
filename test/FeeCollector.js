@@ -27,6 +27,7 @@ describe('FeeCollector', function () {
 
         const feeCollector = await (await ethers.getContractFactory('FeeCollector')).attach(feeCollectorAddr);
 
+        await feeCollector.setOperator(alice)
         await feeCollector.rescueEther();
 
         expect(await ethers.provider.getBalance(feeCollectorAddr)).to.eq(0n);
