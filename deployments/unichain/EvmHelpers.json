@@ -1,0 +1,309 @@
+{
+  "address": "0x750c1b699552cAf908D67F5cCFd20A261305328c",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "wallet",
+          "type": "address"
+        }
+      ],
+      "name": "balanceOf",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "gasLeft",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "gaslimit",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getCurrentBlockTimestamp",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "contract IUniswapV3",
+          "name": "pool",
+          "type": "address"
+        },
+        {
+          "internalType": "int24",
+          "name": "tickRange",
+          "type": "int24"
+        }
+      ],
+      "name": "getTicks",
+      "outputs": [
+        {
+          "internalType": "bytes[]",
+          "name": "ticks",
+          "type": "bytes[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "to",
+              "type": "address"
+            },
+            {
+              "internalType": "bytes",
+              "name": "data",
+              "type": "bytes"
+            }
+          ],
+          "internalType": "struct MultiCall.Call[]",
+          "name": "calls",
+          "type": "tuple[]"
+        }
+      ],
+      "name": "multicall",
+      "outputs": [
+        {
+          "internalType": "bytes[]",
+          "name": "results",
+          "type": "bytes[]"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "to",
+              "type": "address"
+            },
+            {
+              "internalType": "bytes",
+              "name": "data",
+              "type": "bytes"
+            }
+          ],
+          "internalType": "struct MultiCall.Call[]",
+          "name": "calls",
+          "type": "tuple[]"
+        }
+      ],
+      "name": "multicallWithGas",
+      "outputs": [
+        {
+          "internalType": "bytes[]",
+          "name": "results",
+          "type": "bytes[]"
+        },
+        {
+          "internalType": "uint256[]",
+          "name": "gasUsed",
+          "type": "uint256[]"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "to",
+              "type": "address"
+            },
+            {
+              "internalType": "bytes",
+              "name": "data",
+              "type": "bytes"
+            }
+          ],
+          "internalType": "struct MultiCall.Call[]",
+          "name": "calls",
+          "type": "tuple[]"
+        },
+        {
+          "internalType": "uint256",
+          "name": "gasBuffer",
+          "type": "uint256"
+        }
+      ],
+      "name": "multicallWithGasLimitation",
+      "outputs": [
+        {
+          "internalType": "bytes[]",
+          "name": "results",
+          "type": "bytes[]"
+        },
+        {
+          "internalType": "uint256",
+          "name": "lastSuccessIndex",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "transactionHash": "0x250795c08dce421518dda45249000b00d524e3c8bde7a302096a2358a7d2def0",
+  "receipt": {
+    "to": null,
+    "from": "0x56E44874F624EbDE6efCc783eFD685f0FBDC6dcF",
+    "contractAddress": "0x750c1b699552cAf908D67F5cCFd20A261305328c",
+    "transactionIndex": 5,
+    "gasUsed": "1082549",
+    "logsBloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "blockHash": "0x18964275cdfceb3edde191e964f16a1c8a404e550b7fa363fcd14fbe1c20e61e",
+    "transactionHash": "0x250795c08dce421518dda45249000b00d524e3c8bde7a302096a2358a7d2def0",
+    "logs": [],
+    "blockNumber": 16046965,
+    "cumulativeGasUsed": "1581554",
+    "status": 1,
+    "byzantium": true
+  },
+  "args": [],
+  "numDeployments": 1,
+  "solcInputHash": "7f51124f0f7ff12f4de33e94de1d06d3",
+  "metadata": "{\"compiler\":{\"version\":\"0.8.23+commit.f704f362\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"wallet\",\"type\":\"address\"}],\"name\":\"balanceOf\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"gasLeft\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"gaslimit\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getCurrentBlockTimestamp\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"contract IUniswapV3\",\"name\":\"pool\",\"type\":\"address\"},{\"internalType\":\"int24\",\"name\":\"tickRange\",\"type\":\"int24\"}],\"name\":\"getTicks\",\"outputs\":[{\"internalType\":\"bytes[]\",\"name\":\"ticks\",\"type\":\"bytes[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"}],\"internalType\":\"struct MultiCall.Call[]\",\"name\":\"calls\",\"type\":\"tuple[]\"}],\"name\":\"multicall\",\"outputs\":[{\"internalType\":\"bytes[]\",\"name\":\"results\",\"type\":\"bytes[]\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"}],\"internalType\":\"struct MultiCall.Call[]\",\"name\":\"calls\",\"type\":\"tuple[]\"}],\"name\":\"multicallWithGas\",\"outputs\":[{\"internalType\":\"bytes[]\",\"name\":\"results\",\"type\":\"bytes[]\"},{\"internalType\":\"uint256[]\",\"name\":\"gasUsed\",\"type\":\"uint256[]\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"}],\"internalType\":\"struct MultiCall.Call[]\",\"name\":\"calls\",\"type\":\"tuple[]\"},{\"internalType\":\"uint256\",\"name\":\"gasBuffer\",\"type\":\"uint256\"}],\"name\":\"multicallWithGasLimitation\",\"outputs\":[{\"internalType\":\"bytes[]\",\"name\":\"results\",\"type\":\"bytes[]\"},{\"internalType\":\"uint256\",\"name\":\"lastSuccessIndex\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{\"gasLeft()\":{\"returns\":{\"_0\":\"result The remaining gas.\"}},\"gaslimit()\":{\"returns\":{\"_0\":\"result The block gas limit.\"}},\"getCurrentBlockTimestamp()\":{\"returns\":{\"_0\":\"result timestamp of the block.\"}},\"getTicks(address,int24)\":{\"details\":\"The function returns an array of bytes each containing packed data about each tick in the specified range. The returned tick data includes the total liquidity, liquidity delta, outer fee growth for the two tokens, and the tick value itself. The tick range is centered around the current tick of the pool and spans tickRange*2. The tick range is constrained by the global min and max tick values. If there are no initialized ticks in the range, the function returns an empty array.\",\"params\":{\"pool\":\"The Uniswap V3 pool from which to fetch tick data.\",\"tickRange\":\"The range (either side of the current tick) within which to fetch tick data.\"},\"returns\":{\"ticks\":\"An array of bytes each containing packed data about each tick in the specified range.\"}},\"multicall((address,bytes)[])\":{\"details\":\"The function is not gas-limited and may revert due to out of gas errors.\",\"params\":{\"calls\":\"An array of Call structs, each representing a function call.\"},\"returns\":{\"results\":\"An array of bytes, each entry being the result of the respective function call.\"}},\"multicallWithGas((address,bytes)[])\":{\"details\":\"This function is not gas-limited and may revert due to out of gas errors.\",\"params\":{\"calls\":\"An array of Call struct instances representing each call.\"},\"returns\":{\"gasUsed\":\"An array of uint256. Each entry represents the amount of gas used by the corresponding call.\",\"results\":\"An array of bytes. Each entry represents the return data of each call.\"}},\"multicallWithGasLimitation((address,bytes)[],uint256)\":{\"details\":\"The function will stop making calls when the remaining gas is less than `gasBuffer`. Passing emtpy calls array (calls.length == 0) will result in having lastSuccessIndex = uint256.max.\",\"params\":{\"calls\":\"An array of Call struct instances representing each call.\",\"gasBuffer\":\"The amount of gas that should remain after the last function call.\"},\"returns\":{\"lastSuccessIndex\":\"The index of the last successful call in the `calls` array.\",\"results\":\"An array of bytes. Each entry represents the return data of each call.\"}}},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"gasLeft()\":{\"notice\":\"Fetches the remaining gas available for the current transaction.\"},\"gaslimit()\":{\"notice\":\"Fetches the block gas limit.\"},\"getCurrentBlockTimestamp()\":{\"notice\":\"Fetches the block timestamp.\"},\"getTicks(address,int24)\":{\"notice\":\"Fetches tick data for a specified range from a Uniswap V3 pool.\"},\"multicall((address,bytes)[])\":{\"notice\":\"Executes multiple calls in a single transaction.\"},\"multicallWithGas((address,bytes)[])\":{\"notice\":\"Executes multiple calls in a single transaction and measures the gas used by each call.\"},\"multicallWithGasLimitation((address,bytes)[],uint256)\":{\"notice\":\"Executes multiple calls in a single transaction with gas limitations.\"}},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/EvmHelpers.sol\":\"EvmHelpers\"},\"evmVersion\":\"shanghai\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\",\"useLiteralContent\":true},\"optimizer\":{\"enabled\":true,\"runs\":1000000},\"remappings\":[],\"viaIR\":true},\"sources\":{\"@uniswap/v3-core/contracts/libraries/BitMath.sol\":{\"content\":\"// SPDX-License-Identifier: GPL-2.0-or-later\\npragma solidity >=0.5.0;\\n\\n/// @title BitMath\\n/// @dev This library provides functionality for computing bit properties of an unsigned integer\\nlibrary BitMath {\\n    /// @notice Returns the index of the most significant bit of the number,\\n    ///     where the least significant bit is at index 0 and the most significant bit is at index 255\\n    /// @dev The function satisfies the property:\\n    ///     x >= 2**mostSignificantBit(x) and x < 2**(mostSignificantBit(x)+1)\\n    /// @param x the value for which to compute the most significant bit, must be greater than 0\\n    /// @return r the index of the most significant bit\\n    function mostSignificantBit(uint256 x) internal pure returns (uint8 r) {\\n        require(x > 0);\\n\\n        if (x >= 0x100000000000000000000000000000000) {\\n            x >>= 128;\\n            r += 128;\\n        }\\n        if (x >= 0x10000000000000000) {\\n            x >>= 64;\\n            r += 64;\\n        }\\n        if (x >= 0x100000000) {\\n            x >>= 32;\\n            r += 32;\\n        }\\n        if (x >= 0x10000) {\\n            x >>= 16;\\n            r += 16;\\n        }\\n        if (x >= 0x100) {\\n            x >>= 8;\\n            r += 8;\\n        }\\n        if (x >= 0x10) {\\n            x >>= 4;\\n            r += 4;\\n        }\\n        if (x >= 0x4) {\\n            x >>= 2;\\n            r += 2;\\n        }\\n        if (x >= 0x2) r += 1;\\n    }\\n\\n    /// @notice Returns the index of the least significant bit of the number,\\n    ///     where the least significant bit is at index 0 and the most significant bit is at index 255\\n    /// @dev The function satisfies the property:\\n    ///     (x & 2**leastSignificantBit(x)) != 0 and (x & (2**(leastSignificantBit(x)) - 1)) == 0)\\n    /// @param x the value for which to compute the least significant bit, must be greater than 0\\n    /// @return r the index of the least significant bit\\n    function leastSignificantBit(uint256 x) internal pure returns (uint8 r) {\\n        require(x > 0);\\n\\n        r = 255;\\n        if (x & type(uint128).max > 0) {\\n            r -= 128;\\n        } else {\\n            x >>= 128;\\n        }\\n        if (x & type(uint64).max > 0) {\\n            r -= 64;\\n        } else {\\n            x >>= 64;\\n        }\\n        if (x & type(uint32).max > 0) {\\n            r -= 32;\\n        } else {\\n            x >>= 32;\\n        }\\n        if (x & type(uint16).max > 0) {\\n            r -= 16;\\n        } else {\\n            x >>= 16;\\n        }\\n        if (x & type(uint8).max > 0) {\\n            r -= 8;\\n        } else {\\n            x >>= 8;\\n        }\\n        if (x & 0xf > 0) {\\n            r -= 4;\\n        } else {\\n            x >>= 4;\\n        }\\n        if (x & 0x3 > 0) {\\n            r -= 2;\\n        } else {\\n            x >>= 2;\\n        }\\n        if (x & 0x1 > 0) r -= 1;\\n    }\\n}\\n\",\"keccak256\":\"0x82e425066110aac05ed8a9fc90f9ee85142b6f434769447e49d4438a8d9fcd82\",\"license\":\"GPL-2.0-or-later\"},\"contracts/Ether.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n\\npragma solidity 0.8.23;\\n\\n\\ncontract Ether {\\n    function balanceOf(address wallet) external view returns (uint256) {\\n        return wallet.balance;\\n    }\\n}\\n\",\"keccak256\":\"0xa6ef0825e5da2e6e8733dff8748a3ceb99dadd17cd822bd264a08f022392892b\",\"license\":\"MIT\"},\"contracts/EvmHelpers.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n\\npragma solidity 0.8.23;\\n\\nimport \\\"./Ether.sol\\\";\\nimport \\\"./MultiCall.sol\\\";\\nimport \\\"./UniV3Helper.sol\\\";\\n\\n//solhint-disable-next-line no-empty-blocks\\ncontract EvmHelpers is Ether, MultiCall, UniV3Helper {}\\n\",\"keccak256\":\"0x868d411419eaade9a29b8f6cf973c7ea407eea940347658b197b78e04178c0f4\",\"license\":\"MIT\"},\"contracts/MultiCall.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n\\npragma solidity 0.8.23;\\n\\n/// @title MultiCall\\n/// @dev A contract for batching multiple contract function calls into a single transaction.\\ncontract MultiCall {\\n\\n    /// @dev A struct representing a single call to a contract function.\\n    struct Call {\\n        address to; // The address of the contract to call.\\n        bytes data; // The calldata to send with the call.\\n    }\\n\\n    /**\\n     * @notice Executes multiple calls in a single transaction.\\n     * @dev The function is not gas-limited and may revert due to out of gas errors.\\n     * @param calls An array of Call structs, each representing a function call.\\n     * @return results An array of bytes, each entry being the result of the respective function call.\\n     */\\n   function multicall(Call[] memory calls) public returns (bytes[] memory results) {\\n        results = new bytes[](calls.length);\\n        for (uint256 i = 0; i < calls.length; i++) {\\n            (, results[i]) = calls[i].to.call(calls[i].data);  // solhint-disable-line avoid-low-level-calls\\n        }\\n    }\\n\\n    /**\\n     * @notice Executes multiple calls in a single transaction with gas limitations.\\n     * @dev The function will stop making calls when the remaining gas is less than `gasBuffer`.\\n     * Passing emtpy calls array (calls.length == 0) will result in having lastSuccessIndex = uint256.max.\\n     * @param calls An array of Call struct instances representing each call.\\n     * @param gasBuffer The amount of gas that should remain after the last function call.\\n     * @return results An array of bytes. Each entry represents the return data of each call.\\n     * @return lastSuccessIndex The index of the last successful call in the `calls` array.\\n     */\\n    function multicallWithGasLimitation(Call[] memory calls, uint256 gasBuffer) public returns (bytes[] memory results, uint256 lastSuccessIndex) {\\n        results = new bytes[](calls.length);\\n        for (uint256 i = 0; i < calls.length; i++) {\\n            (, results[i]) = calls[i].to.call(calls[i].data);  // solhint-disable-line avoid-low-level-calls\\n            if (gasleft() < gasBuffer) {\\n                return (results, i);\\n            }\\n        }\\n        return (results, calls.length - 1);\\n    }\\n\\n    /**\\n     * @notice Executes multiple calls in a single transaction and measures the gas used by each call.\\n     * @dev This function is not gas-limited and may revert due to out of gas errors.\\n     * @param calls An array of Call struct instances representing each call.\\n     * @return results An array of bytes. Each entry represents the return data of each call.\\n     * @return gasUsed An array of uint256. Each entry represents the amount of gas used by the corresponding call.\\n     */\\n   function multicallWithGas(Call[] memory calls) public returns (bytes[] memory results, uint256[] memory gasUsed) {\\n        results = new bytes[](calls.length);\\n        gasUsed = new uint256[](calls.length);\\n        for (uint256 i = 0; i < calls.length; i++) {\\n            uint256 initialGas = gasleft();\\n            (, results[i]) = calls[i].to.call(calls[i].data);  // solhint-disable-line avoid-low-level-calls\\n            gasUsed[i] = initialGas - gasleft();\\n        }\\n    }\\n\\n    /// @notice Fetches the block gas limit.\\n    /// @return result The block gas limit.\\n    function gaslimit() external view returns (uint256) {\\n        return block.gaslimit;\\n    }\\n\\n    /// @notice Fetches the remaining gas available for the current transaction.\\n    /// @return result The remaining gas.\\n    function gasLeft() external view returns (uint256) {\\n        return gasleft();\\n    }\\n\\n    /// @notice Fetches the block timestamp.\\n    /// @return result timestamp of the block.\\n    function getCurrentBlockTimestamp() external view returns (uint256) {\\n        // solhint-disable-next-line not-rely-on-time\\n        return block.timestamp;\\n    }\\n}\\n\",\"keccak256\":\"0x6f074fe59afd93585821508ffb11679da67b2e8d29b8fd805cfd06657870c593\",\"license\":\"MIT\"},\"contracts/UniV3Helper.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n\\npragma solidity 0.8.23;\\n\\nimport \\\"@uniswap/v3-core/contracts/libraries/BitMath.sol\\\";\\nimport \\\"./interfaces/IUniswapV3.sol\\\";\\n\\n/// @title UniV3Helper\\n/// @dev Helper contract to interact with Uniswap V3 pool contracts.\\ncontract UniV3Helper {\\n    int24 private constant _MIN_TICK = -887272;\\n    int24 private constant _MAX_TICK = -_MIN_TICK;\\n\\n    /**\\n     * @notice Fetches tick data for a specified range from a Uniswap V3 pool.\\n     * @dev The function returns an array of bytes each containing packed data about each tick in the specified range.\\n     * The returned tick data includes the total liquidity, liquidity delta, outer fee growth for the two tokens, and\\n     * the tick value itself. The tick range is centered around the current tick of the pool and spans tickRange*2.\\n     * The tick range is constrained by the global min and max tick values.\\n     * If there are no initialized ticks in the range, the function returns an empty array.\\n     * @param pool The Uniswap V3 pool from which to fetch tick data.\\n     * @param tickRange The range (either side of the current tick) within which to fetch tick data.\\n     * @return ticks An array of bytes each containing packed data about each tick in the specified range.\\n     */\\n    function getTicks(IUniswapV3 pool, int24 tickRange) external view returns (bytes[] memory ticks) {\\n        int24 tickSpacing = pool.tickSpacing();\\n        (,int24 tick) = pool.slot0();\\n\\n        tickRange *= tickSpacing;\\n        int24 fromTick = tick - tickRange;\\n        int24 toTick = tick + tickRange;\\n        if (fromTick < _MIN_TICK) {\\n            fromTick = _MIN_TICK;\\n        }\\n        if (toTick > _MAX_TICK) {\\n            toTick = _MAX_TICK;\\n        }\\n\\n        int24[] memory initTicks = new int24[](uint256(int256((toTick - fromTick + 1) / tickSpacing)));\\n\\n        uint256 counter = 0;\\n        int16 pos = int16((fromTick / tickSpacing) >> 8);\\n        int16 endPos = int16((toTick / tickSpacing) >> 8);\\n        for (; pos <= endPos; pos++) {\\n            uint256 bm = pool.tickBitmap(pos);\\n\\n            while (bm != 0) {\\n                uint8 bit = BitMath.leastSignificantBit(bm);\\n                bm ^= 1 << bit;\\n                int24 extractedTick = ((int24(pos) << 8) | int24(uint24(bit))) * tickSpacing;\\n                if (extractedTick >= fromTick && extractedTick <= toTick) {\\n                    initTicks[counter++] = extractedTick;\\n                }\\n            }\\n        }\\n\\n        ticks = new bytes[](counter);\\n        for (uint256 i = 0; i < counter; i++) {\\n            (\\n                uint128 liquidityGross,\\n                int128 liquidityNet,\\n                uint256 feeGrowthOutside0X128,\\n                uint256 feeGrowthOutside1X128\\n                , // int56 tickCumulativeOutside,\\n                , // secondsPerLiquidityOutsideX128\\n                , // uint32 secondsOutside\\n                , // init\\n            ) = pool.ticks(initTicks[i]);\\n\\n            ticks[i] = abi.encodePacked(\\n                liquidityGross,\\n                liquidityNet,\\n                feeGrowthOutside0X128,\\n                feeGrowthOutside1X128,\\n                // tickCumulativeOutside,\\n                // secondsPerLiquidityOutsideX128,\\n                // secondsOutside,\\n                initTicks[i]\\n            );\\n        }\\n    }\\n}\\n\",\"keccak256\":\"0xb0370c2883c33e4851b032d721a2c92705b052d8eef594cff57e53af5b97257d\",\"license\":\"MIT\"},\"contracts/interfaces/IUniswapV3.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n\\npragma solidity 0.8.23;\\n\\n\\ninterface IUniswapV3 {\\n    function tickSpacing() external view returns (int24);\\n\\n    function slot0()\\n        external\\n        view\\n        returns (\\n            uint160 sqrtPriceX96,\\n            int24 tick\\n            // the rest is ignored\\n        );\\n\\n    function feeGrowthGlobal0X128() external view returns (uint256);\\n\\n    function feeGrowthGlobal1X128() external view returns (uint256);\\n\\n    function protocolFees() external view returns (uint128 token0, uint128 token1);\\n\\n    function liquidity() external view returns (uint128);\\n\\n    function ticks(int24 tick)\\n        external\\n        view\\n        returns (\\n            uint128 liquidityGross,\\n            int128 liquidityNet,\\n            uint256 feeGrowthOutside0X128,\\n            uint256 feeGrowthOutside1X128,\\n            int56 tickCumulativeOutside,\\n            uint160 secondsPerLiquidityOutsideX128,\\n            uint32 secondsOutside,\\n            bool initialized\\n        );\\n\\n    function tickBitmap(int16 wordPosition) external view returns (uint256);\\n\\n    function positions(bytes32 key)\\n        external\\n        view\\n        returns (\\n            uint128 _liquidity,\\n            uint256 feeGrowthInside0LastX128,\\n            uint256 feeGrowthInside1LastX128,\\n            uint128 tokensOwed0,\\n            uint128 tokensOwed1\\n        );\\n\\n    function observations(uint256 index)\\n        external\\n        view\\n        returns (\\n            uint32 blockTimestamp,\\n            int56 tickCumulative,\\n            uint160 secondsPerLiquidityCumulativeX128,\\n            bool initialized\\n        );\\n}\\n\",\"keccak256\":\"0xdfaffac1c05ed63b03980ee4d63e3e755fddb69ae3b3a6ee1a60e1c9a50a9779\",\"license\":\"MIT\"}},\"version\":1}",
+  "bytecode": "0x60808060405234610016576112a7908161001b8239f35b5f80fdfe6080806040526004361015610012575f80fd5b5f3560e01c9081630f28c97d14610d46575080632a72283914610d0e5780632ddb301b14610cd5578063489dba1614610b5a57806370a0823114610aff578063c078e90c146101cd578063caa5c23f146100f45763d699fe1514610074575f80fd5b346100f05760407ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc3601126100f05760043567ffffffffffffffff81116100f0576100d26100c96100e6923690600401610e0f565b602435906111bf565b604051928392604084526040840190610f3c565b9060208301520390f35b5f80fd5b346100f0576020807ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc3601126100f05760043567ffffffffffffffff81116100f057610144903690600401610e0f565b61014e8151610fdf565b915f5b82518110156101b357805f8073ffffffffffffffffffffffffffffffffffffffff61017e60019588611045565b5151168561018c8589611045565b51015190828783519301915af1506101a2611086565b6101ac8287611045565b5201610151565b604051602080825281906101c990820187610f3c565b0390f35b346100f05760407ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc3601126100f05760043573ffffffffffffffffffffffffffffffffffffffff811681036100f0576024358060020b81036100f0576040517fd0c93a7c00000000000000000000000000000000000000000000000000000000815260208160048173ffffffffffffffffffffffffffffffffffffffff87165afa90811561085c575f91610ac5575b50604051917f3850c7bd00000000000000000000000000000000000000000000000000000000835260408360048173ffffffffffffffffffffffffffffffffffffffff88165afa92831561085c575f93610a77575b50816102dc916110e4565b916102e783826110fb565b9260020b9060020b017fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff800000627fffff8183128184131761047c57827ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff27618808760020b12610a6f575b50620d89e8809160020b13610a67575b50600161036a86856110fb565b60020b019182129082131761047c578261038391611135565b60020b907fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe06103ca6103b484610dbd565b936103c26040519586610d7c565b808552610dbd565b013660208401375f926103dd8186611135565b60020b60081d60010b956103f18284611135565b60020b60081d60010b965b8060010b88811361086757604051907f5339c296000000000000000000000000000000000000000000000000000000008252600482015260208160248173ffffffffffffffffffffffffffffffffffffffff87165afa90811561085c575f9161082a575b50805b6104a9575060010b617fff811461047c576001016103fc565b7f4e487b71000000000000000000000000000000000000000000000000000000005f52601160045260245ffd5b8060ff6fffffffffffffffffffffffffffffffff82161561081e5750607f5b67ffffffffffffffff8216156108145760ff7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc0818316011161047c5760ff167fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc0015b63ffffffff82161561080a5760ff7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe0818316011161047c5760ff167fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe0015b61ffff8216156108005760ff7ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0818316011161047c5760ff167ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0015b60ff8216156107f65760ff7ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff8818316011161047c5760ff167ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff8015b600f8216156107ec5760ff7ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc818316011161047c5760ff167ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc015b8560038316156107df575060ff7ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe818316011161047c5760017ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe60ff88931601925b16610787575b60ff6107209216926001841b189260020b8460081b60020b176110e4565b60020b8860020b8112158061077a575b61073c575b5080610463565b87907fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff821461047c5761077460018493019989611045565b52610735565b508560020b811315610730565b5060ff7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff818316011161047c5760ff167fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0184610702565b909160019060021c6106fc565b9060041c9061069a565b9060081c9061063f565b9060101c906105e4565b9060201c90610588565b9060401c9061052a565b90508160801c906104c8565b90506020813d602011610854575b8161084560209383610d7c565b810103126100f0575189610460565b3d9150610838565b6040513d5f823e3d90fd5b85878461087382610fdf565b925f5b83811061089357604051602080825281906101c990820188610f3c565b61089d8183611045565b5160020b90604051917ff30dba930000000000000000000000000000000000000000000000000000000083526004830152610100808360248173ffffffffffffffffffffffffffffffffffffffff89165afa90811561085c575f915f945f925f926109c4575b505061090f8487611045565b5191604051957fffffffffffffffffffffffffffffffff00000000000000000000000000000000608095861b166020880152841b60308701526040860152606085015260e81b908301526063825260a082019180831067ffffffffffffffff841117610997576001926040526109858288611045565b526109908187611045565b5001610876565b7f4e487b71000000000000000000000000000000000000000000000000000000005f52604160045260245ffd5b93509450505082813d8311610a60575b6109de8183610d7c565b810103126100f0578151916fffffffffffffffffffffffffffffffff831683036100f05760208101519081600f0b82036100f05760408101519360608201519160808101518060060b036100f057610a3860a082016110c3565b5060c081015163ffffffff8116036100f05760e00151801515036100f0579193908980610903565b503d6109d4565b92508661035d565b95508761034d565b9092506040813d604011610abd575b81610a9360409383610d7c565b810103126100f05781610ab5602083610aae6102dc956110c3565b50016110b5565b9391506102d1565b3d9150610a86565b90506020813d602011610af7575b81610ae060209383610d7c565b810103126100f057610af1906110b5565b8361027c565b3d9150610ad3565b346100f05760207ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc3601126100f05760043573ffffffffffffffffffffffffffffffffffffffff811681036100f05760209031604051908152f35b346100f0576020807ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc3601126100f05760043567ffffffffffffffff81116100f057610baa903690600401610e0f565b90610bb58251610fdf565b91805192610bdb610bc585610dbd565b94610bd36040519687610d7c565b808652610dbd565b927fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe081860194013685375f5b8351811015610c80575a905f8073ffffffffffffffffffffffffffffffffffffffff610c338489611045565b51511685610c41858a611045565b51015190828783519301915af150610c57611086565b610c618286611045565b525a820391821161047c57600191610c798289611045565b5201610c07565b509083610c9d928681604051958695604087526040870190610f3c565b918583038287015251918281520192915f5b828110610cbe57505050500390f35b835185528695509381019392810192600101610caf565b346100f0575f7ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc3601126100f05760205a604051908152f35b346100f0575f7ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc3601126100f0576020604051458152f35b346100f0575f7ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc3601126100f057602090428152f35b90601f7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe0910116810190811067ffffffffffffffff82111761099757604052565b67ffffffffffffffff81116109975760051b60200190565b67ffffffffffffffff811161099757601f017fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe01660200190565b81601f820112156100f057803591602091610e2984610dbd565b93604091610e3983519687610d7c565b818652848087019260051b820101938085116100f057858201925b858410610e65575050505050505090565b67ffffffffffffffff9084358281116100f057840191867fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe084860301126100f057865192878401848110838211176109975788528981013573ffffffffffffffffffffffffffffffffffffffff811681036100f0578452878101359182116100f057019083603f830112156100f0578882013592610f0284610dd5565b610f0e89519182610d7c565b848152858986860101116100f0575f8b8681978c839801838601378301015283820152815201930192610e54565b9080825180825260208092019180808360051b8601019501935f905b838210610f685750505050505090565b909192939495837fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe08084840301885288518051908185525f5b828110610fcb5750505f818501840152601f01169091018101968101950193929160010190610f58565b818101850151868201860152889401610fa1565b90610fe982610dbd565b610ff66040519182610d7c565b8281527fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe06110248294610dbd565b01905f5b82811061103457505050565b806060602080938501015201611028565b80518210156110595760209160051b010190565b7f4e487b71000000000000000000000000000000000000000000000000000000005f52603260045260245ffd5b3d156110b0573d9061109782610dd5565b916110a56040519384610d7c565b82523d5f602084013e565b606090565b51908160020b82036100f057565b519073ffffffffffffffffffffffffffffffffffffffff821682036100f057565b9060020b9060020b02908160020b91820361047c57565b9060020b9060020b0390627fffff82137fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff80000083121761047c57565b60020b9060020b908115611192577fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff82147fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff80000082141661047c570590565b7f4e487b71000000000000000000000000000000000000000000000000000000005f52601260045260245ffd5b91906111cb8351610fdf565b905f5b845181101561123e575f8073ffffffffffffffffffffffffffffffffffffffff6111f88489611045565b515116602090828261120a878c611045565b51015180519301915af15061121d611086565b6112278285611045565b52815a10611237576001016111ce565b9350509190565b50509151917fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff830192831161047c57919056fea2646970667358221220832431e12bfb8e276404d7b4bb44486f21c3216fd481772d0d64725aabd9bf3f64736f6c63430008170033",
+  "deployedBytecode": "0x6080806040526004361015610012575f80fd5b5f3560e01c9081630f28c97d14610d46575080632a72283914610d0e5780632ddb301b14610cd5578063489dba1614610b5a57806370a0823114610aff578063c078e90c146101cd578063caa5c23f146100f45763d699fe1514610074575f80fd5b346100f05760407ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc3601126100f05760043567ffffffffffffffff81116100f0576100d26100c96100e6923690600401610e0f565b602435906111bf565b604051928392604084526040840190610f3c565b9060208301520390f35b5f80fd5b346100f0576020807ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc3601126100f05760043567ffffffffffffffff81116100f057610144903690600401610e0f565b61014e8151610fdf565b915f5b82518110156101b357805f8073ffffffffffffffffffffffffffffffffffffffff61017e60019588611045565b5151168561018c8589611045565b51015190828783519301915af1506101a2611086565b6101ac8287611045565b5201610151565b604051602080825281906101c990820187610f3c565b0390f35b346100f05760407ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc3601126100f05760043573ffffffffffffffffffffffffffffffffffffffff811681036100f0576024358060020b81036100f0576040517fd0c93a7c00000000000000000000000000000000000000000000000000000000815260208160048173ffffffffffffffffffffffffffffffffffffffff87165afa90811561085c575f91610ac5575b50604051917f3850c7bd00000000000000000000000000000000000000000000000000000000835260408360048173ffffffffffffffffffffffffffffffffffffffff88165afa92831561085c575f93610a77575b50816102dc916110e4565b916102e783826110fb565b9260020b9060020b017fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff800000627fffff8183128184131761047c57827ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff27618808760020b12610a6f575b50620d89e8809160020b13610a67575b50600161036a86856110fb565b60020b019182129082131761047c578261038391611135565b60020b907fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe06103ca6103b484610dbd565b936103c26040519586610d7c565b808552610dbd565b013660208401375f926103dd8186611135565b60020b60081d60010b956103f18284611135565b60020b60081d60010b965b8060010b88811361086757604051907f5339c296000000000000000000000000000000000000000000000000000000008252600482015260208160248173ffffffffffffffffffffffffffffffffffffffff87165afa90811561085c575f9161082a575b50805b6104a9575060010b617fff811461047c576001016103fc565b7f4e487b71000000000000000000000000000000000000000000000000000000005f52601160045260245ffd5b8060ff6fffffffffffffffffffffffffffffffff82161561081e5750607f5b67ffffffffffffffff8216156108145760ff7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc0818316011161047c5760ff167fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc0015b63ffffffff82161561080a5760ff7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe0818316011161047c5760ff167fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe0015b61ffff8216156108005760ff7ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0818316011161047c5760ff167ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0015b60ff8216156107f65760ff7ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff8818316011161047c5760ff167ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff8015b600f8216156107ec5760ff7ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc818316011161047c5760ff167ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc015b8560038316156107df575060ff7ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe818316011161047c5760017ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe60ff88931601925b16610787575b60ff6107209216926001841b189260020b8460081b60020b176110e4565b60020b8860020b8112158061077a575b61073c575b5080610463565b87907fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff821461047c5761077460018493019989611045565b52610735565b508560020b811315610730565b5060ff7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff818316011161047c5760ff167fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0184610702565b909160019060021c6106fc565b9060041c9061069a565b9060081c9061063f565b9060101c906105e4565b9060201c90610588565b9060401c9061052a565b90508160801c906104c8565b90506020813d602011610854575b8161084560209383610d7c565b810103126100f0575189610460565b3d9150610838565b6040513d5f823e3d90fd5b85878461087382610fdf565b925f5b83811061089357604051602080825281906101c990820188610f3c565b61089d8183611045565b5160020b90604051917ff30dba930000000000000000000000000000000000000000000000000000000083526004830152610100808360248173ffffffffffffffffffffffffffffffffffffffff89165afa90811561085c575f915f945f925f926109c4575b505061090f8487611045565b5191604051957fffffffffffffffffffffffffffffffff00000000000000000000000000000000608095861b166020880152841b60308701526040860152606085015260e81b908301526063825260a082019180831067ffffffffffffffff841117610997576001926040526109858288611045565b526109908187611045565b5001610876565b7f4e487b71000000000000000000000000000000000000000000000000000000005f52604160045260245ffd5b93509450505082813d8311610a60575b6109de8183610d7c565b810103126100f0578151916fffffffffffffffffffffffffffffffff831683036100f05760208101519081600f0b82036100f05760408101519360608201519160808101518060060b036100f057610a3860a082016110c3565b5060c081015163ffffffff8116036100f05760e00151801515036100f0579193908980610903565b503d6109d4565b92508661035d565b95508761034d565b9092506040813d604011610abd575b81610a9360409383610d7c565b810103126100f05781610ab5602083610aae6102dc956110c3565b50016110b5565b9391506102d1565b3d9150610a86565b90506020813d602011610af7575b81610ae060209383610d7c565b810103126100f057610af1906110b5565b8361027c565b3d9150610ad3565b346100f05760207ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc3601126100f05760043573ffffffffffffffffffffffffffffffffffffffff811681036100f05760209031604051908152f35b346100f0576020807ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc3601126100f05760043567ffffffffffffffff81116100f057610baa903690600401610e0f565b90610bb58251610fdf565b91805192610bdb610bc585610dbd565b94610bd36040519687610d7c565b808652610dbd565b927fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe081860194013685375f5b8351811015610c80575a905f8073ffffffffffffffffffffffffffffffffffffffff610c338489611045565b51511685610c41858a611045565b51015190828783519301915af150610c57611086565b610c618286611045565b525a820391821161047c57600191610c798289611045565b5201610c07565b509083610c9d928681604051958695604087526040870190610f3c565b918583038287015251918281520192915f5b828110610cbe57505050500390f35b835185528695509381019392810192600101610caf565b346100f0575f7ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc3601126100f05760205a604051908152f35b346100f0575f7ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc3601126100f0576020604051458152f35b346100f0575f7ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc3601126100f057602090428152f35b90601f7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe0910116810190811067ffffffffffffffff82111761099757604052565b67ffffffffffffffff81116109975760051b60200190565b67ffffffffffffffff811161099757601f017fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe01660200190565b81601f820112156100f057803591602091610e2984610dbd565b93604091610e3983519687610d7c565b818652848087019260051b820101938085116100f057858201925b858410610e65575050505050505090565b67ffffffffffffffff9084358281116100f057840191867fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe084860301126100f057865192878401848110838211176109975788528981013573ffffffffffffffffffffffffffffffffffffffff811681036100f0578452878101359182116100f057019083603f830112156100f0578882013592610f0284610dd5565b610f0e89519182610d7c565b848152858986860101116100f0575f8b8681978c839801838601378301015283820152815201930192610e54565b9080825180825260208092019180808360051b8601019501935f905b838210610f685750505050505090565b909192939495837fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe08084840301885288518051908185525f5b828110610fcb5750505f818501840152601f01169091018101968101950193929160010190610f58565b818101850151868201860152889401610fa1565b90610fe982610dbd565b610ff66040519182610d7c565b8281527fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe06110248294610dbd565b01905f5b82811061103457505050565b806060602080938501015201611028565b80518210156110595760209160051b010190565b7f4e487b71000000000000000000000000000000000000000000000000000000005f52603260045260245ffd5b3d156110b0573d9061109782610dd5565b916110a56040519384610d7c565b82523d5f602084013e565b606090565b51908160020b82036100f057565b519073ffffffffffffffffffffffffffffffffffffffff821682036100f057565b9060020b9060020b02908160020b91820361047c57565b9060020b9060020b0390627fffff82137fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff80000083121761047c57565b60020b9060020b908115611192577fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff82147fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff80000082141661047c570590565b7f4e487b71000000000000000000000000000000000000000000000000000000005f52601260045260245ffd5b91906111cb8351610fdf565b905f5b845181101561123e575f8073ffffffffffffffffffffffffffffffffffffffff6111f88489611045565b515116602090828261120a878c611045565b51015180519301915af15061121d611086565b6112278285611045565b52815a10611237576001016111ce565b9350509190565b50509151917fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff830192831161047c57919056fea2646970667358221220832431e12bfb8e276404d7b4bb44486f21c3216fd481772d0d64725aabd9bf3f64736f6c63430008170033",
+  "devdoc": {
+    "kind": "dev",
+    "methods": {
+      "gasLeft()": {
+        "returns": {
+          "_0": "result The remaining gas."
+        }
+      },
+      "gaslimit()": {
+        "returns": {
+          "_0": "result The block gas limit."
+        }
+      },
+      "getCurrentBlockTimestamp()": {
+        "returns": {
+          "_0": "result timestamp of the block."
+        }
+      },
+      "getTicks(address,int24)": {
+        "details": "The function returns an array of bytes each containing packed data about each tick in the specified range. The returned tick data includes the total liquidity, liquidity delta, outer fee growth for the two tokens, and the tick value itself. The tick range is centered around the current tick of the pool and spans tickRange*2. The tick range is constrained by the global min and max tick values. If there are no initialized ticks in the range, the function returns an empty array.",
+        "params": {
+          "pool": "The Uniswap V3 pool from which to fetch tick data.",
+          "tickRange": "The range (either side of the current tick) within which to fetch tick data."
+        },
+        "returns": {
+          "ticks": "An array of bytes each containing packed data about each tick in the specified range."
+        }
+      },
+      "multicall((address,bytes)[])": {
+        "details": "The function is not gas-limited and may revert due to out of gas errors.",
+        "params": {
+          "calls": "An array of Call structs, each representing a function call."
+        },
+        "returns": {
+          "results": "An array of bytes, each entry being the result of the respective function call."
+        }
+      },
+      "multicallWithGas((address,bytes)[])": {
+        "details": "This function is not gas-limited and may revert due to out of gas errors.",
+        "params": {
+          "calls": "An array of Call struct instances representing each call."
+        },
+        "returns": {
+          "gasUsed": "An array of uint256. Each entry represents the amount of gas used by the corresponding call.",
+          "results": "An array of bytes. Each entry represents the return data of each call."
+        }
+      },
+      "multicallWithGasLimitation((address,bytes)[],uint256)": {
+        "details": "The function will stop making calls when the remaining gas is less than `gasBuffer`. Passing emtpy calls array (calls.length == 0) will result in having lastSuccessIndex = uint256.max.",
+        "params": {
+          "calls": "An array of Call struct instances representing each call.",
+          "gasBuffer": "The amount of gas that should remain after the last function call."
+        },
+        "returns": {
+          "lastSuccessIndex": "The index of the last successful call in the `calls` array.",
+          "results": "An array of bytes. Each entry represents the return data of each call."
+        }
+      }
+    },
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {
+      "gasLeft()": {
+        "notice": "Fetches the remaining gas available for the current transaction."
+      },
+      "gaslimit()": {
+        "notice": "Fetches the block gas limit."
+      },
+      "getCurrentBlockTimestamp()": {
+        "notice": "Fetches the block timestamp."
+      },
+      "getTicks(address,int24)": {
+        "notice": "Fetches tick data for a specified range from a Uniswap V3 pool."
+      },
+      "multicall((address,bytes)[])": {
+        "notice": "Executes multiple calls in a single transaction."
+      },
+      "multicallWithGas((address,bytes)[])": {
+        "notice": "Executes multiple calls in a single transaction and measures the gas used by each call."
+      },
+      "multicallWithGasLimitation((address,bytes)[],uint256)": {
+        "notice": "Executes multiple calls in a single transaction with gas limitations."
+      }
+    },
+    "version": 1
+  },
+  "storageLayout": {
+    "storage": [],
+    "types": null
+  }
+}
