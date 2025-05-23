@@ -1,3 +1,4 @@
+const { deployAndGetContractWithCreate3 } = require('@1inch/solidity-utils');
 const hre = require('hardhat');
 const { getChainId, ethers } = hre;
 
@@ -14,6 +15,7 @@ const WETH = {
     8217: '0xe4f05A66Ec68B54A58B17c22107b02e0232cC817', // Klaytn
     8453: '0x4200000000000000000000000000000000000006', // Base
     59144: '0xe5D7C2a44FfDDf6b295A15c148167daaAf5Cf34f', // Linea
+    146: '0x039e2fB66102314Ce7b64Ce5Ce3E5183bc94aD38', // Sonic
     31337: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2', // Hardhat
 };
 
@@ -30,6 +32,7 @@ const FEE_COLLECTOR_FACTORY_OWNER = {
     8217: '0xa38038f9Ac2b3A7b4247804A46C787960E160Aed', // Klaytn (not safe)
     8453: '0xa4659995DC39d891C1bA9131Aaf5F000E5B57224', // Base
     59144: '0x9cCf4d6B76976Ab11CF9f9219A38BA28983A9a27', // Linea
+    146: '0x56E44874F624EbDE6efCc783eFD685f0FBDC6dcF', // Sonic (not safe)
     31337: '0x9F8102b1bB05785BaD2874f2C7B1aaea4c6D976a', // Hardhat
 };
 
@@ -41,49 +44,26 @@ const FEE_COLLECTOR_OWNER = '0xa98f85f55f259ef41548251c93409f1d60e804e4';
 const FEE_COLLECTOR_SALT = ethers.keccak256(ethers.toUtf8Bytes('FeeCollector'));
 const FEE_COLLECTOR_FACTORY_SALT = ethers.keccak256(ethers.toUtf8Bytes('FeeCollectorFactory'));
 
-module.exports = async () => {
+module.exports = async ({ deployments }) => {
     console.log('running deploy script');
     const chainId = await getChainId();
     console.log('network id ', chainId);
 
-    const create3Deployer = await ethers.getContractAt('ICreate3Deployer', CREATE3_DEPLOYER_CONTRACT);
+    const feeCollector = await deployAndGetContractWithCreate3({
+        contractName: 'FeeCollector',
+        constructorArgs: [WETH[chainId], LOP, FEE_COLLECTOR_OWNER],
+        create3Deployer: CREATE3_DEPLOYER_CONTRACT,
+        salt: FEE_COLLECTOR_SALT,
+        deployments,
+    });
 
-    const FeeCollector = await ethers.getContractFactory('FeeCollector');
-
-    const implDeployData = (await FeeCollector.getDeployTransaction(
-        WETH[chainId],
-        LOP,
-        FEE_COLLECTOR_OWNER,
-    )).data;
-
-    const implDeployTxn = await create3Deployer.deploy(FEE_COLLECTOR_SALT, implDeployData);
-    await implDeployTxn.wait();
-
-    console.log(`FeeCollector impl deployed to: ${await create3Deployer.addressOf(FEE_COLLECTOR_SALT)}`);
-
-    const FeeCollectorFactory = await ethers.getContractFactory('FeeCollectorFactory');
-
-    const factoryDeployData = (await FeeCollectorFactory.getDeployTransaction(
-        await create3Deployer.addressOf(FEE_COLLECTOR_SALT),
-        FEE_COLLECTOR_FACTORY_OWNER[chainId],
-    )).data;
-
-    const factoryDeployTxn = await create3Deployer.deploy(FEE_COLLECTOR_FACTORY_SALT, factoryDeployData);
-    await factoryDeployTxn.wait();
-
-    console.log(`FeeCollectorFactory deployed to: ${await create3Deployer.addressOf(FEE_COLLECTOR_FACTORY_SALT)}`);
-
-    if (await getChainId() !== '31337') {
-        await hre.run('verify:verify', {
-            address: await create3Deployer.addressOf(FEE_COLLECTOR_SALT),
-            constructorArguments: [WETH[chainId], LOP, FEE_COLLECTOR_OWNER],
-        });
-
-        await hre.run('verify:verify', {
-            address: await create3Deployer.addressOf(FEE_COLLECTOR_FACTORY_SALT),
-            constructorArguments: [await create3Deployer.addressOf(FEE_COLLECTOR_SALT), FEE_COLLECTOR_FACTORY_OWNER[chainId]],
-        });
-    }
+    await deployAndGetContractWithCreate3({
+        contractName: 'FeeCollectorFactory',
+        constructorArgs: [await feeCollector.getAddress(), FEE_COLLECTOR_FACTORY_OWNER[chainId]],
+        create3Deployer: CREATE3_DEPLOYER_CONTRACT,
+        salt: FEE_COLLECTOR_FACTORY_SALT,
+        deployments,
+    });
 };
 
 module.exports.skip = async () => true;
