@@ -17,18 +17,7 @@ interface IAlgebra {
     * Returns communityFeeToken1 The community fee percentage of the swap fee in thousandths (1e-3) for token1;
     * Returns unlocked Whether the pool is currently locked to reentrancy;
     */
-    function globalState()
-        external
-        view
-        returns (
-            uint160 price,
-            int24 tick,
-            uint16 fee,
-            uint16 timepointIndex,
-            uint8 communityFeeToken0,
-            uint8 communityFeeToken1,
-            bool unlocked
-        );
+    function globalState() external view returns (uint160 price, int24 tick); // returns reduced because forks use different types of returned values that we do not use
 
     /**
     * @notice The fee growth as a Q128.128 fees of token0 collected per unit of liquidity for the entire life of the pool
