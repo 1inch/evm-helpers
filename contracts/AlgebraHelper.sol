@@ -44,7 +44,7 @@ contract AlgebraHelper {
      * @return ticks An array of bytes each containing packed data about each tick in the specified range.
      */
     function getTicks(IAlgebra pool, int24 tickRange) external view returns (bytes[] memory ticks) {
-        (,int24 tick,,,,,) = pool.globalState();
+        (,int24 tick) = pool.globalState();
 
         tickRange *= _TICK_SPACING;
         int24 fromTick = tick - tickRange;
