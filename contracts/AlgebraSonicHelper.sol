@@ -53,11 +53,14 @@ contract AlgebraSonicHelper {
             uint256 outerFeeGrowth0Token,
             uint256 outerFeeGrowth1Token
         ) = pool.ticks(closestTick);
+        int24 prevClosetTick = prevTick;
 
         if (liquidityTotal > 0 || liquidityDelta != 0) {
             rawTicks[counter++] = abi.encodePacked(
                 liquidityTotal,
                 liquidityDelta,
+                prevTick,
+                nextTick,
                 outerFeeGrowth0Token,
                 outerFeeGrowth1Token,
                 closestTick
@@ -68,7 +71,7 @@ contract AlgebraSonicHelper {
             (
                 liquidityTotal,
                 liquidityDelta,
-                /* prevTick */,
+                prevTick,
                 nextTick,
                 outerFeeGrowth0Token,
                 outerFeeGrowth1Token
@@ -78,6 +81,8 @@ contract AlgebraSonicHelper {
                 rawTicks[counter++] = abi.encodePacked(
                     liquidityTotal,
                     liquidityDelta,
+                    prevTick,
+                    nextTick,
                     outerFeeGrowth0Token,
                     outerFeeGrowth1Token,
                     currentTick
@@ -88,12 +93,12 @@ contract AlgebraSonicHelper {
             currentTick = nextTick;
         }
 
-        for (int24 currentTick = prevTick; currentTick >= fromTick; ) {
+        for (int24 currentTick = prevClosetTick; currentTick >= fromTick; ) {
             (
                 liquidityTotal,
                 liquidityDelta,
                 prevTick,
-                /* nextTick */,
+                nextTick,
                 outerFeeGrowth0Token,
                 outerFeeGrowth1Token
             ) = pool.ticks(currentTick);
@@ -102,6 +107,8 @@ contract AlgebraSonicHelper {
                 rawTicks[counter++] = abi.encodePacked(
                     liquidityTotal,
                     liquidityDelta,
+                    prevTick,
+                    nextTick,
                     outerFeeGrowth0Token,
                     outerFeeGrowth1Token,
                     currentTick
