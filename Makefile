@@ -203,7 +203,7 @@ upsert-constant:
 			sed -i '' 's|$(OPS_CHAIN_ID): .*|$(OPS_CHAIN_ID): $(OPS_GEN_VAL),|' $(OPS_GEN_FILE); \
 			sed -i '' 's/"/'\''/g' $(OPS_GEN_FILE); \
 		else \
-			awk '1;/module.exports = {/{print "\t$(OPS_CHAIN_ID): $(subst ",\",$(OPS_GEN_VAL)),"}' $(OPS_GEN_FILE) > tmp && sed -i '' 's/"/'\''/g' tmp && mv tmp $(OPS_GEN_FILE); \
+			awk '1;/module.exports = {/{print "    $(OPS_CHAIN_ID): $(subst ",\",$(OPS_GEN_VAL)),"}' $(OPS_GEN_FILE) > tmp && sed -i '' 's/"/'\''/g' tmp && mv tmp $(OPS_GEN_FILE); \
 		fi \
 		}
 

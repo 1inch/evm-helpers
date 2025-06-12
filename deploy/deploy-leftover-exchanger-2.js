@@ -28,8 +28,8 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     const { deploy } = deployments;
 
     const leftoverExchangerImpl = await deploy(
-        'LeftoverExchangerImpl', 
-        { args: [constants.WETH[chainId], OWNER], from: deployer, contract: 'LeftoverExchanger' }
+        'LeftoverExchangerImpl',
+        { args: [constants.WETH[chainId], OWNER], from: deployer, contract: 'LeftoverExchanger' },
     );
     console.log('LeftoverExchangerImpl deployed to:', leftoverExchangerImpl.address);
 

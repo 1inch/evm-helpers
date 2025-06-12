@@ -15,8 +15,8 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     const { deploy } = deployments;
 
     const leftoverExchangerImpl = await deploy(
-        'LeftoverExchangerImpl', 
-        { args: [constants.WETH[chainId], constants.LEFTOVER_EXCHANGER_OWNER[chainId]], from: deployer, contract: 'LeftoverExchanger' }
+        'LeftoverExchangerImpl',
+        { args: [constants.WETH[chainId], constants.LEFTOVER_EXCHANGER_OWNER[chainId]], from: deployer, contract: 'LeftoverExchanger' },
     );
     console.log('LeftoverExchangerImpl deployed to:', leftoverExchangerImpl.address);
 
@@ -43,7 +43,7 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
 
         await hre.run('verify:verify', {
             address: leftoverExchangerImpl.address,
-            constructorArguments: [WETH[chainId], constants.LEFTOVER_EXCHANGER_OWNER[chainId]],
+            constructorArguments: [constants.WETH[chainId], constants.LEFTOVER_EXCHANGER_OWNER[chainId]],
         });
 
         const proxyAdminBytes32 = await ethers.provider.send('eth_getStorageAt', [

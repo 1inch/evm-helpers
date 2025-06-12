@@ -21,7 +21,7 @@ if (getNetwork().indexOf('zksync') !== -1) {
 const n = new Networks(true, 'mainnet', true);
 const { networks, etherscan } = n.registerAll();
 
-networks.hardhat.mining = {auto:true, interval: 0};
+networks.hardhat.mining = { auto: true, interval: 0 };
 
 module.exports = {
     etherscan,

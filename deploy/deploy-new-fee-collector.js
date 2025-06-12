@@ -2,7 +2,7 @@ const hre = require('hardhat');
 const { getChainId, ethers } = hre;
 const constants = require('./constants');
 
-module.exports = async ( {config} ) => {
+module.exports = async ({ config }) => {
     console.log('running deploy script');
     const chainId = await getChainId();
     console.log('network id ', chainId);

@@ -9,7 +9,7 @@ const uniV4constructorArgs = require('./uni-v4-helper-args');
 const leftoverExchangerOwner = require('./leftover-exchanger-owner');
 
 module.exports = {
-    WETH:   weth,
+    WETH: weth,
     FEE_COLLECTOR_OWNER: feeCollectorOwner,
     FEE_COLLECTOR_FACTORY: feeCollectorFactory,
     FEE_COLLECTOR_FACTORY_OWNER: feeCollectorFactoryOwner,
@@ -17,7 +17,7 @@ module.exports = {
     CREATE3_DEPLOYER_CONTRACT: create3Deployer,
     FEE_COLLECTOR_OPERATOR: operator,
     CONSTRUCTOR_ARGS: {
-        UniV4Helper: uniV4constructorArgs
+        UniV4Helper: uniV4constructorArgs,
     },
     LEFTOVER_EXCHANGER_OWNER: leftoverExchangerOwner,
 };

@@ -31,16 +31,16 @@ module.exports = async () => {
         await hre.run('verify:verify', {
             address: await create3Deployer.addressOf(FEE_COLLECTOR_SALT),
             constructorArguments: [
-                constants.WETH[chainId], 
-                constants.LOP[chainId], 
-                constants.FEE_COLLECTOR_OWNER[chainId]
+                constants.WETH[chainId],
+                constants.LOP[chainId],
+                constants.FEE_COLLECTOR_OWNER[chainId],
             ],
         });
     }
 
     const feeCollectorFactory = await ethers.getContractAt(
-        'FeeCollectorFactory', 
-        await create3Deployer.addressOf(FEE_COLLECTOR_FACTORY_SALT)
+        'FeeCollectorFactory',
+        await create3Deployer.addressOf(FEE_COLLECTOR_FACTORY_SALT),
     );
 
     console.log(
@@ -50,9 +50,7 @@ module.exports = async () => {
     );
 
     for (const [fcType, operator] of Object.entries(OPERATORS)) {
-        console.log(`${key} => ${value}`);
-
-        const salt = ethers.keccak256(ethers.toUtf8Bytes(fcType))
+        const salt = ethers.keccak256(ethers.toUtf8Bytes(fcType));
         const fc = await feeCollectorFactory.getFeeCollectorAddress(salt);
 
         console.log(
