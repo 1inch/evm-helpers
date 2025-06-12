@@ -15,8 +15,13 @@ if (getNetwork().indexOf('zksync') !== -1) {
     require('@nomicfoundation/hardhat-verify');
 }
 
-const { networks, etherscan } = (new Networks(true, 'mainnet', true)).registerAll();
-etherscan.apiKey.zksyncmainnet = process.env.ZKSYNC_ETHERSCAN_KEY;
+// const { networks, etherscan } = (new Networks(true, 'mainnet', true)).registerAll();
+// etherscan.apiKey.zksyncmainnet = process.env.ZKSYNC_ETHERSCAN_KEY;
+
+const n = new Networks(true, 'mainnet', true);
+const { networks, etherscan } = n.registerAll();
+
+networks.hardhat.mining = {auto:true, interval: 0};
 
 module.exports = {
     etherscan,
@@ -46,5 +51,9 @@ module.exports = {
         version: '1.4.1',
         compilerSource: 'binary',
         settings: {},
+    },
+    deployOpts: {
+        contractHelperName: process.env.CONTRACT_HELPER_NAME || '',
+        feeCollectorOperatorName: process.env.FEE_COLLECTOR_OPERATOR_NAME || '',
     },
 };

@@ -1,15 +1,16 @@
 const hre = require('hardhat');
 const { getChainId, ethers } = hre;
-
-const CREATE3_DEPLOYER_CONTRACT = '0x65B3Db8bAeF0215A1F9B14c506D2a3078b2C84AE';
+const constants = require('./constants');
 
 const EVM_HELPERS_SALT = ethers.keccak256(ethers.toUtf8Bytes('EvmHelpers-new'));
 
 module.exports = async () => {
     console.log('running deploy script');
-    console.log('network id ', await getChainId());
 
-    const create3Deployer = await ethers.getContractAt('ICreate3Deployer', CREATE3_DEPLOYER_CONTRACT);
+    const chainId = await getChainId();
+    console.log('network id ', chainId);
+
+    const create3Deployer = await ethers.getContractAt('ICreate3Deployer', constants.CREATE3_DEPLOYER_CONTRACT[chainId]);
 
     const EvmHelpersFactory = await ethers.getContractFactory('EvmHelpers');
 
