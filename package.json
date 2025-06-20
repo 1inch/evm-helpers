@@ -48,5 +48,8 @@
     "lint:sol": "solhint --max-warnings 0 \"contracts/**/*.sol\"",
     "lint:sol:fix": "solhint --max-warnings 0 \"contracts/**/*.sol\" --fix",
     "test": "hardhat test"
+  },
+  "resolutions": {
+    "elliptic": "^6.5.7"
   }
 }
