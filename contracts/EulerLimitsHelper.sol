@@ -47,7 +47,7 @@ contract EulerLimitsHelper {
             }
 
             (, uint16 borrowCap) = vault.caps();
-            uint256 maxWithdraw = decodeCap(uint256(borrowCap));
+            uint256 maxWithdraw = _decodeCap(uint256(borrowCap));
             maxWithdraw = vault.totalBorrows() > maxWithdraw ? 0 : maxWithdraw - vault.totalBorrows();
             if (maxWithdraw < outLimit) {
                 maxWithdraw += vault.convertToAssets(vault.balanceOf(eulerAccount));
@@ -58,7 +58,7 @@ contract EulerLimitsHelper {
         return outLimit;
     }
 
-    function decodeCap(uint256 amountCap) internal pure returns (uint256) {
+    function _decodeCap(uint256 amountCap) internal pure returns (uint256) {
         if (amountCap == 0) return type(uint256).max;
 
         unchecked {
