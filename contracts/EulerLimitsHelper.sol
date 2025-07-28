@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity >=0.8.0;
+pragma solidity ^0.8.0;
 
 interface IEVault {
     function debtOf(address account) external view returns (uint256);
@@ -13,26 +13,30 @@ interface IEVault {
 }
 
 contract EulerLimitsHelper {
+    uint256 private constant _MAX_U112 = type(uint112).max;
 
     function calcLimits(
         address eulerAccount,
         address _vault0,
         address _vault1,
         uint112 reserve0,
-        uint112 reserve1) external view returns (uint256, uint256, uint256, uint256) {
-            IEVault vault0 = IEVault(_vault0);
-            IEVault vault1 = IEVault(_vault1);
-            return (_calcInLimit(eulerAccount, vault0), _calcInLimit(eulerAccount, vault1),
-                    _calcOutLimit(eulerAccount, vault0, reserve0), _calcOutLimit(eulerAccount, vault1, reserve1));
+        uint112 reserve1
+    ) external view returns (uint256, uint256, uint256, uint256) {
+        return (
+            _calcInLimit(eulerAccount, IEVault(_vault0)),
+            _calcInLimit(eulerAccount, IEVault(_vault1)),
+            _calcOutLimit(eulerAccount, IEVault(_vault0), reserve0),
+            _calcOutLimit(eulerAccount, IEVault(_vault1), reserve1)
+        );
     }
 
     function _calcInLimit(address eulerAccount, IEVault vault) internal view returns (uint256) {
         uint256 maxDeposit = vault.debtOf(eulerAccount) + vault.maxDeposit(eulerAccount);
-        return maxDeposit < type(uint112).max ? maxDeposit : type(uint112).max;
+        return maxDeposit < _MAX_U112 ? maxDeposit : _MAX_U112;
     }
 
     function _calcOutLimit(address eulerAccount, IEVault vault, uint112 reserveLimit) internal view returns (uint256) {
-        uint256 outLimit = type(uint112).max;
+        uint256 outLimit = _MAX_U112;
 
         // Reserve limit
         if (reserveLimit < outLimit) {
