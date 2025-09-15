@@ -4,11 +4,11 @@
   "description": "Different helpers for convenient EVM state querying.",
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/1inch/evm-helpers.git"
+    "url": "git@github.com:1inch/evm-helpers.git"
   },
   "license": "MIT",
   "dependencies": {
-    "@1inch/solidity-utils": "^6.6.0",
+    "@1inch/solidity-utils": "6.6.0",
     "@nomicfoundation/ethereumjs-util": "^9.0.4",
     "@openzeppelin/contracts": "5.1.0",
     "@uniswap/v3-core": "1.0.1"
@@ -16,7 +16,7 @@
   "devDependencies": {
     "@matterlabs/hardhat-zksync-deploy": "1.6.0",
     "@matterlabs/hardhat-zksync-solc": "1.2.5",
-    "@matterlabs/hardhat-zksync-verify": "^1.2.2",
+    "@matterlabs/hardhat-zksync-verify": "1.7.0",
     "@nomicfoundation/hardhat-ethers": "3.0.8",
     "@nomicfoundation/hardhat-toolbox": "^5.0.0",
     "@nomicfoundation/hardhat-verify": "2.0.12",
@@ -29,7 +29,7 @@
     "eslint-plugin-promise": "7.2.1",
     "eslint-plugin-standard": "5.0.0",
     "ethers": "6.13.4",
-    "hardhat": "^2.24.2",
+    "hardhat": "2.22.17",
     "hardhat-dependency-compiler": "1.2.1",
     "hardhat-deploy": "0.14.0",
     "hardhat-gas-reporter": "1.0.10",
