@@ -13,3 +13,4 @@ solcinputs
 .coverage_artifacts
 .idea
 .env
+.env.example
