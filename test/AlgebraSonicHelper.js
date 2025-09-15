@@ -12,12 +12,12 @@ describe('AlgebraSonicHelper', function () {
     });
 
     it('should show some ticks for weth-ws pair', async function () {
-        const WETH_WS_POOL_ADDRESS = '0xF58fC088C33aD46113940173cB0da3Dd08c4AA88';
+        const STS_WS_POOL_ADDRESS = '0xd760791b29e7894fb827a94ca433254bb5afb653';
 
         const algebraHelper = await (await ethers.getContractFactory('AlgebraSonicHelper')).deploy();
         await algebraHelper.waitForDeployment();
 
-        const ticks = await algebraHelper.getTicks(WETH_WS_POOL_ADDRESS, 1000);
+        const ticks = await algebraHelper.getTicks(STS_WS_POOL_ADDRESS, 100);
         console.log('ticks', ticks.length);
         expect(ticks.length).to.gt(0);
     });

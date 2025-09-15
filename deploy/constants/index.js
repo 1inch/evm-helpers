@@ -8,6 +8,16 @@ const operator = require('./fee-collector-operator');
 const uniV4constructorArgs = require('./uni-v4-helper-args');
 const leftoverExchangerOwner = require('./leftover-exchanger-owner');
 
+function sliceArgs(args, expectedSize) {
+    let res = {};
+    for (const [key, value] of Object.entries(args)) {
+        if (!isNaN(Number(key)) && Array.isArray(value)) {
+            res[key] = value.slice(0, expectedSize);
+        }
+    }
+    return res;
+}
+
 module.exports = {
     WETH: weth,
     FEE_COLLECTOR_OWNER: feeCollectorOwner,
@@ -18,6 +28,7 @@ module.exports = {
     FEE_COLLECTOR_OPERATOR: operator,
     CONSTRUCTOR_ARGS: {
         UniV4Helper: uniV4constructorArgs,
+        UniV4HelperV2: sliceArgs(uniV4constructorArgs, 2),
     },
     LEFTOVER_EXCHANGER_OWNER: leftoverExchangerOwner,
 };
