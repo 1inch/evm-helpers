@@ -1578,7 +1578,7 @@
     "@nomicfoundation/ethereumjs-util" "9.0.4"
     ethereum-cryptography "0.1.3"
 
-"@nomicfoundation/ethereumjs-util@9.0.4", "@nomicfoundation/ethereumjs-util@^9.0.4":
+"@nomicfoundation/ethereumjs-util@9.0.4":
   version "9.0.4"
   resolved "https://registry.yarnpkg.com/@nomicfoundation/ethereumjs-util/-/ethereumjs-util-9.0.4.tgz#84c5274e82018b154244c877b76bc049a4ed7b38"
   integrity sha512-sLOzjnSrlx9Bb9EFNtHzK/FJFsfg2re6bsGqinFinH1gCqVfz9YYlXiMWwDM4C/L4ywuHFCYwfKTVr/QHQcU0Q==
@@ -1600,11 +1600,6 @@
   integrity sha512-xTNQNI/9xkHvjmCJnJOTyqDSl8uq1rKb2WOVmixQxFtRd7Oa3ecO8zM0cyC2YmOK+jHB9WPZ+F/ijkHg1CoORA==
   dependencies:
     ethereumjs-util "^7.1.4"
-
-"@nomicfoundation/hardhat-toolbox@^5.0.0":
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/@nomicfoundation/hardhat-toolbox/-/hardhat-toolbox-5.0.0.tgz#165b47f8a3d2bf668cc5d453ce7f496a1156948d"
-  integrity sha512-FnUtUC5PsakCbwiVNsqlXVIWG5JIb5CEZoSXbJUsEBun22Bivx2jhF1/q9iQbzuaGpJKFQyOhemPB2+XlEE6pQ==
 
 "@nomicfoundation/hardhat-verify@2.0.11":
   version "2.0.11"

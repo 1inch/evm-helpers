@@ -9,7 +9,6 @@
   "license": "MIT",
   "dependencies": {
     "@1inch/solidity-utils": "6.6.0",
-    "@nomicfoundation/ethereumjs-util": "^9.0.4",
     "@openzeppelin/contracts": "5.1.0",
     "@uniswap/v3-core": "1.0.1"
   },
@@ -18,7 +17,6 @@
     "@matterlabs/hardhat-zksync-solc": "1.2.5",
     "@matterlabs/hardhat-zksync-verify": "1.7.0",
     "@nomicfoundation/hardhat-ethers": "3.0.8",
-    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
     "@nomicfoundation/hardhat-verify": "2.0.12",
     "chai": "4.5.0",
     "dotenv": "16.4.7",
