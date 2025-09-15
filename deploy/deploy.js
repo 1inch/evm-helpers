@@ -1,7 +1,7 @@
 const { getChainId } = require('hardhat');
 const { deployAndGetContract } = require('@1inch/solidity-utils');
 
-const constants  = require('./constants');
+const constants = require('./constants');
 
 module.exports = async ({ deployments, getNamedAccounts, config }) => {
     console.log('running deploy script');

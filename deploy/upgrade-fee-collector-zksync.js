@@ -11,8 +11,8 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     const { deploy } = deployments;
 
     const feeCollector = await deploy(
-        'FeeCollector', 
-        { args: [constants.WETH[chainId], constants.LOP[chainId], constants.FEE_COLLECTOR_OWNER[chainId]], from: deployer }
+        'FeeCollector',
+        { args: [constants.WETH[chainId], constants.LOP[chainId], constants.FEE_COLLECTOR_OWNER[chainId]], from: deployer },
     );
 
     console.log(`FeeCollector impl deployed to: ${feeCollector.address}`);
@@ -21,7 +21,7 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
         await hre.run('verify:verify', {
             address: feeCollector.address,
             constructorArguments: [
-                constants.WETH[chainId], constants.LOP[chainId], constants.FEE_COLLECTOR_OWNER[chainId]
+                constants.WETH[chainId], constants.LOP[chainId], constants.FEE_COLLECTOR_OWNER[chainId],
             ],
         });
     }

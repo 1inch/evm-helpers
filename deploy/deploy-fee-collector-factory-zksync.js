@@ -11,15 +11,15 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     const { deploy } = deployments;
 
     const feeCollector = await deploy(
-        'FeeCollector', 
-        { args: [constants.WETH[chainId], constants.LOP[chainId], constants.FEE_COLLECTOR_OWNER[chainId]], from: deployer }
+        'FeeCollector',
+        { args: [constants.WETH[chainId], constants.LOP[chainId], constants.FEE_COLLECTOR_OWNER[chainId]], from: deployer },
     );
 
     console.log(`FeeCollector impl deployed to: ${feeCollector.address}`);
 
     const feeCollectorFactory = await deploy(
-        'FeeCollectorFactory', 
-        { args: [feeCollector.address, constants.FEE_COLLECTOR_FACTORY_OWNER[chainId]], from: deployer }
+        'FeeCollectorFactory',
+        { args: [feeCollector.address, constants.FEE_COLLECTOR_FACTORY_OWNER[chainId]], from: deployer },
     );
 
     console.log(`FeeCollectorFactory deployed to: ${feeCollectorFactory.address}`);

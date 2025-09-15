@@ -1,5 +1,5 @@
 module.exports = {
-	31337: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266',
+    31337: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266',
     1: '0x9F8102b1bB05785BaD2874f2C7B1aaea4c6D976a', // Mainnet
     56: '0x7a4C2f97069f874A355607eBC52aEfCc4eAc9202', // BSC
     137: '0xA154B43EEa8905Ef684995424fF476656ab50A61', // Matic
