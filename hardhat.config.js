@@ -53,7 +53,8 @@ module.exports = {
         settings: {},
     },
     deployOpts: {
-        contractHelperName: process.env.CONTRACT_HELPER_NAME || '',
-        feeCollectorOperatorName: process.env.FEE_COLLECTOR_OPERATOR_NAME || '',
+        contractHelperNames: process.env.OPS_EVM_HELPER_NAMES || [],
+        feeCollectorOperatorNames: process.env.OPS_FEE_COLLECTOR_OPERATOR_NAMES || [],
+        deploymentMethod: process.env.OPS_DEPLOYMENT_METHOD || 'create3',
     },
 };
