@@ -1,4 +1,5 @@
-const { getChainId } = require('hardhat');
+const hre = require('hardhat');
+const { getChainId, ethers } = hre;
 const { deployAndGetContract, deployAndGetContractWithCreate3 } = require('@1inch/solidity-utils');
 
 const constants = require('./constants');
@@ -59,7 +60,6 @@ module.exports = async ({ deployments, getNamedAccounts, config }) => {
         }
 
         console.log(`Address for ${contractHelperName}: ${await result.getAddress()}`);
-
     }
 };
 
