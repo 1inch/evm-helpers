@@ -8,8 +8,8 @@ const operator = require('./fee-collector-operator');
 const uniV4constructorArgs = require('./uni-v4-helper-args');
 const leftoverExchangerOwner = require('./leftover-exchanger-owner');
 
-function sliceArgs(args, expectedSize) {
-    let res = {};
+function sliceArgs (args, expectedSize) {
+    let res = {}; // eslint-disable-line prefer-const
     for (const [key, value] of Object.entries(args)) {
         if (!isNaN(Number(key)) && Array.isArray(value)) {
             res[key] = value.slice(0, expectedSize);
