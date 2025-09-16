@@ -47,5 +47,3 @@ jobs:
           AVAX_RPC_URL: ${{ secrets.AVAX_RPC_URL}}
           ARBITRUM_RPC_URL: ${{ secrets.ARBITRUM_RPC_URL }}
       - uses: codecov/codecov-action@v3
-
-      
