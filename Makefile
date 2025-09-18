@@ -12,7 +12,7 @@ OPS_CHAIN_ID_=$(shell echo "$(OPS_CHAIN_ID)" | tr -d '\"')
 OPS_ZKSYNC_MODE_=$(shell echo "$(OPS_ZKSYNC_MODE)" | tr -d '\"')
 OPS_DEPLOYMENT_METHOD_=$(shell echo "$(OPS_DEPLOYMENT_METHOD)" | tr -d '\"')
 
-ifndef $(OPS_ZKSYNC_MODE_)
+ifeq ($(OPS_ZKSYNC_MODE_),)
 ifeq ($(OPS_CHAIN_ID_),324)
 	OPS_ZKSYNC_MODE_=true
 endif
