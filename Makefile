@@ -237,6 +237,24 @@ get:
 			echo "Error: OPS_NETWORK is not set"; \
 			exit 1; \
 		fi; \
+		if [ "$(PARAMETER)" = "ALL" ]; then \
+			result="{"; \
+			first=1; \
+			for file in $(CURRENT_DIR)/deployments/$(OPS_NETWORK_)/*.json; do \
+				filename=$$(basename $$file .json); \
+				address=$$(grep '"address"' $$file | head -1 | sed 's/.*"address": *"\([^"]*\)".*/\1/'); \
+				key="OPS_$$(echo $$filename | sed 's/\([A-Z]\)/_\1/g' | sed 's/^_//' | tr 'a-z' 'A-Z')_ADDRESS"; \
+				if [ $$first -eq 1 ]; then \
+					result="$$result\"$$key\": \"$$address\""; \
+					first=0; \
+				else \
+					result="$$result, \"$$key\": \"$$address\""; \
+				fi; \
+			done; \
+			result="$$result}"; \
+			echo "$$result"; \
+			exit 0; \
+		fi; \
 		CONTRACT_FILE=""; \
 		contracts_list=$$(ls contracts/*.sol | xargs -n1 basename | sed 's/\.sol$$//'); \
 		found=0; \
