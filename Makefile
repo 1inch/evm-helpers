@@ -8,14 +8,14 @@ export
 
 CURRENT_DIR=$(shell pwd)
 
-OPS_NETWORK_=$(shell echo "$(OPS_NETWORK)" | tr -d '\"')
-OPS_CHAIN_ID_=$(shell echo "$(OPS_CHAIN_ID)" | tr -d '\"')
-OPS_ZKSYNC_MODE_=$(shell echo "$(OPS_ZKSYNC_MODE)" | tr -d '\"')
-OPS_DEPLOYMENT_METHOD_=$(shell echo "$(OPS_DEPLOYMENT_METHOD)" | tr -d '\"')
+OPS_NETWORK := $(subst ",,$(OPS_NETWORK))
+OPS_CHAIN_ID := $(subst ",,$(OPS_CHAIN_ID))
+OPS_ZKSYNC_MODE := $(subst ",,$(OPS_ZKSYNC_MODE))
+OPS_DEPLOYMENT_METHOD := $(subst ",,$(OPS_DEPLOYMENT_METHOD))
 
-ifeq ($(OPS_ZKSYNC_MODE_),)
-ifeq ($(OPS_CHAIN_ID_),324)
-	OPS_ZKSYNC_MODE_=true
+ifeq ($(OPS_ZKSYNC_MODE),)
+ifeq ($(OPS_CHAIN_ID),324)
+	OPS_ZKSYNC_MODE=true
 endif
 endif
 
@@ -43,11 +43,11 @@ deploy-all:
 		$(MAKE) deploy-skip-all deploy-helpers deploy-leftover-exchanger deploy-fee-collector-factory deploy-new-fee-collector
 
 deploy-helpers: 
-		$(MAKE) OPS_CURRENT_DEP_FILE=$(FILE_DEPLOY) OPS_DEPLOYMENT_METHOD=$(if $(OPS_DEPLOYMENT_METHOD_),$(OPS_DEPLOYMENT_METHOD_),create3) deploy-skip-all validate-helpers deploy-noskip deploy-helpers-impl deploy-skip
+		$(MAKE) OPS_CURRENT_DEP_FILE=$(FILE_DEPLOY) OPS_DEPLOYMENT_METHOD=$(if $(OPS_DEPLOYMENT_METHOD),$(OPS_DEPLOYMENT_METHOD),create3) deploy-skip-all validate-helpers deploy-noskip deploy-helpers-impl deploy-skip
 
 deploy-helpers-impl:
 		@{ \
-		yarn deploy $(OPS_NETWORK_) || exit 1; \
+		yarn deploy $(OPS_NETWORK) || exit 1; \
 		}
 
 deploy-leftover-exchanger:
@@ -55,12 +55,12 @@ deploy-leftover-exchanger:
 
 deploy-leftover-exchanger-impl:
 		@{ \
-		yarn deploy $(OPS_NETWORK_) || exit 1; \
+		yarn deploy $(OPS_NETWORK) || exit 1; \
 		}
 
 deploy-fee-collector-factory:
 		@{ \
-		if [ "$(OPS_ZKSYNC_MODE_)" = "true" ]; then \
+		if [ "$(OPS_ZKSYNC_MODE)" = "true" ]; then \
 			$(MAKE) OPS_CURRENT_DEP_FILE=$(FILE_DEPLOY_FEE_COLLECTOR_FACTORY_ZKSYNC) deploy-skip-all validate-fee-collector-factory deploy-noskip deploy-fee-collector-factory-impl deploy-skip; \
 		else \
 			$(MAKE) OPS_CURRENT_DEP_FILE=$(FILE_DEPLOY_FEE_COLLECTOR_FACTORY) deploy-skip-all validate-fee-collector-factory deploy-noskip deploy-fee-collector-factory-impl deploy-skip; \
@@ -69,7 +69,7 @@ deploy-fee-collector-factory:
 
 deploy-fee-collector-factory-impl:
 		@{ \
-		yarn deploy $(OPS_NETWORK_) > tmp || exit 1; \
+		yarn deploy $(OPS_NETWORK) > tmp || exit 1; \
 		if grep -q "FeeCollectorFactory" tmp; then \
 			echo "FeeCollectorFactory deployed successfully!"; \
 			OPS_FEE_COLLECTOR_FACTORY_ADDRESS=$$(grep 'FeeCollectorFactory' tmp | grep -Eo '0x[a-fA-F0-9]{40}'); \
@@ -87,12 +87,12 @@ deploy-new-fee-collector:
 
 deploy-new-fee-collector-impl:
 		@{ \
-		yarn deploy $(OPS_NETWORK_) || exit 1;
+		yarn deploy $(OPS_NETWORK) || exit 1;
 		}
 
 upgrade-fee-collector:
 		@{ \
-		if [ "$(OPS_ZKSYNC_MODE_)" = "true" ]; then \
+		if [ "$(OPS_ZKSYNC_MODE)" = "true" ]; then \
 			$(MAKE) OPS_CURRENT_DEP_FILE=$(FILE_UPGRADE_FEE_COLLECTOR_ZKSYNC) deploy-skip-all validate-upgrade-fee-collector deploy-noskip upgrade-fee-collector-impl deploy-skip; \
 		else \
 			$(MAKE) OPS_CURRENT_DEP_FILE=$(FILE_UPGRADE_FEE_COLLECTOR) deploy-skip-all validate-upgrade-fee-collector deploy-noskip upgrade-fee-collector-impl deploy-skip; \
@@ -101,23 +101,23 @@ upgrade-fee-collector:
 
 upgrade-fee-collector-impl:
 		@{ \
-		yarn deploy $(OPS_NETWORK_) > tmp || exit 1; \
+		yarn deploy $(OPS_NETWORK) > tmp || exit 1; \
 		}
 
 # Validation targets
 validate-helpers:
 		@{ \
-		if [ -z "$(OPS_NETWORK_)" ]; then echo "OPS_NETWORK is not set!"; exit 1; fi; \
-		if [ -z "$(OPS_CHAIN_ID_)" ]; then echo "OPS_CHAIN_ID is not set!"; exit 1; fi; \
+		if [ -z "$(OPS_NETWORK)" ]; then echo "OPS_NETWORK is not set!"; exit 1; fi; \
+		if [ -z "$(OPS_CHAIN_ID)" ]; then echo "OPS_CHAIN_ID is not set!"; exit 1; fi; \
 		if [ -z "$(OPS_EVM_HELPER_NAMES)" ]; then echo "OPS_EVM_HELPER_NAMES is not set!"; exit 1; fi; \
-		if [ -z "$(MAINNET_RPC_URL)" ] && [ "$(OPS_NETWORK_)" = "hardhat" ]; then echo "MAINNET_RPC_URL is not set!"; exit 1; fi; \
+		if [ -z "$(MAINNET_RPC_URL)" ] && [ "$(OPS_NETWORK)" = "hardhat" ]; then echo "MAINNET_RPC_URL is not set!"; exit 1; fi; \
 		$(MAKE) process-helpers-args; \
 		}
 
 validate-leftover-exchanger:
 		@{ \
-		if [ -z "$(OPS_NETWORK_)" ]; then echo "OPS_NETWORK is not set!"; exit 1; fi; \
-		if [ -z "$(OPS_CHAIN_ID_)" ]; then echo "OPS_CHAIN_ID is not set!"; exit 1; fi; \
+		if [ -z "$(OPS_NETWORK)" ]; then echo "OPS_NETWORK is not set!"; exit 1; fi; \
+		if [ -z "$(OPS_CHAIN_ID)" ]; then echo "OPS_CHAIN_ID is not set!"; exit 1; fi; \
 		if [ -z "$(OPS_WETH_ADDRESS)" ]; then echo "OPS_WETH_ADDRESS is not set!"; exit 1; fi; \
 		if [ -z "$(OPS_CREATE3_DEPLOYER_ADDRESS)" ]; then echo "OPS_CREATE3_DEPLOYER_ADDRESS is not set!"; exit 1; fi; \
 		if [ -z "$(OPS_LEFTOVER_EXCHANGER_OWNER_ADDRESS)" ]; then echo "OPS_LEFTOVER_EXCHANGER_OWNER_ADDRESS is not set!"; exit 1; fi; \
@@ -126,14 +126,14 @@ validate-leftover-exchanger:
 
 validate-fee-collector-factory:
 		@{ \
-		if [ -z "$(OPS_NETWORK_)" ]; then echo "OPS_NETWORK is not set!"; exit 1; fi; \
-		if [ -z "$(OPS_CHAIN_ID_)" ]; then echo "OPS_CHAIN_ID is not set!"; exit 1; fi; \
+		if [ -z "$(OPS_NETWORK)" ]; then echo "OPS_NETWORK is not set!"; exit 1; fi; \
+		if [ -z "$(OPS_CHAIN_ID)" ]; then echo "OPS_CHAIN_ID is not set!"; exit 1; fi; \
 		if [ -z "$(OPS_WETH_ADDRESS)" ]; then echo "OPS_WETH_ADDRESS is not set!"; exit 1; fi; \
 		if [ -z "$(OPS_LOP_ADDRESS)" ]; then echo "OPS_LOP_ADDRESS is not set!"; exit 1; fi; \
 		if [ -z "$(OPS_FEE_COLLECTOR_OWNER_ADDRESS)" ]; then echo "OPS_FEE_COLLECTOR_OWNER_ADDRESS is not set!"; exit 1; fi; \
 		if [ -z "$(OPS_FEE_COLLECTOR_FACTORY_OWNER_ADDRESS)" ]; then echo "OPS_FEE_COLLECTOR_FACTORY_OWNER_ADDRESS is not set!"; exit 1; fi; \
-		if [ "$(OPS_ZKSYNC_MODE_)" != "true" ] && [ -z "$(OPS_CREATE3_DEPLOYER_ADDRESS)" ]; then echo "OPS_CREATE3_DEPLOYER_ADDRESS is not set!"; exit 1; fi; \
-		if [ "$(OPS_ZKSYNC_MODE_)" = "true" ]; then \
+		if [ "$(OPS_ZKSYNC_MODE)" != "true" ] && [ -z "$(OPS_CREATE3_DEPLOYER_ADDRESS)" ]; then echo "OPS_CREATE3_DEPLOYER_ADDRESS is not set!"; exit 1; fi; \
+		if [ "$(OPS_ZKSYNC_MODE)" = "true" ]; then \
 			$(MAKE) process-weth process-lop process-fee-collector-owner process-fee-collector-factory-owner; \
 		else \
 			$(MAKE) process-weth process-create3-deployer process-lop process-fee-collector-owner process-fee-collector-factory-owner; \
@@ -142,8 +142,8 @@ validate-fee-collector-factory:
 
 validate-new-fee-collector:
 		@{ \
-		if [ -z "$(OPS_NETWORK_)" ]; then echo "OPS_NETWORK is not set!"; exit 1; fi; \
-		if [ -z "$(OPS_CHAIN_ID_)" ]; then echo "OPS_CHAIN_ID is not set!"; exit 1; fi; \
+		if [ -z "$(OPS_NETWORK)" ]; then echo "OPS_NETWORK is not set!"; exit 1; fi; \
+		if [ -z "$(OPS_CHAIN_ID)" ]; then echo "OPS_CHAIN_ID is not set!"; exit 1; fi; \
 		if [ -z "$(OPS_FEE_COLLECTOR_OPERATORS)" ]; then echo "OPS_FEE_COLLECTOR_OPERATORS is not set!"; exit 1; fi; \
 		if [ -z "$(OPS_FEE_COLLECTOR_OPERATOR_NAMES)" ]; then echo "OPS_FEE_COLLECTOR_OPERATOR_NAMES is not set!"; exit 1; fi; \
 		$(MAKE) process-fee-collector-operator; \
@@ -151,13 +151,13 @@ validate-new-fee-collector:
 
 validate-upgrade-fee-collector:
 		@{ \
-		if [ -z "$(OPS_NETWORK_)" ]; then echo "OPS_NETWORK is not set!"; exit 1; fi; \
-		if [ -z "$(OPS_CHAIN_ID_)" ]; then echo "OPS_CHAIN_ID is not set!"; exit 1; fi; \
+		if [ -z "$(OPS_NETWORK)" ]; then echo "OPS_NETWORK is not set!"; exit 1; fi; \
+		if [ -z "$(OPS_CHAIN_ID)" ]; then echo "OPS_CHAIN_ID is not set!"; exit 1; fi; \
 		if [ -z "$(OPS_WETH_ADDRESS)" ]; then echo "OPS_WETH_ADDRESS is not set!"; exit 1; fi; \
 		if [ -z "$(OPS_LOP_ADDRESS)" ]; then echo "OPS_LOP_ADDRESS is not set!"; exit 1; fi; \
 		if [ -z "$(OPS_FEE_COLLECTOR_OWNER_ADDRESS)" ]; then echo "OPS_FEE_COLLECTOR_OWNER_ADDRESS is not set!"; exit 1; fi; \
-		if [ "$(OPS_ZKSYNC_MODE_)" != "true" ] && [ -z "$(OPS_CREATE3_DEPLOYER_ADDRESS)" ]; then echo "OPS_CREATE3_DEPLOYER_ADDRESS is not set!"; exit 1; fi; \
-		if [ "$(OPS_ZKSYNC_MODE_)" = "true" ]; then \
+		if [ "$(OPS_ZKSYNC_MODE)" != "true" ] && [ -z "$(OPS_CREATE3_DEPLOYER_ADDRESS)" ]; then echo "OPS_CREATE3_DEPLOYER_ADDRESS is not set!"; exit 1; fi; \
+		if [ "$(OPS_ZKSYNC_MODE)" = "true" ]; then \
 			$(MAKE) process-weth process-lop process-fee-collector-owner; \
 		else \
 			$(MAKE) process-weth process-create3-deployer process-lop process-fee-collector-owner; \
@@ -199,12 +199,12 @@ upsert-constant:
 			echo "variable for file $(OPS_GEN_FILE) is not set!"; \
 			exit 1; \
 		fi; \
-		if grep -q "$(OPS_CHAIN_ID_)" $(OPS_GEN_FILE); then \
-			sed -i '' 's|$(OPS_CHAIN_ID_): .*|$(OPS_CHAIN_ID_): $(OPS_GEN_VAL),|' $(OPS_GEN_FILE); \
+		if grep -q "$(OPS_CHAIN_ID)" $(OPS_GEN_FILE); then \
+			sed -i '' 's|$(OPS_CHAIN_ID): .*|$(OPS_CHAIN_ID): $(OPS_GEN_VAL),|' $(OPS_GEN_FILE); \
 			sed -i '' 's/"/'\''/g' $(OPS_GEN_FILE); \
 		else \
 			tmpfile=$$(mktemp); \
-			awk '1;/module.exports = {/{print "    $(OPS_CHAIN_ID_): $(subst ",\",$(OPS_GEN_VAL)),"}' $(OPS_GEN_FILE) > $$tmpfile && sed -i '' 's/"/'\''/g' $$tmpfile && mv $$tmpfile $(OPS_GEN_FILE); \
+			awk '1;/module.exports = {/{print "    $(OPS_CHAIN_ID): $(subst ",\",$(OPS_GEN_VAL)),"}' $(OPS_GEN_FILE) > $$tmpfile && sed -i '' 's/"/'\''/g' $$tmpfile && mv $$tmpfile $(OPS_GEN_FILE); \
 		fi \
 		}
 
@@ -298,7 +298,7 @@ install-dependencies:
 			yarn install
 
 clean:
-		@rm -Rf $(CURRENT_DIR)/deployments/$(OPS_NETWORK_)/*
+		@rm -Rf $(CURRENT_DIR)/deployments/$(OPS_NETWORK)/*
 
 help:
 	@echo "Available targets:"
