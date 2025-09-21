@@ -238,6 +238,10 @@ get:
 			echo "Error: OPS_NETWORK is not set"; \
 			exit 1; \
 		fi; \
+		if [ ! -d "$(CURRENT_DIR)/deployments/$(OPS_NETWORK)" ]; then \
+			echo "Error: Directory $(CURRENT_DIR)/deployments/$(OPS_NETWORK) does not exist"; \
+			exit 1; \
+		fi; \
 		CONTRACT_FILE=""; \
 		contracts_list=$$(ls $(CURRENT_DIR)/deployments/$(OPS_NETWORK)/*.json | xargs -n1 basename | sed 's/\.json$$//'); \
 		found=0; \
