@@ -4,6 +4,7 @@ ifeq ($(OPS_LAUNCH_MODE),auto)
 else
 -include .env
 endif
+export
 
 CURRENT_DIR=$(shell pwd)
 
