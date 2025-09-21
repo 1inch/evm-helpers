@@ -19,25 +19,25 @@ ifeq ($(OPS_CHAIN_ID),324)
 endif
 endif
 
-CURRENT_DIR=$(shell pwd)
+CURRENT_DIR:=$(shell pwd)
 
-FILE_DEPLOY=$(CURRENT_DIR)/deploy/deploy.js
-FILE_DEPLOY_LEFTOVER_EXCHANGER=$(CURRENT_DIR)/deploy/deploy-leftover-exchanger.js
-FILE_DEPLOY_FEE_COLLECTOR_FACTORY=$(CURRENT_DIR)/deploy/deploy-fee-collector-factory.js
-FILE_DEPLOY_FEE_COLLECTOR_FACTORY_ZKSYNC=$(CURRENT_DIR)/deploy/deploy-fee-collector-factory-zksync.js
-FILE_DEPLOY_NEW_FEE_COLLECTOR=$(CURRENT_DIR)/deploy/deploy-new-fee-collector.js
-FILE_UPGRADE_FEE_COLLECTOR=$(CURRENT_DIR)/deploy/upgrade-fee-collector.js
-FILE_UPGRADE_FEE_COLLECTOR_ZKSYNC=$(CURRENT_DIR)/deploy/upgrade-fee-collector-zksync.js
+FILE_DEPLOY:=$(CURRENT_DIR)/deploy/deploy.js
+FILE_DEPLOY_LEFTOVER_EXCHANGER:=$(CURRENT_DIR)/deploy/deploy-leftover-exchanger.js
+FILE_DEPLOY_FEE_COLLECTOR_FACTORY:=$(CURRENT_DIR)/deploy/deploy-fee-collector-factory.js
+FILE_DEPLOY_FEE_COLLECTOR_FACTORY_ZKSYNC:=$(CURRENT_DIR)/deploy/deploy-fee-collector-factory-zksync.js
+FILE_DEPLOY_NEW_FEE_COLLECTOR:=$(CURRENT_DIR)/deploy/deploy-new-fee-collector.js
+FILE_UPGRADE_FEE_COLLECTOR:=$(CURRENT_DIR)/deploy/upgrade-fee-collector.js
+FILE_UPGRADE_FEE_COLLECTOR_ZKSYNC:=$(CURRENT_DIR)/deploy/upgrade-fee-collector-zksync.js
 
-FILE_UNIV4_ARGS=$(CURRENT_DIR)/deploy/constants/uni-v4-helper-args.js
-FILE_WETH=$(CURRENT_DIR)/deploy/constants/weth.js
-FILE_CREATE3_DEPLOYER=$(CURRENT_DIR)/deploy/constants/create3-deployer.js
-FILE_LOP=$(CURRENT_DIR)/deploy/constants/lop.js
-FILE_FEE_COLLECTOR_FACTORY_OWNER=$(CURRENT_DIR)/deploy/constants/fee-collector-factory-owner.js
-FILE_FEE_COLLECTOR_OWNER=$(CURRENT_DIR)/deploy/constants/fee-collector-owner.js
-FILE_FEE_COLLECTOR_FACTORY=$(CURRENT_DIR)/deploy/constants/fee-collector-factory.js
-FILE_FEE_COLLECTOR_OPERATOR=$(CURRENT_DIR)/deploy/constants/fee-collector-operator.js
-FILE_LEFTOVER_EXCHANGER_OWNER=$(CURRENT_DIR)/deploy/constants/leftover-exchanger-owner.js
+FILE_UNIV4_ARGS:=$(CURRENT_DIR)/deploy/constants/uni-v4-helper-args.js
+FILE_WETH:=$(CURRENT_DIR)/deploy/constants/weth.js
+FILE_CREATE3_DEPLOYER:=$(CURRENT_DIR)/deploy/constants/create3-deployer.js
+FILE_LOP:=$(CURRENT_DIR)/deploy/constants/lop.js
+FILE_FEE_COLLECTOR_FACTORY_OWNER:=$(CURRENT_DIR)/deploy/constants/fee-collector-factory-owner.js
+FILE_FEE_COLLECTOR_OWNER:=$(CURRENT_DIR)/deploy/constants/fee-collector-owner.js
+FILE_FEE_COLLECTOR_FACTORY:=$(CURRENT_DIR)/deploy/constants/fee-collector-factory.js
+FILE_FEE_COLLECTOR_OPERATOR:=$(CURRENT_DIR)/deploy/constants/fee-collector-operator.js
+FILE_LEFTOVER_EXCHANGER_OWNER:=$(CURRENT_DIR)/deploy/constants/leftover-exchanger-owner.js
 
 deploy-all:
 		$(MAKE) deploy-skip-all deploy-helpers deploy-leftover-exchanger deploy-fee-collector-factory deploy-new-fee-collector
