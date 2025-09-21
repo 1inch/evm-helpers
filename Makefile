@@ -230,15 +230,15 @@ deploy-noskip:
 get:
 		@{ \
 		if [ -z "$(PARAMETER)" ]; then \
-			echo "Error: PARAMETER is not set. Usage: make get PARAMETER=OPS_EVM_HELPERS_ADDRESS"; \
+			echo "Error: PARAMETER is not set. Usage: make get PARAMETER=OPS_RESOLVER_ADDRESS"; \
 			exit 1; \
 		fi; \
-		if [ -z "$(OPS_NETWORK_)" ]; then \
+		if [ -z "$(OPS_NETWORK)" ]; then \
 			echo "Error: OPS_NETWORK is not set"; \
 			exit 1; \
 		fi; \
 		CONTRACT_FILE=""; \
-		contracts_list=$$(ls contracts/*.sol | xargs -n1 basename | sed 's/\.sol$$//'); \
+		contracts_list=$$(ls $(CURRENT_DIR)/deployments/$(OPS_NETWORK)/*.json | xargs -n1 basename | sed 's/\.json$$//'); \
 		found=0; \
 		for contract in $$contracts_list; do \
 			contract_upper=$$(echo $$contract | sed 's/\([A-Z]\)/_\1/g' | sed 's/^_//' | tr 'a-z' 'A-Z'); \
@@ -251,7 +251,7 @@ get:
 		if [ "$$found" -eq 0 ]; then \
 			echo "Error: Unknown parameter $(PARAMETER)"; exit 1; \
 		fi; \
-		DEPLOYMENT_FILE="$(CURRENT_DIR)/deployments/$(OPS_NETWORK_)/$$CONTRACT_FILE"; \
+		DEPLOYMENT_FILE="$(CURRENT_DIR)/deployments/$(OPS_NETWORK)/$$CONTRACT_FILE"; \
 		if [ ! -f "$$DEPLOYMENT_FILE" ]; then \
 			echo "Error: Deployment file $$DEPLOYMENT_FILE not found"; \
 			exit 1; \
@@ -264,7 +264,7 @@ get-outputs:
 		@{ \
 		result="{"; \
 		first=1; \
-		for file in $(CURRENT_DIR)/deployments/$(OPS_NETWORK_)/*.json; do \
+		for file in $(CURRENT_DIR)/deployments/$(OPS_NETWORK)/*.json; do \
 			filename=$$(basename $$file .json); \
 			key="OPS_$$(echo $$filename | sed 's/\([A-Z]\)/_\1/g' | sed 's/^_//' | tr 'a-z' 'A-Z')_ADDRESS"; \
 			if [ $$first -eq 1 ]; then \
