@@ -267,6 +267,14 @@ get:
 
 get-outputs:
 		@{ \
+		if [ -z "$(OPS_NETWORK)" ]; then \
+			echo "Error: OPS_NETWORK is not set"; \
+			exit 1; \
+		fi; \
+		if [ ! -d "$(CURRENT_DIR)/deployments/$(OPS_NETWORK)" ]; then \
+			echo "Error: Directory $(CURRENT_DIR)/deployments/$(OPS_NETWORK) does not exist"; \
+			exit 1; \
+		fi; \
 		result="{"; \
 		first=1; \
 		for file in $(CURRENT_DIR)/deployments/$(OPS_NETWORK)/*.json; do \
