@@ -12,7 +12,7 @@ module.exports = async ({ deployments, getNamedAccounts, config }) => {
 
     if (
         networkName in hre.config.networks &&
-        chainId !== hre.config.networks[networkName].chainId.toString()
+        chainId !== hre.config.networks[networkName].chainId?.toString()
     ) {
         console.log(`network chain id: ${hre.config.networks[networkName].chainId}, your chain id ${chainId}`);
         console.log('skipping wrong chain id deployment');
