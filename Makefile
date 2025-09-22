@@ -6,8 +6,6 @@ else
 endif
 export
 
-CURRENT_DIR=$(shell pwd)
-
 OPS_NETWORK := $(subst ",,$(OPS_NETWORK))
 OPS_CHAIN_ID := $(subst ",,$(OPS_CHAIN_ID))
 OPS_ZKSYNC_MODE := $(subst ",,$(OPS_ZKSYNC_MODE))
