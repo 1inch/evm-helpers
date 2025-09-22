@@ -38,10 +38,10 @@ FILE_FEE_COLLECTOR_OPERATOR:=$(CURRENT_DIR)/deploy/constants/fee-collector-opera
 FILE_LEFTOVER_EXCHANGER_OWNER:=$(CURRENT_DIR)/deploy/constants/leftover-exchanger-owner.js
 
 deploy-all:
-		$(MAKE) deploy-skip-all deploy-helpers deploy-leftover-exchanger deploy-fee-collector-factory deploy-new-fee-collector
+		@$(MAKE) deploy-skip-all deploy-helpers deploy-leftover-exchanger deploy-fee-collector-factory deploy-new-fee-collector
 
 deploy-helpers: 
-		$(MAKE) OPS_CURRENT_DEP_FILE=$(FILE_DEPLOY) OPS_DEPLOYMENT_METHOD=$(if $(OPS_DEPLOYMENT_METHOD),$(OPS_DEPLOYMENT_METHOD),create3) deploy-skip-all validate-helpers deploy-noskip deploy-helpers-impl deploy-skip
+		@$(MAKE) OPS_CURRENT_DEP_FILE=$(FILE_DEPLOY) OPS_DEPLOYMENT_METHOD=$(if $(OPS_DEPLOYMENT_METHOD),$(OPS_DEPLOYMENT_METHOD),create3) deploy-skip-all validate-helpers deploy-noskip deploy-helpers-impl deploy-skip
 
 deploy-helpers-impl:
 		@{ \
@@ -49,7 +49,7 @@ deploy-helpers-impl:
 		}
 
 deploy-leftover-exchanger:
-		$(MAKE) OPS_CURRENT_DEP_FILE=$(FILE_DEPLOY_LEFTOVER_EXCHANGER) deploy-skip-all validate-leftover-exchanger deploy-noskip deploy-leftover-exchanger-impl deploy-skip
+		@$(MAKE) OPS_CURRENT_DEP_FILE=$(FILE_DEPLOY_LEFTOVER_EXCHANGER) deploy-skip-all validate-leftover-exchanger deploy-noskip deploy-leftover-exchanger-impl deploy-skip
 
 deploy-leftover-exchanger-impl:
 		@{ \
@@ -81,7 +81,7 @@ deploy-fee-collector-factory-impl:
 		}
 
 deploy-new-fee-collector:
-		$(MAKE) OPS_CURRENT_DEP_FILE=$(FILE_DEPLOY_NEW_FEE_COLLECTOR) deploy-skip-all validate-new-fee-collector deploy-noskip deploy-new-fee-collector-impl deploy-skip
+		@$(MAKE) OPS_CURRENT_DEP_FILE=$(FILE_DEPLOY_NEW_FEE_COLLECTOR) deploy-skip-all validate-new-fee-collector deploy-noskip deploy-new-fee-collector-impl deploy-skip
 
 deploy-new-fee-collector-impl:
 		@{ \
