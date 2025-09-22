@@ -53,8 +53,8 @@ module.exports = {
         settings: {},
     },
     deployOpts: {
-        contractHelperNames: JSON.parse(process.env.OPS_EVM_HELPER_NAMES) || [],
-        feeCollectorOperatorNames: JSON.parse(process.env.OPS_FEE_COLLECTOR_OPERATOR_NAMES) || [],
+        contractHelperNames: process.env.OPS_EVM_HELPER_NAMES ? JSON.parse(process.env.OPS_EVM_HELPER_NAMES) : [],
+        feeCollectorOperatorNames: process.env.OPS_FEE_COLLECTOR_OPERATOR_NAMES ? JSON.parse(process.env.OPS_FEE_COLLECTOR_OPERATOR_NAMES) : [],
         deploymentMethod: process.env.OPS_DEPLOYMENT_METHOD || 'create3',
     },
 };
