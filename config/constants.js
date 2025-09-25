@@ -1,7 +1,4 @@
-const fs = require('fs');
-const path = require('path');
-
-const constantsData = JSON.parse(fs.readFileSync(path.join(__dirname, 'constants.json'), 'utf8'));
+const constantsData = require('./constants.json');
 
 function sliceArgs (args, expectedSize) {
     let res = {}; // eslint-disable-line prefer-const
@@ -28,5 +25,3 @@ module.exports = {
     LEFTOVER_EXCHANGER_OWNER: constantsData.leftoverExchangerOwner || {},
     LEFTOVER_EXCHANGER_SALT: constantsData.leftoverExchangerSalt || {},
 };
-
-module.exports.skip = async () => true;
