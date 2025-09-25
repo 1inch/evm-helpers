@@ -30,10 +30,11 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
         constructorArgs: [constants.WETH[chainId], constants.LEFTOVER_EXCHANGER_OWNER[chainId]],
     });
 
-    const salt = constants.LEFTOVER_EXCHANGER_SALT[chainId] ? (
-        constants.LEFTOVER_EXCHANGER_SALT[chainId].startsWith('0x') ?
-            constants.LEFTOVER_EXCHANGER_SALT[chainId] : ethers.keccak256(ethers.toUtf8Bytes(constants.LEFTOVER_EXCHANGER_SALT[chainId]))
-    ) : ethers.keccak256(ethers.toUtf8Bytes('LeftoverExchanger'));
+    const salt = constants.LEFTOVER_EXCHANGER_SALT[chainId]
+        ? constants.LEFTOVER_EXCHANGER_SALT[chainId].startsWith('0x')
+            ? constants.LEFTOVER_EXCHANGER_SALT[chainId]
+            : ethers.keccak256(ethers.toUtf8Bytes(constants.LEFTOVER_EXCHANGER_SALT[chainId]))
+        : ethers.keccak256(ethers.toUtf8Bytes('LeftoverExchanger'));
 
     const transparentUpgradeableProxy = await deployAndGetContractWithCreate3({
         contractName: 'TransparentUpgradeableProxy',

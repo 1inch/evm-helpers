@@ -30,10 +30,11 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
         constructorArgs: [constants.WETH[chainId], constants.LEFTOVER_EXCHANGER_OWNER[chainId]],
     });
 
-    const salt = constants.LEFTOVER_EXCHANGER_SALT[chainId] ? (
-        constants.LEFTOVER_EXCHANGER_SALT[chainId].startsWith('0x') ?
-            constants.LEFTOVER_EXCHANGER_SALT[chainId] : ethers.keccak256(ethers.toUtf8Bytes(constants.LEFTOVER_EXCHANGER_SALT[chainId]))
-    ) : ethers.keccak256(ethers.toUtf8Bytes('LeftoverExchanger'));
+    const salt = constants.LEFTOVER_EXCHANGER_SALT[chainId]
+        ? constants.LEFTOVER_EXCHANGER_SALT[chainId].startsWith('0x')
+            ? constants.LEFTOVER_EXCHANGER_SALT[chainId]
+            : ethers.keccak256(ethers.toUtf8Bytes(constants.LEFTOVER_EXCHANGER_SALT[chainId]))
+        : ethers.keccak256(ethers.toUtf8Bytes('LeftoverExchanger'));
 
     const create3Deployer = await ethers.getContractAt('ICreate3Deployer', constants.CREATE3_DEPLOYER_CONTRACT[chainId]);
     const proxy = await ethers.getContractAt('TransparentUpgradeableProxy', await create3Deployer.addressOf(salt));

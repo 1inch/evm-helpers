@@ -3,7 +3,7 @@ const path = require('path');
 
 const constantsData = JSON.parse(fs.readFileSync(path.join(__dirname, 'constants.json'), 'utf8'));
 
-function sliceArgs(args, expectedSize) {
+function sliceArgs (args, expectedSize) {
     let res = {}; // eslint-disable-line prefer-const
     for (const [key, value] of Object.entries(args)) {
         if (!isNaN(Number(key)) && Array.isArray(value)) {

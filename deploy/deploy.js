@@ -32,10 +32,11 @@ module.exports = async ({ deployments, getNamedAccounts, config }) => {
         let result;
 
         if (DEPLOYMENT_METHOD === 'create3') {
-            let salt = contractHelperConfig.salt ? (
-                contractHelperConfig.salt.startsWith('0x') ? 
-                    contractHelperConfig.salt : ethers.keccak256(ethers.toUtf8Bytes(contractHelperConfig.salt))
-            ) : ethers.keccak256(ethers.toUtf8Bytes(contractHelperName));
+            const salt = contractHelperConfig.salt
+                ? contractHelperConfig.salt.startsWith('0x')
+                    ? contractHelperConfig.salt
+                    : ethers.keccak256(ethers.toUtf8Bytes(contractHelperConfig.salt))
+                : ethers.keccak256(ethers.toUtf8Bytes(contractHelperName));
 
             if (!constants.CREATE3_DEPLOYER_CONTRACT?.[chainId]) {
                 console.log(`Skipping deployment on chain ${chainId} as no Create3Deployer is set`);

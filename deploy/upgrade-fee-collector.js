@@ -6,7 +6,7 @@ const { deployAndGetContractWithCreate3 } = require('@1inch/solidity-utils');
 const FEE_COLLECTOR_SALT = ethers.keccak256(ethers.toUtf8Bytes('FeeCollector_v2'));
 const FEE_COLLECTOR_FACTORY_SALT = ethers.keccak256(ethers.toUtf8Bytes('FeeCollectorFactory'));
 
-module.exports = async () => {
+module.exports = async ({ deployments }) => {
     const networkName = hre.network.name;
     console.log('running deploy script');
     const chainId = await getChainId();
