@@ -1,6 +1,6 @@
 const hre = require('hardhat');
 const { getChainId, ethers } = hre;
-const constants = require('./constants');
+const constants = require('../config/constants');
 
 module.exports = async ({ config }) => {
     console.log('running deploy script');

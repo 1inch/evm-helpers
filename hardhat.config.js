@@ -55,6 +55,6 @@ module.exports = {
     deployOpts: {
         contractHelperNames: process.env.OPS_EVM_HELPER_NAMES ? JSON.parse(process.env.OPS_EVM_HELPER_NAMES) : [],
         feeCollectorOperatorNames: process.env.OPS_FEE_COLLECTOR_OPERATOR_NAMES ? JSON.parse(process.env.OPS_FEE_COLLECTOR_OPERATOR_NAMES) : [],
-        deploymentMethod: process.env.OPS_DEPLOYMENT_METHOD || 'create3',
+        deploymentMethod: process.env.OPS_DEPLOYMENT_METHOD,
     },
 };

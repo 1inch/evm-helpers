@@ -2,15 +2,25 @@ const { deployAndGetContractWithCreate3 } = require('@1inch/solidity-utils');
 const hre = require('hardhat');
 const { getChainId, ethers } = hre;
 
-const constants = require('./constants');
+const constants = require('../config/constants');
 
 const FEE_COLLECTOR_SALT = ethers.keccak256(ethers.toUtf8Bytes('FeeCollector'));
 const FEE_COLLECTOR_FACTORY_SALT = ethers.keccak256(ethers.toUtf8Bytes('FeeCollectorFactory'));
 
 module.exports = async ({ deployments }) => {
+    const networkName = hre.network.name;
     console.log('running deploy script');
     const chainId = await getChainId();
     console.log('network id ', chainId);
+
+    if (
+        networkName in hre.config.networks &&
+        chainId !== hre.config.networks[networkName].chainId?.toString()
+    ) {
+        console.log(`network chain id: ${hre.config.networks[networkName].chainId}, your chain id ${chainId}`);
+        console.log('skipping wrong chain id deployment');
+        return;
+    }
 
     const feeCollector = await deployAndGetContractWithCreate3({
         contractName: 'FeeCollector',

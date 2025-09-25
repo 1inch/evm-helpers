@@ -2,7 +2,7 @@ const hre = require('hardhat');
 const { getChainId, ethers } = hre;
 const { deployAndGetContract, deployAndGetContractWithCreate3 } = require('@1inch/solidity-utils');
 
-const constants = require('./constants');
+const constants = require('../config/constants');
 
 module.exports = async ({ deployments, getNamedAccounts, config }) => {
     const networkName = hre.network.name;
@@ -25,17 +25,19 @@ module.exports = async ({ deployments, getNamedAccounts, config }) => {
         DEPLOYMENT_METHOD = 'create';
     }
 
-    for (const contractHelperName of config.deployOpts.contractHelperNames) {
+    for (const contractHelperConfig of config.deployOpts.contractHelperConfigs) {
+        const contractHelperName = contractHelperConfig.name;
         console.log('Deploying contract helper for name:', contractHelperName);
 
         let result;
 
         if (DEPLOYMENT_METHOD === 'create3') {
-            let salt = ethers.keccak256(ethers.toUtf8Bytes(contractHelperName));
-            if (contractHelperName === 'EvmHelpers') {
-                salt = ethers.keccak256(ethers.toUtf8Bytes('EvmHelpers-new'));
-            }
-            if (!constants.CREATE3_DEPLOYER?.[chainId]) {
+            let salt = contractHelperConfig.salt ? (
+                contractHelperConfig.salt.startsWith('0x') ? 
+                    contractHelperConfig.salt : ethers.keccak256(ethers.toUtf8Bytes(contractHelperConfig.salt))
+            ) : ethers.keccak256(ethers.toUtf8Bytes(contractHelperName));
+
+            if (!constants.CREATE3_DEPLOYER_CONTRACT?.[chainId]) {
                 console.log(`Skipping deployment on chain ${chainId} as no Create3Deployer is set`);
                 continue;
             }
@@ -44,7 +46,7 @@ module.exports = async ({ deployments, getNamedAccounts, config }) => {
                 contractName: contractHelperName,
                 constructorArgs: constants.CONSTRUCTOR_ARGS?.[contractHelperName]?.[chainId] ?? [],
                 deploymentName: contractHelperName,
-                create3Deployer: constants.CREATE3_DEPLOYER[chainId],
+                create3Deployer: constants.CREATE3_DEPLOYER_CONTRACT[chainId],
                 salt,
                 deployments,
             });
