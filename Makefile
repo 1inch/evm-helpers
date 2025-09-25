@@ -69,7 +69,7 @@ validate-helpers:
 		@{ \
 		if [ -z "$(OPS_NETWORK)" ]; then echo "OPS_NETWORK is not set!"; exit 1; fi; \
 		if [ -z "$(OPS_CHAIN_ID)" ]; then echo "OPS_CHAIN_ID is not set!"; exit 1; fi; \
-		if [ -z "$(OPS_EVM_HELPER_NAMES)" ]; then echo "OPS_EVM_HELPER_NAMES is not set!"; exit 1; fi; \
+		if [ -z "$(OPS_EVM_HELPER_CONFIGS)" ]; then echo "OPS_EVM_HELPER_CONFIGS is not set!"; exit 1; fi; \
 		if [ -z "$(MAINNET_RPC_URL)" ] && [ "$(OPS_NETWORK)" = "hardhat" ]; then echo "MAINNET_RPC_URL is not set!"; exit 1; fi; \
 		$(MAKE) process-helpers-args; \
 		}
@@ -128,7 +128,7 @@ validate-upgrade-fee-collector:
 
 process-helpers-args:
 		@{ \
-		if echo "$(OPS_EVM_HELPER_NAMES)" | grep -q "UniV4Helper"; then \
+		if echo "$(OPS_EVM_HELPER_CONFIGS)" | grep -q "UniV4Helper"; then \
 			$(MAKE) OPS_GEN_KEY=constructorArgs.UniV4Helper OPS_GEN_VAL='$(OPS_UNIV4HELPER_ARGS)' upsert-constant; \
 		fi \
 		}
