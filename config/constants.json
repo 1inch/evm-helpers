@@ -104,7 +104,7 @@
     "59144": "0x65B3Db8bAeF0215A1F9B14c506D2a3078b2C84AE",
     "146": "0x65B3Db8bAeF0215A1F9B14c506D2a3078b2C84AE",
     "130": "0x65B3Db8bAeF0215A1F9B14c506D2a3078b2C84AE",
-    "31337": "0x62f4807082fa27E711784C53fE5CBF056E6C11B2"
+    "31337": "0x8eFFe1a973945Af40B38370f4e82C7ECe88Bce79"
   },
   "feeCollectorOperator": {
     "31337": {
@@ -114,10 +114,17 @@
   },
   "constructorArgs": {
     "UniV4Helper": {
-      "31337": ["0x000000000004444c5dc75cB358380D2e3dE08A90", "0x7ffe42c4a5deea5b0fec41c94c136cf115597227", "0xbd216513d74c8cf14cf4747e6aaa6420ff64ee9e"]
+      "31337": [
+        "0x000000000004444c5dc75cB358380D2e3dE08A90",
+        "0x7ffe42c4a5deea5b0fec41c94c136cf115597227",
+        "0xbd216513d74c8cf14cf4747e6aaa6420ff64ee9e"
+      ]
     }
   },
   "leftoverExchangerOwner": {
-    "31337": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266"
+    "31337": "0xAA74E80De15758Fe983Cb6102176ef2cE195ECfE"
+  },
+  "leftoverExchangerSalt": {
+    "31337": "LeftoverExchanger"
   }
 }

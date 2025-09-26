@@ -1,0 +1,110 @@
+{
+  "address": "0x46360369Dcf248e37a4Afa369b0D83c8F8d1A0C5",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "contract IJoePair",
+          "name": "pair",
+          "type": "address"
+        },
+        {
+          "internalType": "uint24",
+          "name": "offset",
+          "type": "uint24"
+        },
+        {
+          "internalType": "uint24",
+          "name": "size",
+          "type": "uint24"
+        }
+      ],
+      "name": "getBins",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "id",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "reserveX",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "reserveY",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct TraderJoeHelper.BinData[]",
+          "name": "data",
+          "type": "tuple[]"
+        },
+        {
+          "internalType": "uint24",
+          "name": "i",
+          "type": "uint24"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "transactionHash": "0xe85f2fd065245f1bb8131d0eab2fc8a6da8f0985d9dd81a49cbdafb84fdd37a3",
+  "receipt": {
+    "to": null,
+    "from": "0xAA74E80De15758Fe983Cb6102176ef2cE195ECfE",
+    "contractAddress": "0x46360369Dcf248e37a4Afa369b0D83c8F8d1A0C5",
+    "transactionIndex": 0,
+    "gasUsed": "378756",
+    "logsBloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "blockHash": "0x595b90131fd37029a3b72150ae597982cf60541fc30fd8e614096c353aa799a8",
+    "transactionHash": "0xe85f2fd065245f1bb8131d0eab2fc8a6da8f0985d9dd81a49cbdafb84fdd37a3",
+    "logs": [],
+    "blockNumber": 23447057,
+    "cumulativeGasUsed": "378756",
+    "status": 1,
+    "byzantium": true
+  },
+  "args": [],
+  "numDeployments": 1,
+  "solcInputHash": "97e4fefd86f366bb4c4f567be2b50d2b",
+  "metadata": "{\"compiler\":{\"version\":\"0.8.23+commit.f704f362\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"contract IJoePair\",\"name\":\"pair\",\"type\":\"address\"},{\"internalType\":\"uint24\",\"name\":\"offset\",\"type\":\"uint24\"},{\"internalType\":\"uint24\",\"name\":\"size\",\"type\":\"uint24\"}],\"name\":\"getBins\",\"outputs\":[{\"components\":[{\"internalType\":\"uint256\",\"name\":\"id\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"reserveX\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"reserveY\",\"type\":\"uint256\"}],\"internalType\":\"struct TraderJoeHelper.BinData[]\",\"name\":\"data\",\"type\":\"tuple[]\"},{\"internalType\":\"uint24\",\"name\":\"i\",\"type\":\"uint24\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{\"getBins(address,uint24,uint24)\":{\"params\":{\"offset\":\"The ID of the first bin to fetch data from.\",\"pair\":\"The Trader Joe pair to fetch bin data from.\",\"size\":\"The maximum number of bins to fetch data for.\"},\"returns\":{\"data\":\"An array of BinData structs containing data about each bin.\",\"i\":\"The bin id where data collection stopped. It is reset to 0 if end of bins was reached before collecting size bins.\"}}},\"title\":\"TraderJoeHelper\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"getBins(address,uint24,uint24)\":{\"notice\":\"Fetches data about a range of bins in a given Trader Joe pair.\"}},\"notice\":\"A helper contract for interacting with Trader Joe's liquidity pool pairs.\",\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/TraderJoeHelper.sol\":\"TraderJoeHelper\"},\"evmVersion\":\"shanghai\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\",\"useLiteralContent\":true},\"optimizer\":{\"enabled\":true,\"runs\":1000000},\"remappings\":[],\"viaIR\":true},\"sources\":{\"contracts/TraderJoeHelper.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n\\npragma solidity 0.8.23;\\n\\nimport \\\"./interfaces/IJoePair.sol\\\";\\n\\n/// @title TraderJoeHelper\\n/// @notice A helper contract for interacting with Trader Joe's liquidity pool pairs.\\ncontract TraderJoeHelper {\\n\\n    /// @dev Represents data about a bin in a Trader Joe pair.\\n    struct BinData {\\n        uint256 id;\\n        uint256 reserveX;\\n        uint256 reserveY;\\n    }\\n\\n    /**\\n     * @notice Fetches data about a range of bins in a given Trader Joe pair.\\n     * @param pair The Trader Joe pair to fetch bin data from.\\n     * @param offset The ID of the first bin to fetch data from.\\n     * @param size The maximum number of bins to fetch data for.\\n     * @return data An array of BinData structs containing data about each bin.\\n     * @return i The bin id where data collection stopped. It is reset to 0 if end of bins was reached before collecting size bins.\\n     */\\n    function getBins(IJoePair pair, uint24 offset, uint24 size)\\n        external\\n        view\\n        returns (BinData[] memory data, uint24 i)\\n    {\\n        uint256 counter = 0;\\n        data = new BinData[](size);\\n        uint24 lastBin = pair.findFirstNonEmptyBinId(type(uint24).max, true);\\n        for (\\n            i = offset;\\n            i < lastBin && counter < size;\\n            i = pair.findFirstNonEmptyBinId(i, false)\\n        ) {\\n            (uint256 x, uint256 y) = pair.getBin(i);\\n            if (x > 0 || y > 0) {\\n                (data[counter].reserveX, data[counter].reserveY) = (x, y);\\n                data[counter].id = i;\\n                unchecked{ ++counter; }\\n            }\\n        }\\n        if (i == lastBin && counter < size) {\\n            (data[counter].reserveX, data[counter].reserveY) = pair.getBin(i);\\n            data[counter].id = i;\\n            unchecked{ ++counter; }\\n            i = 0;\\n        }\\n        // cut array size down\\n        assembly (\\\"memory-safe\\\") {  // solhint-disable-line no-inline-assembly\\n            mstore(data, counter)\\n        }\\n    }\\n}\\n\",\"keccak256\":\"0xa0badf1b0819b99a4b432b1c7a90e795f0cbea1e4a314436c07097d1729749e8\",\"license\":\"MIT\"},\"contracts/interfaces/IJoePair.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n\\npragma solidity 0.8.23;\\n\\ninterface IJoePair {\\n\\tfunction findFirstNonEmptyBinId(uint24 _id, bool _swapForY) external view returns (uint24);\\n    function getBin(uint24 _id) external view returns (uint256 reserveX, uint256 reserveY);\\n}\\n\",\"keccak256\":\"0xc376e4f9b801ef74987323b10497443cd6c681c1b31b8f2fa2647838a5d51b40\",\"license\":\"MIT\"}},\"version\":1}",
+  "bytecode": "0x60808060405234610016576105ea908161001b8239f35b5f80fdfe60806040526004361015610011575f80fd5b5f3560e01c6336d9ec1914610024575f80fd5b346104e55760607ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc3601126104e55760043573ffffffffffffffffffffffffffffffffffffffff811681036104e55760243562ffffff811681036104e5576044359062ffffff821682036104e5575f916100a262ffffff821661052a565b916100b060405193846104e9565b62ffffff821683527fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe06100e762ffffff841661052a565b015f5b81811061047c575050604051907f8f919a8300000000000000000000000000000000000000000000000000000000825262ffffff60048301526001602483015260208260448173ffffffffffffffffffffffffffffffffffffffff8a165afa91821561027b575f9261045b575b505b62ffffff821662ffffff8216108061044d575b15610300576040517f0abe968800000000000000000000000000000000000000000000000000000000815262ffffff8216600482015260408160248173ffffffffffffffffffffffffffffffffffffffff8b165afa801561027b575f915f916102cf575b5081158015906102c6575b610286575b505062ffffff604051917f8f919a830000000000000000000000000000000000000000000000000000000083521660048201525f602482015260208160448173ffffffffffffffffffffffffffffffffffffffff8a165afa90811561027b575f9161024c575b50610159565b61026e915060203d602011610274575b61026681836104e9565b810190610542565b5f610246565b503d61025c565b6040513d5f823e3d90fd5b90869160206102986001959989610573565b51019060406102a7858a610573565b5101525262ffffff86166102bb8287610573565b515201935f806101e0565b508015156101db565b90506102f3915060403d6040116102f9575b6102eb81836104e9565b81019061055d565b5f6101d0565b503d6102e1565b9391859062ffffff80871693168314908161043e575b50610384575b5050815260405190604082016040835281518091526020606084019201905f5b8181106103565750505062ffffff82931660208301520390f35b909192602060606001926040875180518352848101518584015201516040820152019401910191909161033c565b73ffffffffffffffffffffffffffffffffffffffff93945060409060248251809681937f0abe9688000000000000000000000000000000000000000000000000000000008352866004840152165afa92831561027b576001935f915f9161041d575b5060206103f38588610573565b51019060406104028689610573565b510152526104108285610573565b515201905f91838061031c565b9050610438915060403d6040116102f9576102eb81836104e9565b866103e6565b62ffffff915016831086610316565b5062ffffff8316851061016c565b61047591925060203d6020116102745761026681836104e9565b905f610157565b60405190606082019180831067ffffffffffffffff8411176104b8576020926040525f81525f838201525f6040820152828288010152016100ea565b7f4e487b71000000000000000000000000000000000000000000000000000000005f52604160045260245ffd5b5f80fd5b90601f7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe0910116810190811067ffffffffffffffff8211176104b857604052565b67ffffffffffffffff81116104b85760051b60200190565b908160209103126104e5575162ffffff811681036104e55790565b91908260409103126104e5576020825192015190565b80518210156105875760209160051b010190565b7f4e487b71000000000000000000000000000000000000000000000000000000005f52603260045260245ffdfea264697066735822122002b4c727ee9f81a2f27fb104280ca1a9d007d89f50baf55a9971582d69f6517d64736f6c63430008170033",
+  "deployedBytecode": "0x60806040526004361015610011575f80fd5b5f3560e01c6336d9ec1914610024575f80fd5b346104e55760607ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc3601126104e55760043573ffffffffffffffffffffffffffffffffffffffff811681036104e55760243562ffffff811681036104e5576044359062ffffff821682036104e5575f916100a262ffffff821661052a565b916100b060405193846104e9565b62ffffff821683527fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe06100e762ffffff841661052a565b015f5b81811061047c575050604051907f8f919a8300000000000000000000000000000000000000000000000000000000825262ffffff60048301526001602483015260208260448173ffffffffffffffffffffffffffffffffffffffff8a165afa91821561027b575f9261045b575b505b62ffffff821662ffffff8216108061044d575b15610300576040517f0abe968800000000000000000000000000000000000000000000000000000000815262ffffff8216600482015260408160248173ffffffffffffffffffffffffffffffffffffffff8b165afa801561027b575f915f916102cf575b5081158015906102c6575b610286575b505062ffffff604051917f8f919a830000000000000000000000000000000000000000000000000000000083521660048201525f602482015260208160448173ffffffffffffffffffffffffffffffffffffffff8a165afa90811561027b575f9161024c575b50610159565b61026e915060203d602011610274575b61026681836104e9565b810190610542565b5f610246565b503d61025c565b6040513d5f823e3d90fd5b90869160206102986001959989610573565b51019060406102a7858a610573565b5101525262ffffff86166102bb8287610573565b515201935f806101e0565b508015156101db565b90506102f3915060403d6040116102f9575b6102eb81836104e9565b81019061055d565b5f6101d0565b503d6102e1565b9391859062ffffff80871693168314908161043e575b50610384575b5050815260405190604082016040835281518091526020606084019201905f5b8181106103565750505062ffffff82931660208301520390f35b909192602060606001926040875180518352848101518584015201516040820152019401910191909161033c565b73ffffffffffffffffffffffffffffffffffffffff93945060409060248251809681937f0abe9688000000000000000000000000000000000000000000000000000000008352866004840152165afa92831561027b576001935f915f9161041d575b5060206103f38588610573565b51019060406104028689610573565b510152526104108285610573565b515201905f91838061031c565b9050610438915060403d6040116102f9576102eb81836104e9565b866103e6565b62ffffff915016831086610316565b5062ffffff8316851061016c565b61047591925060203d6020116102745761026681836104e9565b905f610157565b60405190606082019180831067ffffffffffffffff8411176104b8576020926040525f81525f838201525f6040820152828288010152016100ea565b7f4e487b71000000000000000000000000000000000000000000000000000000005f52604160045260245ffd5b5f80fd5b90601f7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe0910116810190811067ffffffffffffffff8211176104b857604052565b67ffffffffffffffff81116104b85760051b60200190565b908160209103126104e5575162ffffff811681036104e55790565b91908260409103126104e5576020825192015190565b80518210156105875760209160051b010190565b7f4e487b71000000000000000000000000000000000000000000000000000000005f52603260045260245ffdfea264697066735822122002b4c727ee9f81a2f27fb104280ca1a9d007d89f50baf55a9971582d69f6517d64736f6c63430008170033",
+  "devdoc": {
+    "kind": "dev",
+    "methods": {
+      "getBins(address,uint24,uint24)": {
+        "params": {
+          "offset": "The ID of the first bin to fetch data from.",
+          "pair": "The Trader Joe pair to fetch bin data from.",
+          "size": "The maximum number of bins to fetch data for."
+        },
+        "returns": {
+          "data": "An array of BinData structs containing data about each bin.",
+          "i": "The bin id where data collection stopped. It is reset to 0 if end of bins was reached before collecting size bins."
+        }
+      }
+    },
+    "title": "TraderJoeHelper",
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {
+      "getBins(address,uint24,uint24)": {
+        "notice": "Fetches data about a range of bins in a given Trader Joe pair."
+      }
+    },
+    "notice": "A helper contract for interacting with Trader Joe's liquidity pool pairs.",
+    "version": 1
+  },
+  "storageLayout": {
+    "storage": [],
+    "types": null
+  }
+}
