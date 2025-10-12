@@ -14,7 +14,7 @@ OPS_DEPLOYMENT_METHOD := $(subst ",,$(OPS_DEPLOYMENT_METHOD))
 IS_ZKSYNC := $(findstring zksync,$(OPS_NETWORK))
 
 ifeq ($(OPS_ZKSYNC_MODE),)
-ifneq ($(IS_ZKSYNC),"")
+ifneq ($(IS_ZKSYNC),)
 	OPS_ZKSYNC_MODE=true
 endif
 endif
@@ -38,9 +38,7 @@ deploy-helpers:
 		@$(MAKE) OPS_CURRENT_DEP_FILE=$(FILE_DEPLOY) OPS_DEPLOYMENT_METHOD=$(if $(OPS_DEPLOYMENT_METHOD),$(OPS_DEPLOYMENT_METHOD),create3) deploy-skip-all validate-helpers deploy-noskip deploy-impl deploy-skip
 
 deploy-impl:
-		@{ \
-		yarn deploy $(OPS_NETWORK) || exit 1; \
-		}
+		@yarn deploy $(OPS_NETWORK) || exit 1
 
 deploy-leftover-exchanger:
 		@$(MAKE) OPS_CURRENT_DEP_FILE=$(FILE_DEPLOY_LEFTOVER_EXCHANGER) deploy-skip-all validate-leftover-exchanger deploy-noskip deploy-impl deploy-skip
@@ -88,7 +86,7 @@ validate-leftover-exchanger:
 		if [ "$(OPS_DEPLOYMENT_METHOD)" = "create3" ] && [ "$(IS_ZKSYNC)" = "" ]; then \
 			$(MAKE) ID=OPS_LEFTOVER_EXCHANGER_SALT validate || exit 1; \
 		fi; \
-		$(MAKE) process-weth process-create3-deployer process-leftover-exchanger-owner process-leftover-exchanger-salt; \
+		$(MAKE) process-weth process-create3-deployer process-leftover-exchanger-owner process-leftover-exchanger-salt || exit 1; \
 		}
 
 validate-fee-collector-factory:
@@ -100,10 +98,10 @@ validate-fee-collector-factory:
 		$(MAKE) ID=OPS_FEE_COLLECTOR_FACTORY_OWNER_ADDRESS validate || exit 1; \
 		$(MAKE) ID=OPS_FEE_COLLECTOR_OWNER_ADDRESS validate || exit 1; \
 		if [ "$(OPS_ZKSYNC_MODE)" = "true" ]; then \
-			$(MAKE) process-weth process-lop process-fee-collector-owner process-fee-collector-factory-owner; \
+			$(MAKE) process-weth process-lop process-fee-collector-owner process-fee-collector-factory-owner || exit 1; \
 		else \
 			$(MAKE) ID=OPS_CREATE3_DEPLOYER_ADDRESS validate || exit 1; \
-			$(MAKE) process-weth process-create3-deployer process-lop process-fee-collector-owner process-fee-collector-factory-owner; \
+			$(MAKE) process-weth process-create3-deployer process-lop process-fee-collector-owner process-fee-collector-factory-owner || exit 1; \
 		fi \
 		}
 
