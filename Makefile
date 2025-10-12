@@ -11,8 +11,10 @@ OPS_CHAIN_ID := $(subst ",,$(OPS_CHAIN_ID))
 OPS_ZKSYNC_MODE := $(subst ",,$(OPS_ZKSYNC_MODE))
 OPS_DEPLOYMENT_METHOD := $(subst ",,$(OPS_DEPLOYMENT_METHOD))
 
+IS_ZKSYNC := $(findstring zksync,$(OPS_NETWORK))
+
 ifeq ($(OPS_ZKSYNC_MODE),)
-ifeq ($(OPS_CHAIN_ID),324)
+ifneq ($(IS_ZKSYNC),"")
 	OPS_ZKSYNC_MODE=true
 endif
 endif
@@ -67,61 +69,65 @@ upgrade-fee-collector:
 # Validation targets
 validate-helpers:
 		@{ \
-		if [ -z "$(OPS_NETWORK)" ]; then echo "OPS_NETWORK is not set!"; exit 1; fi; \
-		if [ -z "$(OPS_CHAIN_ID)" ]; then echo "OPS_CHAIN_ID is not set!"; exit 1; fi; \
-		if [ -z "$(OPS_EVM_HELPER_CONFIGS)" ]; then echo "OPS_EVM_HELPER_CONFIGS is not set!"; exit 1; fi; \
-		if [ -z "$(MAINNET_RPC_URL)" ] && [ "$(OPS_NETWORK)" = "hardhat" ]; then echo "MAINNET_RPC_URL is not set!"; exit 1; fi; \
-		$(MAKE) process-helpers-args; \
+		$(MAKE) ID=OPS_NETWORK validate || exit 1; \
+		$(MAKE) ID=OPS_CHAIN_ID validate || exit 1; \
+		$(MAKE) ID=OPS_EVM_HELPER_CONFIGS validate || exit 1; \
+		if [ "$(OPS_NETWORK)" = "hardhat" ]; then \
+			$(MAKE) ID=MAINNET_RPC_URL validate || exit 1; \
+		fi; \
+		$(MAKE) process-helpers-args || exit 1; \
 		}
 
 validate-leftover-exchanger:
 		@{ \
-		if [ -z "$(OPS_NETWORK)" ]; then echo "OPS_NETWORK is not set!"; exit 1; fi; \
-		if [ -z "$(OPS_CHAIN_ID)" ]; then echo "OPS_CHAIN_ID is not set!"; exit 1; fi; \
-		if [ -z "$(OPS_WETH_ADDRESS)" ]; then echo "OPS_WETH_ADDRESS is not set!"; exit 1; fi; \
-		if [ -z "$(OPS_CREATE3_DEPLOYER_ADDRESS)" ]; then echo "OPS_CREATE3_DEPLOYER_ADDRESS is not set!"; exit 1; fi; \
-		if [ -z "$(OPS_LEFTOVER_EXCHANGER_OWNER_ADDRESS)" ]; then echo "OPS_LEFTOVER_EXCHANGER_OWNER_ADDRESS is not set!"; exit 1; fi; \
-		if [ -z "$(OPS_LEFTOVER_EXCHANGER_SALT)" ] && [ "$(OPS_DEPLOYMENT_METHOD)" = "create3" ] && [ "$(OPS_CHAIN_ID)" != "324" ]; then echo "OPS_LEFTOVER_EXCHANGER_SALT is not set!"; exit 1; fi; \
+		$(MAKE) ID=OPS_NETWORK validate || exit 1; \
+		$(MAKE) ID=OPS_CHAIN_ID validate || exit 1; \
+		$(MAKE) ID=OPS_WETH_ADDRESS validate || exit 1; \
+		$(MAKE) ID=OPS_CREATE3_DEPLOYER_ADDRESS validate || exit 1; \
+		$(MAKE) ID=OPS_LEFTOVER_EXCHANGER_OWNER_ADDRESS validate || exit 1; \
+		if [ "$(OPS_DEPLOYMENT_METHOD)" = "create3" ] && [ "$(IS_ZKSYNC)" = "" ]; then \
+			$(MAKE) ID=OPS_LEFTOVER_EXCHANGER_SALT validate || exit 1; \
+		fi; \
 		$(MAKE) process-weth process-create3-deployer process-leftover-exchanger-owner process-leftover-exchanger-salt; \
 		}
 
 validate-fee-collector-factory:
 		@{ \
-		if [ -z "$(OPS_NETWORK)" ]; then echo "OPS_NETWORK is not set!"; exit 1; fi; \
-		if [ -z "$(OPS_CHAIN_ID)" ]; then echo "OPS_CHAIN_ID is not set!"; exit 1; fi; \
-		if [ -z "$(OPS_WETH_ADDRESS)" ]; then echo "OPS_WETH_ADDRESS is not set!"; exit 1; fi; \
-		if [ -z "$(OPS_LOP_ADDRESS)" ]; then echo "OPS_LOP_ADDRESS is not set!"; exit 1; fi; \
-		if [ -z "$(OPS_FEE_COLLECTOR_OWNER_ADDRESS)" ]; then echo "OPS_FEE_COLLECTOR_OWNER_ADDRESS is not set!"; exit 1; fi; \
-		if [ -z "$(OPS_FEE_COLLECTOR_FACTORY_OWNER_ADDRESS)" ]; then echo "OPS_FEE_COLLECTOR_FACTORY_OWNER_ADDRESS is not set!"; exit 1; fi; \
-		if [ "$(OPS_ZKSYNC_MODE)" != "true" ] && [ -z "$(OPS_CREATE3_DEPLOYER_ADDRESS)" ]; then echo "OPS_CREATE3_DEPLOYER_ADDRESS is not set!"; exit 1; fi; \
+		$(MAKE) ID=OPS_NETWORK validate || exit 1; \
+		$(MAKE) ID=OPS_CHAIN_ID validate || exit 1; \
+		$(MAKE) ID=OPS_WETH_ADDRESS validate || exit 1; \
+		$(MAKE) ID=OPS_LOP_ADDRESS validate || exit 1; \
+		$(MAKE) ID=OPS_FEE_COLLECTOR_FACTORY_OWNER_ADDRESS validate || exit 1; \
+		$(MAKE) ID=OPS_FEE_COLLECTOR_OWNER_ADDRESS validate || exit 1; \
 		if [ "$(OPS_ZKSYNC_MODE)" = "true" ]; then \
 			$(MAKE) process-weth process-lop process-fee-collector-owner process-fee-collector-factory-owner; \
 		else \
+			$(MAKE) ID=OPS_CREATE3_DEPLOYER_ADDRESS validate || exit 1; \
 			$(MAKE) process-weth process-create3-deployer process-lop process-fee-collector-owner process-fee-collector-factory-owner; \
 		fi \
 		}
 
 validate-new-fee-collector:
 		@{ \
-		if [ -z "$(OPS_NETWORK)" ]; then echo "OPS_NETWORK is not set!"; exit 1; fi; \
-		if [ -z "$(OPS_CHAIN_ID)" ]; then echo "OPS_CHAIN_ID is not set!"; exit 1; fi; \
-		if [ -z "$(OPS_FEE_COLLECTOR_OPERATORS)" ]; then echo "OPS_FEE_COLLECTOR_OPERATORS is not set!"; exit 1; fi; \
-		if [ -z "$(OPS_FEE_COLLECTOR_OPERATOR_NAMES)" ]; then echo "OPS_FEE_COLLECTOR_OPERATOR_NAMES is not set!"; exit 1; fi; \
-		$(MAKE) process-fee-collector-operator; \
+		$(MAKE) ID=OPS_NETWORK validate || exit 1; \
+		$(MAKE) ID=OPS_CHAIN_ID validate || exit 1; \
+		$(MAKE) ID=OPS_FEE_COLLECTOR_OPERATORS validate || exit 1; \
+		$(MAKE) ID=OPS_FEE_COLLECTOR_OPERATOR_NAMES validate || exit 1; \
+		$(MAKE) process-fee-collector-operator || exit 1; \
 		}
 
 validate-upgrade-fee-collector:
 		@{ \
-		if [ -z "$(OPS_NETWORK)" ]; then echo "OPS_NETWORK is not set!"; exit 1; fi; \
-		if [ -z "$(OPS_CHAIN_ID)" ]; then echo "OPS_CHAIN_ID is not set!"; exit 1; fi; \
-		if [ -z "$(OPS_WETH_ADDRESS)" ]; then echo "OPS_WETH_ADDRESS is not set!"; exit 1; fi; \
-		if [ -z "$(OPS_LOP_ADDRESS)" ]; then echo "OPS_LOP_ADDRESS is not set!"; exit 1; fi; \
-		if [ -z "$(OPS_FEE_COLLECTOR_OWNER_ADDRESS)" ]; then echo "OPS_FEE_COLLECTOR_OWNER_ADDRESS is not set!"; exit 1; fi; \
-		if [ "$(OPS_ZKSYNC_MODE)" != "true" ] && [ -z "$(OPS_CREATE3_DEPLOYER_ADDRESS)" ]; then echo "OPS_CREATE3_DEPLOYER_ADDRESS is not set!"; exit 1; fi; \
+		$(MAKE) ID=OPS_NETWORK validate || exit 1; \
+		$(MAKE) ID=OPS_CHAIN_ID validate || exit 1; \
+		$(MAKE) ID=OPS_WETH_ADDRESS validate || exit 1; \
+		$(MAKE) ID=OPS_LOP_ADDRESS validate || exit 1; \
+		$(MAKE) ID=OPS_FEE_COLLECTOR_OWNER_ADDRESS validate || exit 1; \
 		if [ "$(OPS_ZKSYNC_MODE)" = "true" ]; then \
-			$(MAKE) process-weth process-lop process-fee-collector-owner; \
+			$(MAKE) process-weth process-lop process-fee-collector-owner || exit 1; \
 		else \
-			$(MAKE) process-weth process-create3-deployer process-lop process-fee-collector-owner; \
+			$(MAKE) ID=OPS_CREATE3_DEPLOYER_ADDRESS validate || exit 1; \
+			$(MAKE) process-weth process-create3-deployer process-lop process-fee-collector-owner || exit 1; \
 		fi \
 		}
 
@@ -137,7 +143,7 @@ process-weth:
 		@$(MAKE) OPS_GEN_KEY=weth OPS_GEN_VAL='$(OPS_WETH_ADDRESS)' upsert-constant
 
 process-create3-deployer:
-		@$(MAKE) OPS_GEN_KEY=create3DeployerContract OPS_GEN_VAL='$(OPS_CREATE3_DEPLOYER_ADDRESS)' upsert-constant
+		@if [ -n "$$OPS_CREATE3_DEPLOYER_ADDRESS" ]; then $(MAKE) OPS_GEN_KEY=create3DeployerContract OPS_GEN_VAL='$(OPS_CREATE3_DEPLOYER_ADDRESS)' upsert-constant; fi
 
 process-lop:
 		@$(MAKE) OPS_GEN_KEY=lop OPS_GEN_VAL='$(OPS_LOP_ADDRESS)' upsert-constant
@@ -155,22 +161,13 @@ process-leftover-exchanger-owner:
 		@$(MAKE) OPS_GEN_KEY=leftoverExchangerOwner OPS_GEN_VAL='$(OPS_LEFTOVER_EXCHANGER_OWNER_ADDRESS)' upsert-constant
 
 process-leftover-exchanger-salt:
-		@$(MAKE) OPS_GEN_KEY=leftoverExchangerSalt OPS_GEN_VAL='$(OPS_LEFTOVER_EXCHANGER_SALT)' upsert-constant
+		@if [ -n "$$OPS_LEFTOVER_EXCHANGER_SALT" ]; then $(MAKE) OPS_GEN_KEY=leftoverExchangerSalt OPS_GEN_VAL='$(OPS_LEFTOVER_EXCHANGER_SALT)' upsert-constant; fi
 
 upsert-constant:
 		@{ \
-		if [ -z "$(OPS_GEN_VAL)" ]; then \
-			echo "Variable for key $(OPS_GEN_KEY) is not set!"; \
-			exit 1; \
-		fi; \
-		if [ -z "$(OPS_GEN_KEY)" ]; then \
-			echo "OPS_GEN_KEY is not set!"; \
-			exit 1; \
-		fi; \
-		if [ -z "$(OPS_CHAIN_ID)" ]; then \
-			echo "OPS_CHAIN_ID is not set!"; \
-			exit 1; \
-		fi; \
+		$(MAKE) ID=OPS_GEN_VAL validate || exit 1; \
+		$(MAKE) ID=OPS_GEN_KEY validate || exit 1; \
+		$(MAKE) ID=OPS_CHAIN_ID validate || exit 1; \
 		tmpfile=$$(mktemp); \
 		jq '.$(OPS_GEN_KEY)."$(OPS_CHAIN_ID)" = $(OPS_GEN_VAL)' $(FILE_CONSTANTS_JSON) > $$tmpfile && mv $$tmpfile $(FILE_CONSTANTS_JSON); \
 		echo "Updated $(OPS_GEN_KEY)[$(OPS_CHAIN_ID)] = $(OPS_GEN_VAL)"; \
@@ -198,14 +195,8 @@ deploy-noskip:
 # Get deployed contract addresses from deployment files
 get:
 		@{ \
-		if [ -z "$(PARAMETER)" ]; then \
-			echo "Error: PARAMETER is not set. Usage: make get PARAMETER=OPS_RESOLVER_ADDRESS"; \
-			exit 1; \
-		fi; \
-		if [ -z "$(OPS_NETWORK)" ]; then \
-			echo "Error: OPS_NETWORK is not set"; \
-			exit 1; \
-		fi; \
+		$(MAKE) ID=PARAMETER validate || exit 1; \
+		$(MAKE) ID=OPS_NETWORK validate || exit 1; \
 		if [ ! -d "$(CURRENT_DIR)/deployments/$(OPS_NETWORK)" ]; then \
 			echo "Error: Directory $(CURRENT_DIR)/deployments/$(OPS_NETWORK) does not exist"; \
 			exit 1; \
@@ -235,10 +226,7 @@ get:
 
 get-outputs:
 		@{ \
-		if [ -z "$(OPS_NETWORK)" ]; then \
-			echo "Error: OPS_NETWORK is not set"; \
-			exit 1; \
-		fi; \
+		$(MAKE) ID=OPS_NETWORK validate || exit 1; \
 		if [ ! -d "$(CURRENT_DIR)/deployments/$(OPS_NETWORK)" ]; then \
 			echo "Error: Directory $(CURRENT_DIR)/deployments/$(OPS_NETWORK) does not exist"; \
 			exit 1; \
@@ -257,6 +245,15 @@ get-outputs:
 		done; \
 		result="$$result}"; \
 		echo "$$result"; \
+		}
+
+validate:
+		@{ \
+			VALUE=$$(echo "$${!ID}" | tr -d '"'); \
+			if [ -z "$${VALUE}" ]; then \
+				echo "$${ID} is not set (Value: '$${VALUE}')!"; \
+				exit 1; \
+			fi; \
 		}
 
 install: install-utils install-dependencies
@@ -286,4 +283,4 @@ help:
 	@echo "  launch-hh-node         Launch Hardhat node with forked RPC"
 	@echo "  help                   Show this help message"
 
-.PHONY: install install-utils install-dependencies clean deploy-all deploy-helpers deploy-leftover-exchanger deploy-fee-collector-factory deploy-new-fee-collector upgrade-fee-collector get get-outputs help
+.PHONY: install install-utils install-dependencies clean deploy-all deploy-helpers deploy-leftover-exchanger deploy-fee-collector-factory deploy-new-fee-collector upgrade-fee-collector get get-outputs help validate validate-helpers validate-leftover-exchanger validate-fee-collector-factory validate-new-fee-collector validate-upgrade-fee-collector process-helpers-args process-weth process-create3-deployer process-lop process-fee-collector-factory-owner process-fee-collector-owner process-fee-collector-operator process-leftover-exchanger-owner process-leftover-exchanger-salt upsert-constant deploy-skip-all deploy-skip deploy-noskip
