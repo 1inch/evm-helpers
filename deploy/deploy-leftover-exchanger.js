@@ -36,6 +36,8 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
             : ethers.keccak256(ethers.toUtf8Bytes(constants.LEFTOVER_EXCHANGER_SALT[chainId]))
         : ethers.keccak256(ethers.toUtf8Bytes('LeftoverExchanger'));
 
+    console.log(`Using salt ${salt} for LeftoverExchanger proxy`);
+
     const transparentUpgradeableProxy = await deployAndGetContractWithCreate3({
         contractName: 'TransparentUpgradeableProxy',
         deploymentName: 'LeftoverExchanger',

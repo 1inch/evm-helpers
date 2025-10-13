@@ -38,6 +38,8 @@ module.exports = async ({ deployments, getNamedAccounts, config }) => {
                     : ethers.keccak256(ethers.toUtf8Bytes(contractHelperConfig.salt))
                 : ethers.keccak256(ethers.toUtf8Bytes(contractHelperName));
 
+            console.log(`Using salt ${salt} for contract ${contractHelperName}`);
+
             if (!constants.CREATE3_DEPLOYER_CONTRACT?.[chainId]) {
                 console.log(`Skipping deployment on chain ${chainId} as no Create3Deployer is set`);
                 continue;
