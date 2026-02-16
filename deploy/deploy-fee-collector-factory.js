@@ -28,6 +28,7 @@ module.exports = async ({ deployments }) => {
         create3Deployer: constants.CREATE3_DEPLOYER_CONTRACT[chainId],
         salt: FEE_COLLECTOR_SALT,
         deployments,
+        skipVerify: process.env.OPS_SKIP_VERIFY === 'true',
     });
 
     await deployAndGetContractWithCreate3({
@@ -36,6 +37,7 @@ module.exports = async ({ deployments }) => {
         create3Deployer: constants.CREATE3_DEPLOYER_CONTRACT[chainId],
         salt: FEE_COLLECTOR_FACTORY_SALT,
         deployments,
+        skipVerify: process.env.OPS_SKIP_VERIFY === 'true',
     });
 };
 

@@ -28,6 +28,7 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
         deployments,
         deployer,
         constructorArgs: [constants.WETH[chainId], constants.LEFTOVER_EXCHANGER_OWNER[chainId]],
+        skipVerify: process.env.OPS_SKIP_VERIFY === 'true',
     });
 
     const salt = constants.LEFTOVER_EXCHANGER_SALT[chainId]

@@ -25,6 +25,7 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
         deployments,
         deployer,
         constructorArgs: [constants.WETH[chainId], constants.LOP[chainId], constants.FEE_COLLECTOR_OWNER[chainId]],
+        skipVerify: process.env.OPS_SKIP_VERIFY === 'true',
     });
 
     const feeCollectorFactory = await ethers.getContractAt('FeeCollectorFactory', constants.FEE_COLLECTOR_FACTORY[chainId]);
