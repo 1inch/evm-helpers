@@ -134,7 +134,7 @@ process-helpers-args:
 		@{ \
 		if echo "$(OPS_EVM_HELPER_CONFIGS)" | grep -q "UniV4Helper"; then \
 			$(MAKE) OPS_GEN_KEY=constructorArgs.UniV4Helper OPS_GEN_VAL='$(OPS_UNIV4HELPER_ARGS)' upsert-constant; \
-		fi \
+		fi; \
 		if echo "$(OPS_EVM_HELPER_CONFIGS)" | grep -q "UniV4HelperV2"; then \
 			$(MAKE) OPS_GEN_KEY=constructorArgs.UniV4HelperV2 OPS_GEN_VAL='$(OPS_UNIV4HELPER_V2_ARGS)' upsert-constant; \
 		fi \
