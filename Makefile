@@ -34,7 +34,7 @@ FILE_CONSTANTS_JSON:=$(CURRENT_DIR)/config/constants.json
 deploy-all:
 		@$(MAKE) deploy-skip-all deploy-helpers deploy-leftover-exchanger deploy-fee-collector-factory deploy-new-fee-collector
 
-deploy-helpers: 
+deploy-helpers:
 		@$(MAKE) OPS_CURRENT_DEP_FILE=$(FILE_DEPLOY) OPS_DEPLOYMENT_METHOD=$(if $(OPS_DEPLOYMENT_METHOD),$(OPS_DEPLOYMENT_METHOD),create3) deploy-skip-all validate-helpers deploy-noskip deploy-impl deploy-skip
 
 deploy-impl:
@@ -134,6 +134,9 @@ process-helpers-args:
 		@{ \
 		if echo "$(OPS_EVM_HELPER_CONFIGS)" | grep -q "UniV4Helper"; then \
 			$(MAKE) OPS_GEN_KEY=constructorArgs.UniV4Helper OPS_GEN_VAL='$(OPS_UNIV4HELPER_ARGS)' upsert-constant; \
+		fi \
+		if echo "$(OPS_EVM_HELPER_CONFIGS)" | grep -q "UniV4HelperV2"; then \
+			$(MAKE) OPS_GEN_KEY=constructorArgs.UniV4HelperV2 OPS_GEN_VAL='$(OPS_UNIV4HELPER_V2_ARGS)' upsert-constant; \
 		fi \
 		}
 
