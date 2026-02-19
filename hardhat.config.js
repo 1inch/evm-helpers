@@ -19,7 +19,8 @@ if (getNetwork().indexOf('zksync') !== -1) {
 // etherscan.apiKey.zksyncmainnet = process.env.ZKSYNC_ETHERSCAN_KEY;
 
 const n = new Networks(true, 'mainnet', true);
-const { networks, etherscan } = n.registerAll();
+const { networks } = n.registerAll();
+const etherscan = n.getEtherscanConfig(getNetwork());
 
 networks.hardhat.mining = { auto: true, interval: 0 };
 
