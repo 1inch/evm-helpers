@@ -10,6 +10,7 @@ OPS_NETWORK := $(subst ",,$(OPS_NETWORK))
 OPS_CHAIN_ID := $(subst ",,$(OPS_CHAIN_ID))
 OPS_ZKSYNC_MODE := $(subst ",,$(OPS_ZKSYNC_MODE))
 OPS_DEPLOYMENT_METHOD := $(subst ",,$(OPS_DEPLOYMENT_METHOD))
+OPS_SKIP_VERIFY := $(subst ",,$(OPS_SKIP_VERIFY))
 
 IS_ZKSYNC := $(findstring zksync,$(OPS_NETWORK))
 
@@ -35,32 +36,32 @@ deploy-all:
 		@$(MAKE) deploy-skip-all deploy-helpers deploy-leftover-exchanger deploy-fee-collector-factory deploy-new-fee-collector
 
 deploy-helpers:
-		@$(MAKE) OPS_CURRENT_DEP_FILE=$(FILE_DEPLOY) OPS_DEPLOYMENT_METHOD=$(if $(OPS_DEPLOYMENT_METHOD),$(OPS_DEPLOYMENT_METHOD),create3) deploy-skip-all validate-helpers deploy-noskip deploy-impl deploy-skip
+		@$(MAKE) OPS_CURRENT_DEP_FILE=$(FILE_DEPLOY) OPS_DEPLOYMENT_METHOD=$(if $(OPS_DEPLOYMENT_METHOD),$(OPS_DEPLOYMENT_METHOD),create3) OPS_SKIP_VERIFY=$(OPS_SKIP_VERIFY) deploy-skip-all validate-helpers deploy-noskip deploy-impl deploy-skip
 
 deploy-impl:
 		@yarn deploy $(OPS_NETWORK) || exit 1
 
 deploy-leftover-exchanger:
-		@$(MAKE) OPS_CURRENT_DEP_FILE=$(FILE_DEPLOY_LEFTOVER_EXCHANGER) deploy-skip-all validate-leftover-exchanger deploy-noskip deploy-impl deploy-skip
+		@$(MAKE) OPS_CURRENT_DEP_FILE=$(FILE_DEPLOY_LEFTOVER_EXCHANGER) OPS_SKIP_VERIFY=$(OPS_SKIP_VERIFY) deploy-skip-all validate-leftover-exchanger deploy-noskip deploy-impl deploy-skip
 
 deploy-fee-collector-factory:
 		@{ \
 		if [ "$(OPS_ZKSYNC_MODE)" = "true" ]; then \
-			$(MAKE) OPS_CURRENT_DEP_FILE=$(FILE_DEPLOY_FEE_COLLECTOR_FACTORY_ZKSYNC) deploy-skip-all validate-fee-collector-factory deploy-noskip deploy-impl deploy-skip; \
+			$(MAKE) OPS_CURRENT_DEP_FILE=$(FILE_DEPLOY_FEE_COLLECTOR_FACTORY_ZKSYNC) OPS_SKIP_VERIFY=$(OPS_SKIP_VERIFY) deploy-skip-all validate-fee-collector-factory deploy-noskip deploy-impl deploy-skip; \
 		else \
-			$(MAKE) OPS_CURRENT_DEP_FILE=$(FILE_DEPLOY_FEE_COLLECTOR_FACTORY) deploy-skip-all validate-fee-collector-factory deploy-noskip deploy-impl deploy-skip; \
+			$(MAKE) OPS_CURRENT_DEP_FILE=$(FILE_DEPLOY_FEE_COLLECTOR_FACTORY) OPS_SKIP_VERIFY=$(OPS_SKIP_VERIFY) deploy-skip-all validate-fee-collector-factory deploy-noskip deploy-impl deploy-skip; \
 		fi \
 		}
 
 deploy-new-fee-collector:
-		@$(MAKE) OPS_CURRENT_DEP_FILE=$(FILE_DEPLOY_NEW_FEE_COLLECTOR) deploy-skip-all validate-new-fee-collector deploy-noskip deploy-impl deploy-skip
+		@$(MAKE) OPS_CURRENT_DEP_FILE=$(FILE_DEPLOY_NEW_FEE_COLLECTOR) OPS_SKIP_VERIFY=$(OPS_SKIP_VERIFY) deploy-skip-all validate-new-fee-collector deploy-noskip deploy-impl deploy-skip
 
 upgrade-fee-collector:
 		@{ \
 		if [ "$(OPS_ZKSYNC_MODE)" = "true" ]; then \
-			$(MAKE) OPS_CURRENT_DEP_FILE=$(FILE_UPGRADE_FEE_COLLECTOR_ZKSYNC) deploy-skip-all validate-upgrade-fee-collector deploy-noskip deploy-impl deploy-skip; \
+			$(MAKE) OPS_CURRENT_DEP_FILE=$(FILE_UPGRADE_FEE_COLLECTOR_ZKSYNC) OPS_SKIP_VERIFY=$(OPS_SKIP_VERIFY) deploy-skip-all validate-upgrade-fee-collector deploy-noskip deploy-impl deploy-skip; \
 		else \
-			$(MAKE) OPS_CURRENT_DEP_FILE=$(FILE_UPGRADE_FEE_COLLECTOR) deploy-skip-all validate-upgrade-fee-collector deploy-noskip deploy-impl deploy-skip; \
+			$(MAKE) OPS_CURRENT_DEP_FILE=$(FILE_UPGRADE_FEE_COLLECTOR) OPS_SKIP_VERIFY=$(OPS_SKIP_VERIFY) deploy-skip-all validate-upgrade-fee-collector deploy-noskip deploy-impl deploy-skip; \
 		fi \
 		}
 
