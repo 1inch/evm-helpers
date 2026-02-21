@@ -103,6 +103,20 @@ describe('MultiCall', function () {
             expect(estimatedGas).to.be.lte(28568);
             expect(estimatedGas - totalPerCallGas).to.be.lte(24743);
         });
+
+        it('100 calls: all successful', async function () {
+            const getUintCalldata = target.interface.encodeFunctionData('getUint');
+            const calls = Array(100).fill({ data: getUintCalldata, returnWordIndex: 0 });
+            const { decodedArray, estimatedGas, totalPerCallGas } = await callMulticallOneTargetPackedAndMeasureGas(multiCall, await target.getAddress(), calls);
+            expect(decodedArray).to.have.lengthOf(100);
+            for (let i = 0; i < 100; i++) {
+                const { success, value } = unpackResult(decodedArray[i]);
+                expect(success).to.equal(true);
+                expect(value).to.equal(42n);
+            }
+            expect(estimatedGas).to.be.lte(107122);
+            expect(estimatedGas - totalPerCallGas).to.be.lte(78122);
+        });
     });
 
     describe('multicallWithGas', function () {
@@ -167,6 +181,18 @@ describe('MultiCall', function () {
             }
             expect(estimatedGas).to.be.lte(40919);
             expect(estimatedGas - totalPerCallGas).to.be.lte(34397);
+        });
+
+        it('100 calls: all successful', async function () {
+            const getUintCalldata = target.interface.encodeFunctionData('getUint');
+            const calls = Array(100).fill(null).map(() => toCall(getUintCalldata));
+            const { results, estimatedGas, totalPerCallGas } = await callMulticallWithGasAndMeasureGas(multiCall, calls);
+            expect(results).to.have.lengthOf(100);
+            for (let i = 0; i < 100; i++) {
+                expect(BigInt(results[i])).to.equal(42n);
+            }
+            expect(estimatedGas).to.be.lte(338176);
+            expect(estimatedGas - totalPerCallGas).to.be.lte(254646);
         });
     });
 });
