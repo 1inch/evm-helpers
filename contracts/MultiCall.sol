@@ -62,6 +62,90 @@ contract MultiCall {
         }
     }
 
+    /**
+     * @notice Executes multiple calls in a single transaction (Yul implementation); reads payload from calldata.
+     * @dev All calls are made to the same target. returnWordIndex per call selects which 32-byte word of returndata to use (0 = first word).
+     *
+     * Calldata layout:
+     *   4 bytes  - selector (multicallOneTargetPacked())
+     *   2 bytes  - numCalls
+     *   20 bytes - target address
+     *   For each call:
+     *     32 bytes - header (1 byte returnWordIndex | 31 bytes dataLength)
+     *     N bytes  - call data (length = dataLength)
+     *
+     * @return result ABI-encoded bytes as above.
+     *
+     *   32 bytes - payload length
+     *   For each call (32 bytes per packed word):
+     *     1 bit    - success (0 or 1)
+     *     28 bits  - gasUsed
+     *     227 bits - selected return word (value)
+     */
+    function multicallOneTargetPacked() external returns (bytes memory result) {
+        assembly {
+            if lt(calldatasize(), 26) {
+                revert(0, 0)
+            }
+
+            let numCalls := shr(240, calldataload(4))
+            let target := shr(96, calldataload(6))
+
+            let ptr := mload(0x40)
+            if iszero(numCalls) {
+                mstore(ptr, 0x20)
+                mstore(add(ptr, 0x20), 0)
+                return(ptr, 0x40)
+            }
+
+            let calldataPtr := 26
+
+            let resultsPtr := add(ptr, 0x20)
+            let totalSize := mul(32, numCalls)
+            mstore(ptr, totalSize)
+            mstore(0x40, add(resultsPtr, totalSize))
+
+            let endPtr := add(resultsPtr, totalSize)
+
+            for { let i := resultsPtr } lt(i, endPtr) { i := add(i, 32) } {
+                let header := calldataload(calldataPtr)
+                let returnWordIndex := shr(248, header)
+                let dataLength := and(header, 0x00ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff)
+                calldataPtr := add(calldataPtr, 32)
+
+                if gt(add(calldataPtr, dataLength), calldatasize()) {
+                    revert(0, 0)
+                }
+
+                calldatacopy(endPtr, calldataPtr, dataLength)
+                let g := gas()
+                let success := call(g, target, 0, endPtr, dataLength, 0, 0)
+                let gasUsedVal := sub(g, gas())
+
+                let offset := mul(returnWordIndex, 32)
+
+                let returnWord := 0
+                if and(success, iszero(lt(returndatasize(), add(offset, 32)))) {
+                    returndatacopy(0, offset, 32)
+                    returnWord := mload(0)
+                }
+
+                let packed := or(
+                    or(
+                        shl(255, success),
+                        shl(227, and(gasUsedVal, 0x0fffffff))
+                    ),
+                    and(returnWord, 0x0000000000000007ffffffffffffffffffffffffffffffffffffffffffffffffffffffff)
+                )
+                mstore(i, packed)
+
+                calldataPtr := add(calldataPtr, dataLength)
+            }
+
+            result := ptr
+        }
+    }
+
     /// @notice Fetches the block gas limit.
     /// @return result The block gas limit.
     function gaslimit() external view returns (uint256) {
