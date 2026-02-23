@@ -2,7 +2,9 @@ const { ethers } = require('hardhat');
 const { expect } = require('@1inch/solidity-utils');
 const {
     unpackResult,
+    buildMulticallOneTargetPackedPatchableCalldata,
     callMulticallOneTargetPackedAndMeasureGas,
+    callMulticallOneTargetPackedPatchableAndMeasureGas,
     callMulticallWithGasAndMeasureGas,
 } = require('./utils');
 
@@ -16,13 +18,12 @@ describe('MultiCall', function () {
         await multiCall.waitForDeployment();
         target = await (await ethers.getContractFactory('MultiCallTestTarget')).deploy();
         await target.waitForDeployment();
-        targetAddress = await target.getAddress()
+        targetAddress = await target.getAddress();
     });
 
     describe('multicallOneTargetPacked', function () {
-
         it('returns empty array when numCalls is 0', async function () {
-            const { decodedArray, estimatedGas, totalPerCallGas } = await callMulticallOneTargetPackedAndMeasureGas(multiCall, await target.getAddress(), []);
+            const { decodedArray, estimatedGas, totalPerCallGas } = await callMulticallOneTargetPackedAndMeasureGas(multiCall, targetAddress, []);
             expect(decodedArray).to.have.lengthOf(0);
             expect(estimatedGas).to.be.lte(21656);
             expect(estimatedGas - totalPerCallGas).to.be.lte(21656);
@@ -32,8 +33,8 @@ describe('MultiCall', function () {
             const getUintCalldata = target.interface.encodeFunctionData('getUint');
             const { decodedArray, estimatedGas, totalPerCallGas } = await callMulticallOneTargetPackedAndMeasureGas(
                 multiCall,
-                await target.getAddress(),
-                [{ data: getUintCalldata, returnWordIndex: 0 }]
+                targetAddress,
+                [{ data: getUintCalldata, returnWordIndex: 0 }],
             );
             expect(decodedArray).to.have.lengthOf(1);
             const { success, gasUsed, value } = unpackResult(decodedArray[0]);
@@ -46,7 +47,11 @@ describe('MultiCall', function () {
 
         it('single successful call: returnWordIndex 1, parses second 32 bytes', async function () {
             const getSeveralWordsCalldata = target.interface.encodeFunctionData('getSeveralWords', [1, 2, 3, 4, 5]);
-            const { decodedArray, estimatedGas, totalPerCallGas } = await callMulticallOneTargetPackedAndMeasureGas(multiCall, await target.getAddress(), [{ data: getSeveralWordsCalldata, returnWordIndex: 1 }]);
+            const { decodedArray, estimatedGas, totalPerCallGas } = await callMulticallOneTargetPackedAndMeasureGas(
+                multiCall,
+                targetAddress,
+                [{ data: getSeveralWordsCalldata, returnWordIndex: 1 }],
+            );
             expect(decodedArray).to.have.lengthOf(1);
             const { success, gasUsed, value } = unpackResult(decodedArray[0]);
             expect(success).to.equal(true);
@@ -58,7 +63,11 @@ describe('MultiCall', function () {
 
         it('failed call: success bit 0, gasUsed set, value 0', async function () {
             const doRevertCalldata = target.interface.encodeFunctionData('doRevert');
-            const { decodedArray, estimatedGas, totalPerCallGas } = await callMulticallOneTargetPackedAndMeasureGas(multiCall, await target.getAddress(), [{ data: doRevertCalldata, returnWordIndex: 0 }]);
+            const { decodedArray, estimatedGas, totalPerCallGas } = await callMulticallOneTargetPackedAndMeasureGas(
+                multiCall,
+                targetAddress,
+                [{ data: doRevertCalldata, returnWordIndex: 0 }],
+            );
             expect(decodedArray).to.have.lengthOf(1);
             const { success, gasUsed, value } = unpackResult(decodedArray[0]);
             expect(success).to.equal(false);
@@ -71,7 +80,7 @@ describe('MultiCall', function () {
         it('multiple calls: mix success and failure', async function () {
             const getUintCalldata = target.interface.encodeFunctionData('getUint');
             const doRevertCalldata = target.interface.encodeFunctionData('doRevert');
-            const { decodedArray, estimatedGas, totalPerCallGas } = await callMulticallOneTargetPackedAndMeasureGas(multiCall, await target.getAddress(), [
+            const { decodedArray, estimatedGas, totalPerCallGas } = await callMulticallOneTargetPackedAndMeasureGas(multiCall, targetAddress, [
                 { data: getUintCalldata, returnWordIndex: 0 },
                 { data: doRevertCalldata, returnWordIndex: 0 },
                 { data: getUintCalldata, returnWordIndex: 0 },
@@ -93,7 +102,7 @@ describe('MultiCall', function () {
         it('5 calls: all successful', async function () {
             const getUintCalldata = target.interface.encodeFunctionData('getUint');
             const calls = Array(5).fill({ data: getUintCalldata, returnWordIndex: 0 });
-            const { decodedArray, estimatedGas, totalPerCallGas } = await callMulticallOneTargetPackedAndMeasureGas(multiCall, await target.getAddress(), calls);
+            const { decodedArray, estimatedGas, totalPerCallGas } = await callMulticallOneTargetPackedAndMeasureGas(multiCall, targetAddress, calls);
             expect(decodedArray).to.have.lengthOf(5);
             for (let i = 0; i < 5; i++) {
                 const { success, value } = unpackResult(decodedArray[i]);
@@ -107,7 +116,7 @@ describe('MultiCall', function () {
         it('100 calls: all successful', async function () {
             const getUintCalldata = target.interface.encodeFunctionData('getUint');
             const calls = Array(100).fill({ data: getUintCalldata, returnWordIndex: 0 });
-            const { decodedArray, estimatedGas, totalPerCallGas } = await callMulticallOneTargetPackedAndMeasureGas(multiCall, await target.getAddress(), calls);
+            const { decodedArray, estimatedGas, totalPerCallGas } = await callMulticallOneTargetPackedAndMeasureGas(multiCall, targetAddress, calls);
             expect(decodedArray).to.have.lengthOf(100);
             for (let i = 0; i < 100; i++) {
                 const { success, value } = unpackResult(decodedArray[i]);
@@ -119,8 +128,61 @@ describe('MultiCall', function () {
         });
     });
 
+    describe('multicallOneTargetPackedPatchable', function () {
+        it('one calldata × one patch value: one call', async function () {
+            const baseData = target.interface.encodeFunctionData('getSeveralWords', [0, 0, 0, 0, 0]);
+            const calls = [{ baseData, returnWordIndex: 0, patchOffset: 4, patchValues: [1n] }];
+            const { decodedArray } = await callMulticallOneTargetPackedPatchableAndMeasureGas(multiCall, targetAddress, calls);
+            expect(decodedArray).to.have.lengthOf(1);
+            const { success, value } = unpackResult(decodedArray[0]);
+            expect(success).to.equal(true);
+            expect(value).to.equal(1n);
+        });
+
+        it('one calldata × 5 patch values at same offset: 5 calls', async function () {
+            const baseData = target.interface.encodeFunctionData('getSeveralWords', [0, 0, 0, 0, 0]);
+            const calls = [{ baseData, returnWordIndex: 0, patchOffset: 4, patchValues: [1n, 2n, 3n, 4n, 5n] }];
+            const { decodedArray } = await callMulticallOneTargetPackedPatchableAndMeasureGas(multiCall, targetAddress, calls);
+            expect(decodedArray).to.have.lengthOf(5);
+            for (let i = 0; i < 5; i++) {
+                const { success, value } = unpackResult(decodedArray[i]);
+                expect(success).to.equal(true);
+                expect(value).to.equal(BigInt(i + 1));
+            }
+        });
+
+        it('one calldata × 100 patch values: 100 calls', async function () {
+            const baseData = target.interface.encodeFunctionData('getSeveralWords', [0, 0, 0, 0, 0]);
+            const patchValues = Array.from({ length: 100 }, (_, i) => BigInt(i) + 1n, 0n);
+            const calls = [{ baseData, returnWordIndex: 0, patchOffset: 4, patchValues }];
+            const { decodedArray } = await callMulticallOneTargetPackedPatchableAndMeasureGas(multiCall, targetAddress, calls);
+            expect(decodedArray).to.have.lengthOf(100);
+            for (let i = 0; i < 100; i++) {
+                const { success, value } = unpackResult(decodedArray[i]);
+                expect(success).to.equal(true);
+                expect(value).to.equal(BigInt(i + 1));
+            }
+        });
+
+        it('two calldatas × two patch values each: 4 calls', async function () {
+            const baseData = target.interface.encodeFunctionData('getSeveralWords', [0, 0, 0, 0, 0]);
+            const calls = [
+                { baseData, returnWordIndex: 0, patchOffset: 4, patchValues: [1n, 2n] },
+                { baseData, returnWordIndex: 0, patchOffset: 4, patchValues: [3n, 4n] },
+            ];
+            const data = buildMulticallOneTargetPackedPatchableCalldata(targetAddress, calls);
+            expect(ethers.getBytes(data).length).to.equal(548); // 28 + 2*(32+164+64)
+            const { decodedArray } = await callMulticallOneTargetPackedPatchableAndMeasureGas(multiCall, targetAddress, calls);
+            expect(decodedArray).to.have.lengthOf(4);
+            expect(unpackResult(decodedArray[0]).value).to.equal(1n);
+            expect(unpackResult(decodedArray[1]).value).to.equal(2n);
+            expect(unpackResult(decodedArray[2]).value).to.equal(3n);
+            expect(unpackResult(decodedArray[3]).value).to.equal(4n);
+        });
+    });
+
     describe('multicallWithGas', function () {
-        function toCall(data) {
+        function toCall (data) {
             return { to: targetAddress, data };
         }
 
@@ -193,6 +255,36 @@ describe('MultiCall', function () {
             }
             expect(estimatedGas).to.be.lte(338176);
             expect(estimatedGas - totalPerCallGas).to.be.lte(254646);
+        });
+    });
+
+    describe('performance', function () {
+        it('getSeveralWords', async function () {
+            const calls = [{
+                baseData: target.interface.encodeFunctionData('getSeveralWords', [0, 0, 0, 0, 0]),
+                returnWordIndex: 0,
+                patchOffset: 4,
+                patchValues: Array.from({ length: 100 }, (_, i) => BigInt(i) + 1n),
+            },
+            ];
+
+            const calls2 = Array.from({ length: 100 }, (_, i) => ({
+                data: target.interface.encodeFunctionData('getSeveralWords', [BigInt(i) + 1n, 0, 0, 0, 0]),
+                returnWordIndex: 0,
+            }));
+
+            const calls3 = Array.from({ length: 100 }, (_, i) => ({
+                data: target.interface.encodeFunctionData('getSeveralWords', [BigInt(i) + 1n, 0, 0, 0, 0]),
+                to: targetAddress,
+            }));
+
+            const multiCallOneTargetPackedPatchableResult = await callMulticallOneTargetPackedPatchableAndMeasureGas(multiCall, targetAddress, calls);
+            const multiCallOneTargetPackedResult = await callMulticallOneTargetPackedAndMeasureGas(multiCall, targetAddress, calls2);
+            const multicallWithGasResult = await callMulticallWithGasAndMeasureGas(multiCall, calls3);
+
+            expect(multicallWithGasResult.estimatedGas).to.be.eq(461_188);
+            expect(multiCallOneTargetPackedResult.estimatedGas).to.be.eq(178_302);
+            expect(multiCallOneTargetPackedPatchableResult.estimatedGas).to.be.eq(101_011);
         });
     });
 });
