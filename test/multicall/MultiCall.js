@@ -282,9 +282,9 @@ describe('MultiCall', function () {
             const multiCallOneTargetPackedResult = await callMulticallOneTargetPackedAndMeasureGas(multiCall, targetAddress, calls2);
             const multicallWithGasResult = await callMulticallWithGasAndMeasureGas(multiCall, calls3);
 
-            expect(multicallWithGasResult.estimatedGas).to.be.eq(461_188);
-            expect(multiCallOneTargetPackedResult.estimatedGas).to.be.eq(178_302);
-            expect(multiCallOneTargetPackedPatchableResult.estimatedGas).to.be.eq(101_011);
+            expect(multicallWithGasResult.estimatedGas).to.be.eq(454_751);
+            expect(multiCallOneTargetPackedResult.estimatedGas).to.be.eq(178_312);
+            expect(multiCallOneTargetPackedPatchableResult.estimatedGas).to.be.eq(101_012);
         });
     });
 });

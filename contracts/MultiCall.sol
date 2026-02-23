@@ -81,7 +81,7 @@ contract MultiCall {
      *     227 bits - selected return word (value)
      */
     function multicallOneTargetPacked() external returns (bytes memory) {
-        assembly {
+        assembly ("memory-safe") {  // solhint-disable-line no-inline-assembly
             if lt(calldatasize(), 26) {
                 revert(0, 0)
             }
@@ -167,7 +167,7 @@ contract MultiCall {
      *     227 bits - selected return word (value)
      */
     function multicallOneTargetPackedPatchable() external returns (bytes memory) {
-        assembly {
+        assembly ("memory-safe") {  // solhint-disable-line no-inline-assembly
             if lt(calldatasize(), 28) {
                 revert(0, 0)
             }
