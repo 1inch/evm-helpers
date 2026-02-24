@@ -98,6 +98,8 @@ validate-fee-collector-factory:
 		$(MAKE) ID=OPS_LOP_ADDRESS validate || exit 1; \
 		$(MAKE) ID=OPS_FEE_COLLECTOR_FACTORY_OWNER_ADDRESS validate || exit 1; \
 		$(MAKE) ID=OPS_FEE_COLLECTOR_OWNER_ADDRESS validate || exit 1; \
+		$(MAKE) ID=OPS_FEE_COLLECTOR_SALT validate || exit 1; \
+		$(MAKE) ID=OPS_FEE_COLLECTOR_FACTORY_SALT validate || exit 1; \
 		if [ "$(OPS_ZKSYNC_MODE)" = "true" ]; then \
 			$(MAKE) process-weth process-lop process-fee-collector-owner process-fee-collector-factory-owner || exit 1; \
 		else \
@@ -164,6 +166,12 @@ process-leftover-exchanger-owner:
 
 process-leftover-exchanger-salt:
 		@if [ -n "$$OPS_LEFTOVER_EXCHANGER_SALT" ]; then $(MAKE) OPS_GEN_KEY=leftoverExchangerSalt OPS_GEN_VAL='$(OPS_LEFTOVER_EXCHANGER_SALT)' upsert-constant; fi
+
+process-fee-collector-salt:
+		@if [ -n "$$OPS_FEE_COLLECTOR_SALT" ]; then $(MAKE) OPS_GEN_KEY=feeCollectorSalt OPS_GEN_VAL='$(OPS_FEE_COLLECTOR_SALT)' upsert-constant; fi
+
+process-fee-collector-factory-salt:
+		@if [ -n "$$OPS_FEE_COLLECTOR_FACTORY_SALT" ]; then $(MAKE) OPS_GEN_KEY=feeCollectorFactorySalt OPS_GEN_VAL='$(OPS_FEE_COLLECTOR_FACTORY_SALT)' upsert-constant; fi
 
 upsert-constant:
 		@{ \
@@ -289,4 +297,4 @@ help:
 	@echo "  launch-hh-node         Launch Hardhat node with forked RPC"
 	@echo "  help                   Show this help message"
 
-.PHONY: install install-utils install-dependencies clean deploy-all deploy-helpers deploy-leftover-exchanger deploy-fee-collector-factory deploy-new-fee-collector upgrade-fee-collector get get-outputs help validate validate-helpers validate-leftover-exchanger validate-fee-collector-factory validate-new-fee-collector validate-upgrade-fee-collector process-helpers-args process-weth process-create3-deployer process-lop process-fee-collector-factory-owner process-fee-collector-owner process-fee-collector-operator process-leftover-exchanger-owner process-leftover-exchanger-salt upsert-constant deploy-skip-all deploy-skip deploy-noskip
+.PHONY: install install-utils install-dependencies clean deploy-all deploy-helpers deploy-leftover-exchanger deploy-fee-collector-factory deploy-new-fee-collector upgrade-fee-collector get get-outputs help validate validate-helpers validate-leftover-exchanger validate-fee-collector-factory validate-new-fee-collector validate-upgrade-fee-collector process-helpers-args process-weth process-create3-deployer process-lop process-fee-collector-factory-owner process-fee-collector-owner process-fee-collector-operator process-leftover-exchanger-owner process-leftover-exchanger-salt process-fee-collector-salt process-fee-collector-factory-salt upsert-constant deploy-skip-all deploy-skip deploy-noskip
