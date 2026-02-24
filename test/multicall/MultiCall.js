@@ -2,11 +2,14 @@ const { ethers } = require('hardhat');
 const { expect } = require('@1inch/solidity-utils');
 const {
     unpackResult,
-    buildMulticallOneTargetPackedPatchableCalldata,
     callMulticallOneTargetPackedAndMeasureGas,
     callMulticallOneTargetPackedPatchableAndMeasureGas,
     callMulticallWithGasAndMeasureGas,
 } = require('./utils');
+const {
+    PatchableCall,
+    PatchableMulticall,
+} = require('./patchable-multicall');
 
 describe('MultiCall', function () {
     let multiCall;
@@ -104,53 +107,82 @@ describe('MultiCall', function () {
 
     describe('multicallOneTargetPackedPatchable', function () {
         it('one calldata × one patch value: one call', async function () {
-            const baseData = target.interface.encodeFunctionData('getSeveralWords', [0, 0, 0, 0, 0]);
-            const calls = [{ baseData, returnWordIndex: 0, patchOffset: 4, patchValues: [1n] }];
-            const { decodedArray } = await callMulticallOneTargetPackedPatchableAndMeasureGas(multiCall, targetAddress, calls);
-            expect(decodedArray).to.have.lengthOf(1);
-            const { success, value } = unpackResult(decodedArray[0]);
-            expect(success).to.equal(true);
-            expect(value).to.equal(1n);
+            const baseDataHex = target.interface.encodeFunctionData('getSeveralWords', [0, 0, 0, 0, 0]);
+            const call = PatchableCall.new({ returnWordIndex: 0, patchOffset: 4, baseDataHex, patchValues: [1n] });
+            const patchableMulticall = PatchableMulticall.new({ target: targetAddress, calls: [call] });
+            const res = await multiCall.runner.provider.call({
+                to: await multiCall.getAddress(),
+                data: patchableMulticall.encode(),
+            });
+            const decodedResults = PatchableMulticall.decode(res);
+            expect(decodedResults).to.have.lengthOf(1);
+            expect(decodedResults[0].success).to.equal(true);
+            expect(decodedResults[0].outOfRange).to.equal(false);
+            expect(decodedResults[0].value).to.equal(1n);
+            expect(Number(decodedResults[0].gasUsed)).to.gt(0);
         });
 
         it('return value out of range', async function () {
-            const baseData = target.interface.encodeFunctionData('getSeveralWords', [0, 0, 0, 0, 0]);
-            const calls = [{ baseData, returnWordIndex: 0, patchOffset: 4, patchValues: [1n << 226n] }];
-            const { decodedArray } = await callMulticallOneTargetPackedPatchableAndMeasureGas(multiCall, targetAddress, calls);
-            expect(decodedArray).to.have.lengthOf(1);
-            const { success, outOfRange, value } = unpackResult(decodedArray[0]);
-            expect(success).to.equal(true);
-            expect(outOfRange).to.equal(true);
-            expect(value).to.equal(0n);
+            const baseDataHex = target.interface.encodeFunctionData('getSeveralWords', [0, 0, 0, 0, 0]);
+            const call = PatchableCall.new({ returnWordIndex: 0, patchOffset: 4, baseDataHex, patchValues: [1n << 226n] });
+            const patchableMulticall = PatchableMulticall.new({ target: targetAddress, calls: [call] });
+            const res = await multiCall.runner.provider.call({
+                to: await multiCall.getAddress(),
+                data: patchableMulticall.encode(),
+            });
+            const decodedResults = PatchableMulticall.decode(res);
+            expect(decodedResults).to.have.lengthOf(1);
+            expect(decodedResults[0].success).to.equal(true);
+            expect(decodedResults[0].outOfRange).to.equal(true);
+            expect(decodedResults[0].value).to.equal(0n);
         });
 
         it('one calldata × 100 patch values: 100 calls', async function () {
-            const baseData = target.interface.encodeFunctionData('getSeveralWords', [0, 0, 0, 0, 0]);
-            const patchValues = Array.from({ length: 100 }, (_, i) => BigInt(i) + 1n, 0n);
-            const calls = [{ baseData, returnWordIndex: 0, patchOffset: 4, patchValues }];
-            const { decodedArray } = await callMulticallOneTargetPackedPatchableAndMeasureGas(multiCall, targetAddress, calls);
-            expect(decodedArray).to.have.lengthOf(100);
+            const call = PatchableCall.new({
+                returnWordIndex: 0,
+                patchOffset: 4,
+                baseDataHex: target.interface.encodeFunctionData('getSeveralWords', [0, 0, 0, 0, 0]),
+                patchValues: Array.from({ length: 100 }, (_, i) => BigInt(i) + 1n, 0n),
+            });
+
+            const patchableMulticall = PatchableMulticall.new({
+                target: targetAddress,
+                calls: [call],
+            });
+
+            const res = await multiCall.runner.provider.call({
+                to: await multiCall.getAddress(),
+                data: patchableMulticall.encode(),
+            });
+
+            const decodedResults = PatchableMulticall.decode(res);
+
+            expect(decodedResults).to.have.lengthOf(100);
             for (let i = 0; i < 100; i++) {
-                const { success, value } = unpackResult(decodedArray[i]);
-                expect(success).to.equal(true);
-                expect(value).to.equal(BigInt(i + 1));
+                const decoded = decodedResults[i];
+                expect(decoded.success).to.equal(true);
+                expect(decoded.outOfRange).to.equal(false);
+                expect(decoded.value).to.equal(BigInt(i + 1));
             }
         });
 
         it('two calldatas × two patch values each: 4 calls', async function () {
-            const baseData = target.interface.encodeFunctionData('getSeveralWords', [0, 0, 0, 0, 0]);
+            const baseDataHex = target.interface.encodeFunctionData('getSeveralWords', [0, 0, 0, 0, 0]);
             const calls = [
-                { baseData, returnWordIndex: 0, patchOffset: 4, patchValues: [1n, 2n] },
-                { baseData, returnWordIndex: 0, patchOffset: 4, patchValues: [3n, 4n] },
+                PatchableCall.new({ returnWordIndex: 0, patchOffset: 4, baseDataHex, patchValues: [1n, 2n] }),
+                PatchableCall.new({ returnWordIndex: 0, patchOffset: 4, baseDataHex, patchValues: [3n, 4n] }),
             ];
-            const data = buildMulticallOneTargetPackedPatchableCalldata(targetAddress, calls);
-            expect(ethers.getBytes(data).length).to.equal(548); // 28 + 2*(32+164+64)
-            const { decodedArray } = await callMulticallOneTargetPackedPatchableAndMeasureGas(multiCall, targetAddress, calls);
-            expect(decodedArray).to.have.lengthOf(4);
-            expect(unpackResult(decodedArray[0]).value).to.equal(1n);
-            expect(unpackResult(decodedArray[1]).value).to.equal(2n);
-            expect(unpackResult(decodedArray[2]).value).to.equal(3n);
-            expect(unpackResult(decodedArray[3]).value).to.equal(4n);
+            const patchableMulticall = PatchableMulticall.new({ target: targetAddress, calls });
+            const res = await multiCall.runner.provider.call({
+                to: await multiCall.getAddress(),
+                data: patchableMulticall.encode(),
+            });
+            const decodedResults = PatchableMulticall.decode(res);
+            expect(decodedResults).to.have.lengthOf(4);
+            expect(decodedResults[0].value).to.equal(1n);
+            expect(decodedResults[1].value).to.equal(2n);
+            expect(decodedResults[2].value).to.equal(3n);
+            expect(decodedResults[3].value).to.equal(4n);
         });
     });
 
