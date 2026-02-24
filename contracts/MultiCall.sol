@@ -77,8 +77,9 @@ contract MultiCall {
      * @return result  ABI-encoded bytes:
      *   For each call (32 bytes per packed word):
      *     1 bit    - success (0 or 1)
+     *     1 bit    - outOfRange (1 if return word > value mask)
      *     28 bits  - gasUsed
-     *     227 bits - selected return word (value)
+     *     226 bits - selected return word (value), masked
      */
     function multicallOneTargetPacked() external returns (bytes memory) {
         assembly ("memory-safe") {  // solhint-disable-line no-inline-assembly
@@ -101,13 +102,13 @@ contract MultiCall {
             mstore(add(ptr, 0x20), totalSize)
             let resultsPtr := add(ptr, 0x40)
             let endPtr := add(resultsPtr, totalSize)
-            mstore(0x40, endPtr)
 
             let calldataPtr := 26
+            let returnWordMask := 0x3ffffffffffffffffffffffffffffffffffffffffffffffffffffffff
 
             for { let i := resultsPtr } lt(i, endPtr) { i := add(i, 32) } {
                 let header := calldataload(calldataPtr)
-                let returnWordIndex := shr(248, header)
+                let returnWordIndex := byte(0, header)
                 let dataLength := and(header, 0x00ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff)
                 calldataPtr := add(calldataPtr, 32)
 
@@ -130,10 +131,13 @@ contract MultiCall {
 
                 let packed := or(
                     or(
-                        shl(255, success),
-                        shl(227, and(gasUsedVal, 0x0fffffff))
+                        or(
+                            shl(255, success),
+                            shl(254, gt(returnWord, returnWordMask)) // out of range
+                        ),
+                        shl(226, and(gasUsedVal, 0x0fffffff))
                     ),
-                    and(returnWord, 0x0000000000000007ffffffffffffffffffffffffffffffffffffffffffffffffffffffff)
+                    and(returnWord, returnWordMask)
                 )
                 mstore(i, packed)
 
@@ -163,8 +167,9 @@ contract MultiCall {
      * @return result ABI-encoded bytes:
      *   For each call (32 bytes per packed word):
      *     1 bit    - success (0 or 1)
+     *     1 bit    - outOfRange (1 if return word > value mask)
      *     28 bits  - gasUsed
-     *     227 bits - selected return word (value)
+     *     226 bits - selected return word (value), masked
      */
     function multicallOneTargetPackedPatchable() external returns (bytes memory) {
         assembly ("memory-safe") {  // solhint-disable-line no-inline-assembly
@@ -192,23 +197,22 @@ contract MultiCall {
             mstore(add(ptr, 0x20), totalSize)
             let resultsPtr := add(ptr, 0x40)
             let endPtr := add(resultsPtr, totalSize)
-            mstore(0x40, endPtr)
 
             let resultIdx := resultsPtr
 
             let calldataPtr := 28
+            let returnWordMask := 0x3ffffffffffffffffffffffffffffffffffffffffffffffffffffffff
 
             for { let cdIdx := numCalldatas } cdIdx { cdIdx := sub(cdIdx, 1) } {
                 let header := calldataload(calldataPtr)
-                let returnWordIndex := shr(248, header)
+                let returnWordIndex := byte(0, header)
                 let numPatches := and(shr(232, header), 0xffff)
                 let patchOffset := and(shr(216, header), 0xffff)
                 let dataLength := and(header, 0x00000000000000ffffffffffffffffffffffffffffffffffffffffffffffffff)
                 calldataPtr := add(calldataPtr, 32)
 
-                let patchesSize := mul(numPatches, 32)
                 let calldataEnd := add(calldataPtr, dataLength)
-                let patchesEnd := add(calldataEnd, patchesSize)
+                let patchesEnd := add(calldataEnd, mul(numPatches, 32))
                  if gt(patchesEnd, calldatasize()) {
                     revert(0, 0)
                 }
@@ -216,9 +220,10 @@ contract MultiCall {
                 calldatacopy(endPtr, calldataPtr, dataLength)
 
                 let offset := mul(returnWordIndex, 32)
+                let offsetEnd := add(offset, 32)
 
                 let patchOffsetPtr := add(endPtr, patchOffset)
-                
+
                 for { let j := calldataEnd } lt(j, patchesEnd) { j := add(j, 0x20) } {
                     mstore(patchOffsetPtr, calldataload(j))
 
@@ -227,17 +232,20 @@ contract MultiCall {
                     let gasUsedVal := sub(g, gas())
 
                     let returnWord := 0
-                    if and(success, iszero(lt(returndatasize(), add(offset, 32)))) {
+                    if and(success, iszero(lt(returndatasize(), offsetEnd))) {
                         returndatacopy(0, offset, 32)
                         returnWord := mload(0)
                     }
 
                     let packed := or(
                         or(
-                            shl(255, success),
-                            shl(227, and(gasUsedVal, 0x0fffffff))
+                            or(
+                                shl(255, success),
+                                shl(254, gt(returnWord, returnWordMask)) // out of range
+                            ),
+                            shl(226, and(gasUsedVal, 0x0fffffff))
                         ),
-                        and(returnWord, 0x0000000000000007ffffffffffffffffffffffffffffffffffffffffffffffffffffffff)
+                        and(returnWord, returnWordMask)
                     )
                     mstore(resultIdx, packed)
                     resultIdx := add(resultIdx, 32)

@@ -1,14 +1,15 @@
 const { ethers } = require('hardhat');
 
-// Packed result: bit 255 = success (1 bit), bits 254-227 = gasUsed (28 bits), bits 226-0 = value (227 bits)
-const GAS_USED_MASK = (1n << 255n) - (1n << 227n); // bits 254-227 (28 bits)
-const VALUE_MASK = (1n << 227n) - 1n; // bits 226-0
+// Packed result: bit 255 = success, bit 254 = outOfRange, bits 253-226 = gasUsed (28 bits), bits 225-0 = value (226 bits)
+const GAS_USED_MASK = (1n << 254n) - (1n << 226n); // bits 253-226 (28 bits)
+const VALUE_MASK = (1n << 226n) - 1n; // bits 225-0 (226 bits)
 
 function unpackResult (r) {
     const success = ((r >> 255n) & 1n) !== 0n;
-    const gasUsed = Number((r & GAS_USED_MASK) >> 227n);
+    const outOfRange = ((r >> 254n) & 1n) !== 0n;
+    const gasUsed = Number((r & GAS_USED_MASK) >> 226n);
     const value = r & VALUE_MASK;
-    return { success, gasUsed, value };
+    return { success, outOfRange, gasUsed, value };
 }
 
 function decodeBytesToPackedUint256Array (callResultHex) {
