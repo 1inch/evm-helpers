@@ -62,6 +62,202 @@ contract MultiCall {
         }
     }
 
+    /**
+     * @notice Executes multiple calls in a single transaction (Yul implementation); reads payload from calldata.
+     * @dev All calls are made to the same target. returnWordIndex per call selects which 32-byte word of returndata to use (0 = first word).
+     *
+     * Calldata layout:
+     *   4 bytes  - selector (multicallOneTargetPacked())
+     *   2 bytes  - numCalls
+     *   20 bytes - target address
+     *   For each call:
+     *     32 bytes - header (1 byte returnWordIndex | 31 bytes dataLength)
+     *     N bytes  - call data (length = dataLength)
+     *
+     * @return result  ABI-encoded bytes:
+     *   For each call (32 bytes per packed word):
+     *     1 bit    - success (0 or 1)
+     *     1 bit    - outOfRange (1 if return word > value mask)
+     *     28 bits  - gasUsed
+     *     226 bits - selected return word (value), masked
+     */
+    function multicallOneTargetPacked() external returns (bytes memory) {
+        assembly ("memory-safe") {  // solhint-disable-line no-inline-assembly
+            if lt(calldatasize(), 26) {
+                revert(0, 0)
+            }
+
+            let numCalls := shr(240, calldataload(4))
+            let target := shr(96, calldataload(6))
+
+            if iszero(numCalls) {
+                  mstore(0x00, 0x20)
+                  mstore(0x20, 0)
+                  return(0x00, 0x40)
+            }
+
+            let ptr := mload(0x40)
+            mstore(ptr, 0x20)
+            let totalSize := mul(32, numCalls)
+            mstore(add(ptr, 0x20), totalSize)
+            let resultsPtr := add(ptr, 0x40)
+            let endPtr := add(resultsPtr, totalSize)
+
+            let calldataPtr := 26
+            let returnWordMask := 0x3ffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+
+            for { let i := resultsPtr } lt(i, endPtr) { i := add(i, 32) } {
+                let header := calldataload(calldataPtr)
+                let returnWordIndex := byte(0, header)
+                let dataLength := and(header, 0x00ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff)
+                calldataPtr := add(calldataPtr, 32)
+
+                if gt(add(calldataPtr, dataLength), calldatasize()) {
+                    revert(0, 0)
+                }
+
+                calldatacopy(endPtr, calldataPtr, dataLength)
+                let g := gas()
+                let success := call(g, target, 0, endPtr, dataLength, 0, 0)
+                let gasUsedVal := sub(g, gas())
+
+                let offset := mul(returnWordIndex, 32)
+
+                let returnWord := 0
+                if and(success, iszero(lt(returndatasize(), add(offset, 32)))) {
+                    returndatacopy(0, offset, 32)
+                    returnWord := mload(0)
+                }
+
+                let packed := or(
+                    or(
+                        or(
+                            shl(255, success),
+                            shl(254, gt(returnWord, returnWordMask)) // out of range
+                        ),
+                        shl(226, and(gasUsedVal, 0x0fffffff))
+                    ),
+                    and(returnWord, returnWordMask)
+                )
+                mstore(i, packed)
+
+                calldataPtr := add(calldataPtr, dataLength)
+            }
+
+            return(ptr, add(totalSize, 0x40))
+        }
+    }
+
+    /**
+     * @notice Executes multiple calls in a single transaction with patchable calldata; reads payload from calldata.
+     * @dev All calls are made to the same target. Each entry has one base calldata and multiple patch values; for each patch value
+     * the base calldata is copied, the value is written at patchOffset, then the call is made. returnWordIndex selects which
+     * 32-byte word of returndata to use (0 = first word). numCalls must equal the total number of patch values across all entries.
+     *
+     * Calldata layout:
+     *   4 bytes  - selector (multicallOneTargetPackedPatchable())
+     *   2 bytes  - numCalls (total number of calls)
+     *   2 bytes  - numCalldatas (number of base calldata entries)
+     *   20 bytes - target address
+     *   For each calldata entry:
+     *     32 bytes - header (1 byte returnWordIndex | 2 bytes numPatches | 2 bytes patchOffset | dataLength in low bits)
+     *     N bytes  - base call data (length = dataLength)
+     *     numPatches * 32 bytes - patch values (each written at patchOffset in a copy of base data before the call)
+     *
+     * @return result ABI-encoded bytes:
+     *   For each call (32 bytes per packed word):
+     *     1 bit    - success (0 or 1)
+     *     1 bit    - outOfRange (1 if return word > value mask)
+     *     28 bits  - gasUsed
+     *     226 bits - selected return word (value), masked
+     */
+    function multicallOneTargetPackedPatchable() external returns (bytes memory) {
+        assembly ("memory-safe") {  // solhint-disable-line no-inline-assembly
+            if lt(calldatasize(), 28) {
+                revert(0, 0)
+            }
+
+            let numCalls := shr(240, calldataload(4))
+            let numCalldatas := shr(240, calldataload(6))
+            let target := shr(96, calldataload(8))
+
+            if gt(numCalldatas, numCalls) {
+                revert(0, 0)
+            }
+
+            if iszero(numCalls) {
+                mstore(0x00, 0x20)
+                mstore(0x20, 0)
+                return(0x00, 0x40)
+            }
+
+            let ptr := mload(0x40)
+            mstore(ptr, 0x20)
+            let totalSize := mul(32, numCalls)
+            mstore(add(ptr, 0x20), totalSize)
+            let resultsPtr := add(ptr, 0x40)
+            let endPtr := add(resultsPtr, totalSize)
+
+            let resultIdx := resultsPtr
+
+            let calldataPtr := 28
+            let returnWordMask := 0x3ffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+
+            for { let cdIdx := numCalldatas } cdIdx { cdIdx := sub(cdIdx, 1) } {
+                let header := calldataload(calldataPtr)
+                let returnWordIndex := byte(0, header)
+                let numPatches := and(shr(232, header), 0xffff)
+                let patchOffset := and(shr(216, header), 0xffff)
+                let dataLength := and(header, 0x00000000000000ffffffffffffffffffffffffffffffffffffffffffffffffff)
+                calldataPtr := add(calldataPtr, 32)
+
+                let calldataEnd := add(calldataPtr, dataLength)
+                let patchesEnd := add(calldataEnd, mul(numPatches, 32))
+                 if gt(patchesEnd, calldatasize()) {
+                    revert(0, 0)
+                }
+
+                calldatacopy(endPtr, calldataPtr, dataLength)
+
+                let offset := mul(returnWordIndex, 32)
+                let offsetEnd := add(offset, 32)
+
+                let patchOffsetPtr := add(endPtr, patchOffset)
+
+                for { let j := calldataEnd } lt(j, patchesEnd) { j := add(j, 0x20) } {
+                    mstore(patchOffsetPtr, calldataload(j))
+
+                    let g := gas()
+                    let success := call(g, target, 0, endPtr, dataLength, 0, 0)
+                    let gasUsedVal := sub(g, gas())
+
+                    let returnWord := 0
+                    if and(success, iszero(lt(returndatasize(), offsetEnd))) {
+                        returndatacopy(0, offset, 32)
+                        returnWord := mload(0)
+                    }
+
+                    let packed := or(
+                        or(
+                            or(
+                                shl(255, success),
+                                shl(254, gt(returnWord, returnWordMask)) // out of range
+                            ),
+                            shl(226, and(gasUsedVal, 0x0fffffff))
+                        ),
+                        and(returnWord, returnWordMask)
+                    )
+                    mstore(resultIdx, packed)
+                    resultIdx := add(resultIdx, 32)
+                }
+
+                calldataPtr := patchesEnd
+            }
+
+            return(ptr, add(totalSize, 0x40))
+        }
+    }
+
     /// @notice Fetches the block gas limit.
     /// @return result The block gas limit.
     function gaslimit() external view returns (uint256) {
