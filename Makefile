@@ -104,7 +104,7 @@ validate-fee-collector-factory:
 			$(MAKE) process-weth process-lop process-fee-collector-owner process-fee-collector-factory-owner || exit 1; \
 		else \
 			$(MAKE) ID=OPS_CREATE3_DEPLOYER_ADDRESS validate || exit 1; \
-			$(MAKE) process-weth process-create3-deployer process-lop process-fee-collector-owner process-fee-collector-factory-owner || exit 1; \
+			$(MAKE) process-weth process-create3-deployer process-lop process-fee-collector-owner process-fee-collector-factory-owner process-fee-collector-salt process-fee-collector-factory-salt || exit 1; \
 		fi \
 		}
 
