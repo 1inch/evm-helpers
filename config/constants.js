@@ -13,8 +13,10 @@ function sliceArgs (args, expectedSize) {
 module.exports = {
     WETH: constantsData.weth || {},
     FEE_COLLECTOR_OWNER: constantsData.feeCollectorOwner || {},
+    FEE_COLLECTOR_SALT: constantsData.feeCollectorSalt || {},
     FEE_COLLECTOR_FACTORY: constantsData.feeCollectorFactory || {},
     FEE_COLLECTOR_FACTORY_OWNER: constantsData.feeCollectorFactoryOwner || {},
+    FEE_COLLECTOR_FACTORY_SALT: constantsData.feeCollectorFactorySalt || {},
     LOP: constantsData.lop || {},
     CREATE3_DEPLOYER_CONTRACT: constantsData.create3DeployerContract || {},
     FEE_COLLECTOR_OPERATOR: constantsData.feeCollectorOperator || {},
