@@ -1,57 +1,33 @@
 const { bytesToHex, hexToBytes, toHex } = require('./utils');
 
-class PatchableCall {
-    static DATA_LENGTH_MASK = (1n << 200n) - 1n;
-
-    constructor (returnWordIndex, patchOffset, baseDataHex, patchValues) {
+class OneTargetPackedCall {
+    constructor (returnWordIndex, data) {
         this.returnWordIndex = returnWordIndex;
-        this.patchOffset = patchOffset;
-        this.baseDataHex = baseDataHex;
-        this.patchValues = patchValues;
+        this.data = data;
     }
 
     static new (params) {
-        return new PatchableCall(
-            params.returnWordIndex,
-            params.patchOffset,
-            params.baseDataHex,
-            params.patchValues,
-        );
+        return new OneTargetPackedCall(params.returnWordIndex, params.data);
     }
 
-    get patchValuesCount () {
-        return this.patchValues.length;
-    }
-
-    get baseDataBytes () {
-        const h = this.baseDataHex.startsWith('0x') ? this.baseDataHex.slice(2) : this.baseDataHex;
+    get dataBytes () {
+        const h = this.data.startsWith('0x') ? this.data.slice(2) : this.data;
         return Math.floor(h.length / 2);
     }
 
     encode () {
-        const dataLength = this.baseDataBytes;
-        const numPatches = this.patchValues.length;
-        const header =
-            (BigInt(this.returnWordIndex) << 248n) |
-            (BigInt(numPatches) << 232n) |
-            (BigInt(this.patchOffset) << 216n) |
-            (BigInt(dataLength) & PatchableCall.DATA_LENGTH_MASK);
-
-        let baseHex = this.baseDataHex.startsWith('0x') ? this.baseDataHex.slice(2) : this.baseDataHex;
-        if (baseHex.length % 2) {
-            baseHex = '0' + baseHex;
+        const dataLength = this.dataBytes;
+        const header = (BigInt(this.returnWordIndex) << 248n) | BigInt(dataLength);
+        let data = this.data.startsWith('0x') ? this.data.slice(2) : this.data;
+        if (data.length % 2) {
+            data = '0' + data;
         }
-
-        const parts = [toHex(header, 32), '0x' + baseHex];
-        for (const v of this.patchValues) {
-            parts.push(toHex(BigInt(v), 32));
-        }
-        return parts;
+        return [toHex(header, 32), '0x' + data];
     }
 }
 
-class PatchableMulticall {
-    static SELECTOR = '0x7bc97c36'; // keccak256('multicallOneTargetPackedPatchable()').slice(0, 10)
+class OneTargetPackedMulticall {
+    static SELECTOR = '0x27ae9ae3'; // keccak256('multicallOneTargetPacked()').slice(0,10)
 
     constructor (target, calls) {
         this.target = target;
@@ -59,7 +35,7 @@ class PatchableMulticall {
     }
 
     static new (params) {
-        return new PatchableMulticall(params.target, params.calls);
+        return new OneTargetPackedMulticall(params.target, params.calls);
     }
 
     static decode (res) {
@@ -67,8 +43,8 @@ class PatchableMulticall {
         if (bytes.length < 64) {
             return [];
         }
-        const lengthWord = bytes.slice(32, 64);
 
+        const lengthWord = bytes.slice(32, 64);
         let len = 0;
         for (let i = 0; i < 32; i++) {
             len = (len << 8) | lengthWord[i];
@@ -85,23 +61,20 @@ class PatchableMulticall {
             }
             results.push(PackedResult.decode(word));
         }
+
         return results;
     }
 
     encode () {
-        const numCalls = this.calls.reduce((s, e) => s + e.patchValuesCount, 0);
-
         const chunks = [
-            hexToBytes(PatchableMulticall.SELECTOR),
-            hexToBytes(toHex(numCalls, 2)),
+            hexToBytes(OneTargetPackedMulticall.SELECTOR),
             hexToBytes(toHex(this.calls.length, 2)),
-            hexToBytes(this.target.replace('0x', '')),
+            hexToBytes(this.target.replace(/^0x/, '').toLowerCase().padStart(40, '0')),
         ];
 
-        for (const entry of this.calls) {
-            const parts = entry.encode();
-            for (const p of parts) {
-                chunks.push(hexToBytes(p));
+        for (const call of this.calls) {
+            for (const chunk of call.encode()) {
+                chunks.push(hexToBytes(chunk));
             }
         }
 
@@ -112,6 +85,7 @@ class PatchableMulticall {
             out.set(c, offset);
             offset += c.length;
         }
+
         return bytesToHex(out);
     }
 }
@@ -139,7 +113,7 @@ class PackedResult {
 }
 
 module.exports = {
-    PatchableMulticall,
-    PatchableCall,
+    OneTargetPackedMulticall,
+    OneTargetPackedCall,
     PackedResult,
 };
