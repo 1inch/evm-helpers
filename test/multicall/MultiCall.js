@@ -139,7 +139,7 @@ describe('MultiCall', function () {
                 returnWordIndex: 0,
                 patchOffset: 4,
                 baseDataHex: target.interface.encodeFunctionData('getSeveralWords', [0, 0, 0, 0, 0]),
-                patchValues: Array.from({ length: 100 }, (_, i) => BigInt(i) + 1n, 0n),
+                patchValues: Array.from({ length: 100 }, (_, i) => BigInt(i) + 1n),
             });
 
             const patchableMulticall = PatchableMulticall.new({

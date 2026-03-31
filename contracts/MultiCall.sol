@@ -71,7 +71,7 @@ contract MultiCall {
      *   2 bytes  - numCalls
      *   20 bytes - target address
      *   For each call:
-     *     32 bytes - header (1 byte returnWordIndex | 31 bytes dataLength)
+     *     32 bytes - header (1 byte returnWordIndex | 248 bits (31 bytes) dataLength)
      *     N bytes  - call data (length = dataLength)
      *
      * @return result  ABI-encoded bytes:
@@ -213,7 +213,7 @@ contract MultiCall {
 
                 let calldataEnd := add(calldataPtr, dataLength)
                 let patchesEnd := add(calldataEnd, mul(numPatches, 32))
-                 if gt(patchesEnd, calldatasize()) {
+                if gt(patchesEnd, calldatasize()) {
                     revert(0, 0)
                 }
 
