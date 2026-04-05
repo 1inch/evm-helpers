@@ -1,6 +1,6 @@
 {
   "name": "evm-helpers",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Different helpers for convenient EVM state querying.",
   "repository": {
     "type": "git",
@@ -51,6 +51,7 @@
   },
   "resolutions": {
     "elliptic": "6.6.1",
-    "form-data": "4.0.4"
+    "form-data": "4.0.4",
+    "handlebars": "4.7.9"
   }
 }
