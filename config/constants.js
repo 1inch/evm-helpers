@@ -20,6 +20,7 @@ module.exports = {
     LOP: constantsData.lop || {},
     CREATE3_DEPLOYER_CONTRACT: constantsData.create3DeployerContract || {},
     FEE_COLLECTOR_OPERATOR: constantsData.feeCollectorOperator || {},
+    FEE_COLLECTOR: constantsData.feeCollector || {},
     CONSTRUCTOR_ARGS: {
         UniV4Helper: constantsData.constructorArgs?.UniV4Helper || {},
         UniV4HelperV2: sliceArgs(constantsData.constructorArgs?.UniV4Helper || {}, 2),

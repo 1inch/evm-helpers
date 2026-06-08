@@ -14,14 +14,15 @@ module.exports = async ({ config }) => {
         return;
     }
 
-    const { feeCollectorOperatorName, feeCollectorOperator } = config.deployOpts;
+    for (const feeCollectorOperatorName of config.deployOpts.feeCollectorOperatorNames) {
+        if (!constants.FEE_COLLECTOR_OPERATOR?.[chainId]?.[feeCollectorOperatorName]) {
+            console.log(`Skipping deployment on chain ${chainId} as no operator is set for name ${feeCollectorOperatorName}`);
+            continue;
+        }
 
-    if (!feeCollectorOperatorName || !feeCollectorOperator) {
-        console.log('Skipping deployment as feeCollectorOperatorName or feeCollectorOperator is not set');
-        return;
+        const operatorAddress = constants.FEE_COLLECTOR_OPERATOR[chainId][feeCollectorOperatorName];
+        await deployFeeCollectorForOperator(hre, chainId, feeCollectorOperatorName, operatorAddress);
     }
-
-    await deployFeeCollectorForOperator(hre, chainId, feeCollectorOperatorName, feeCollectorOperator);
 };
 
 module.exports.skip = async () => true;
