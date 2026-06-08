@@ -1,16 +1,4 @@
-const fs = require('fs');
-const path = require('path');
 const constants = require('../../config/constants');
-
-function upsertFeeCollectorAddress(chainId, operatorName, address) {
-    const constantsPath = path.join(__dirname, '../../config/constants.json');
-    const data = JSON.parse(fs.readFileSync(constantsPath, 'utf8'));
-    if (!data.feeCollector) data.feeCollector = {};
-    if (!data.feeCollector[chainId]) data.feeCollector[chainId] = {};
-    data.feeCollector[chainId][operatorName] = address;
-    fs.writeFileSync(constantsPath, JSON.stringify(data, null, 2) + '\n');
-    console.log(`Updated feeCollector[${chainId}][${operatorName}] = ${address}`);
-}
 
 async function deployFeeCollectorForOperator(hre, chainId, feeCollectorOperatorName, operatorAddress) {
     const { ethers } = hre;
@@ -38,8 +26,6 @@ async function deployFeeCollectorForOperator(hre, chainId, feeCollectorOperatorN
     const feeCollector = await ethers.getContractAt('FeeCollector', feeCollectorAddress);
     await feeCollector.setOperator(operatorAddress);
     console.log('feeCollectorOperator set to', feeCollectorAddress);
-
-    upsertFeeCollectorAddress(chainId, feeCollectorOperatorName, feeCollectorAddress);
 
     return feeCollectorAddress;
 }

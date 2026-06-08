@@ -56,7 +56,7 @@ deploy-fee-collector-factory:
 		}
 
 deploy-new-fee-collector:
-		@$(MAKE) OPS_CURRENT_DEP_FILE=$(FILE_DEPLOY_NEW_FEE_COLLECTOR) OPS_SKIP_VERIFY=$(OPS_SKIP_VERIFY) deploy-skip-all validate-new-fee-collector deploy-noskip deploy-impl deploy-skip collect-new-fee-collector
+		@$(MAKE) OPS_CURRENT_DEP_FILE=$(FILE_DEPLOY_NEW_FEE_COLLECTOR) OPS_SKIP_VERIFY=$(OPS_SKIP_VERIFY) deploy-skip-all validate-new-fee-collector deploy-noskip deploy-impl deploy-skip
 
 deploy-new-fee-collectors:
 		@$(MAKE) OPS_CURRENT_DEP_FILE=$(FILE_DEPLOY_NEW_FEE_COLLECTORS) OPS_SKIP_VERIFY=$(OPS_SKIP_VERIFY) deploy-skip-all validate-new-fee-collectors deploy-noskip deploy-impl deploy-skip
@@ -238,19 +238,6 @@ deploy-skip:
 deploy-noskip:
 		@sed -i '' 's/module.exports.skip.*/module.exports.skip = async () => false;/g' $(OPS_CURRENT_DEP_FILE)
 
-collect-new-fee-collector:
-		@{ \
-		$(MAKE) ID=OPS_CHAIN_ID validate || exit 1; \
-		$(MAKE) ID=OPS_FEE_COLLECTOR_OPERATOR_NAME validate || exit 1; \
-		ADDRESS=$$(jq -r '.feeCollector."$(OPS_CHAIN_ID)"."$(OPS_FEE_COLLECTOR_OPERATOR_NAME)"' $(FILE_CONSTANTS_JSON)); \
-		if [ -z "$$ADDRESS" ] || [ "$$ADDRESS" = "null" ]; then \
-			echo "Error: FeeCollector address not found in constants.json"; \
-			exit 1; \
-		fi; \
-		echo "OPS_FEE_COLLECTOR_INSTANCE_ADDRESS=$$ADDRESS" >> $(FILE_ENV_OUTPUTS); \
-		echo "Wrote OPS_FEE_COLLECTOR_INSTANCE_ADDRESS=$$ADDRESS to .env.outputs"; \
-		}
-
 # Get deployed contract addresses from deployment files
 get:
 		@{ \
@@ -343,4 +330,4 @@ help:
 	@echo "  launch-hh-node         Launch Hardhat node with forked RPC"
 	@echo "  help                   Show this help message"
 
-.PHONY: install install-utils install-dependencies clean deploy-all deploy-helpers deploy-leftover-exchanger deploy-fee-collector-factory deploy-new-fee-collector deploy-new-fee-collectors upgrade-fee-collector collect-new-fee-collector get get-outputs help validate validate-helpers validate-leftover-exchanger validate-fee-collector-factory validate-new-fee-collector validate-new-fee-collectors validate-upgrade-fee-collector process-helpers-args process-weth process-create3-deployer process-lop process-fee-collector-factory process-fee-collector-factory-owner process-fee-collector-owner process-fee-collector-operator process-fee-collector-operator-single process-leftover-exchanger-owner process-leftover-exchanger-salt process-fee-collector-salt process-fee-collector-factory-salt upsert-constant deploy-skip-all deploy-skip deploy-noskip
+.PHONY: install install-utils install-dependencies clean deploy-all deploy-helpers deploy-leftover-exchanger deploy-fee-collector-factory deploy-new-fee-collector deploy-new-fee-collectors upgrade-fee-collector get get-outputs help validate validate-helpers validate-leftover-exchanger validate-fee-collector-factory validate-new-fee-collector validate-new-fee-collectors validate-upgrade-fee-collector process-helpers-args process-weth process-create3-deployer process-lop process-fee-collector-factory process-fee-collector-factory-owner process-fee-collector-owner process-fee-collector-operator process-fee-collector-operator-single process-leftover-exchanger-owner process-leftover-exchanger-salt process-fee-collector-salt process-fee-collector-factory-salt upsert-constant deploy-skip-all deploy-skip deploy-noskip

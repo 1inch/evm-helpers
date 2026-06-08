@@ -1,3 +1,5 @@
+const fs = require('fs');
+const path = require('path');
 const hre = require('hardhat');
 const { getChainId } = hre;
 const constants = require('../config/constants');
@@ -21,7 +23,11 @@ module.exports = async ({ config }) => {
         return;
     }
 
-    await deployFeeCollectorForOperator(hre, chainId, feeCollectorOperatorName, feeCollectorOperator);
+    const feeCollectorAddress = await deployFeeCollectorForOperator(hre, chainId, feeCollectorOperatorName, feeCollectorOperator);
+
+    const envOutputsPath = path.join(__dirname, '../.env.outputs');
+    fs.appendFileSync(envOutputsPath, `OPS_FEE_COLLECTOR_INSTANCE_ADDRESS=${feeCollectorAddress}\n`);
+    console.log(`Wrote OPS_FEE_COLLECTOR_INSTANCE_ADDRESS=${feeCollectorAddress} to .env.outputs`);
 };
 
 module.exports.skip = async () => true;

@@ -59,15 +59,15 @@ Single operator (`make deploy-new-fee-collector`):
 - `OPS_FEE_COLLECTOR_OPERATOR_NAME`: Operator name (plain string, e.g. `Safe`).
 - `OPS_FEE_COLLECTOR_OPERATOR`: Operator address (plain string).
 
-After a successful single deploy, the deployed FeeCollector proxy address is:
-- written to `config/constants.json` under `feeCollector[<chainId>][<operatorName>]`
-- appended to `.env.outputs` as `OPS_FEE_COLLECTOR_INSTANCE_ADDRESS=0x...`
+After a successful single deploy:
+1. The deploy script appends `OPS_FEE_COLLECTOR_INSTANCE_ADDRESS=0x...` to `.env.outputs`
+2. `process-fee-collector-instance` writes the address to `config/constants.json` as `feeCollector[<chainId>] = "0x..."` via `upsert-constant`
 
 Batch operators (`make deploy-new-fee-collectors`, also used by `deploy-all`):
 - `OPS_FEE_COLLECTOR_OPERATOR_NAMES`: JSON array of operator names (e.g. `'["Safe","DevPortal"]'`).
 - `OPS_FEE_COLLECTOR_OPERATORS`: JSON object mapping names to addresses (e.g. `'{"Safe":"0x...","DevPortal":"0x..."}'`).
 
-Batch deploy also updates `feeCollector[<chainId>][<operatorName>]` in `constants.json` for each deployed instance, but does not write `.env.outputs`.
+Batch deploy does not write `.env.outputs` or update `feeCollector` in `constants.json`.
 
 Note: For ZKSync (chain ID 324), `OPS_ZKSYNC_MODE` is automatically set to true and `OPS_CREATE3_DEPLOYER_ADDRESS` is not required.
 
