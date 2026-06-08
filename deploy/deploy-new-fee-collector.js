@@ -1,6 +1,9 @@
+const fs = require('fs');
+const path = require('path');
 const hre = require('hardhat');
-const { getChainId, ethers } = hre;
+const { getChainId } = hre;
 const constants = require('../config/constants');
+const { deployFeeCollectorForOperator } = require('./helpers/deploy-fee-collector-for-operator');
 
 module.exports = async ({ config }) => {
     console.log('running deploy script');
@@ -13,33 +16,18 @@ module.exports = async ({ config }) => {
         return;
     }
 
-    for (const feeCollectorOperatorName of config.deployOpts.feeCollectorOperatorNames) {
-        console.log('Deploying FeeCollector for operator name:', feeCollectorOperatorName);
+    const { feeCollectorOperatorName, feeCollectorOperator } = config.deployOpts;
 
-        if (!constants.FEE_COLLECTOR_OPERATOR?.[chainId]?.[feeCollectorOperatorName]) {
-            console.log(`Skipping deployment on chain ${chainId} as no operator is set for name ${feeCollectorOperatorName}`);
-            continue;
-        }
-
-        const salt = ethers.keccak256(ethers.toUtf8Bytes(feeCollectorOperatorName)); // Use correct salt, for instance: from `deploy/upgrade-fee-collector.js`
-
-        const feeCollectorFactory = await ethers.getContractAt('FeeCollectorFactory', constants.FEE_COLLECTOR_FACTORY[chainId]);
-        await feeCollectorFactory.deployFeeCollector(salt);
-        const feeCollectorAddress = await feeCollectorFactory.getFeeCollectorAddress(salt);
-        console.log('FeeCollector deployed at', feeCollectorAddress);
-
-        if (chainId !== '31337' && process.env.OPS_SKIP_VERIFY !== 'true') {
-            await hre.run('verify:verify', {
-                address: feeCollectorAddress,
-                constructorArguments: [constants.FEE_COLLECTOR_FACTORY[chainId], '0x'],
-            });
-        }
-
-        const OPERATOR = constants.FEE_COLLECTOR_OPERATOR[chainId][feeCollectorOperatorName]; // Replace with the actual operator address
-        const feeCollector = await ethers.getContractAt('FeeCollector', feeCollectorAddress);
-        await feeCollector.setOperator(OPERATOR);
-        console.log('feeCollectorOperator set to', feeCollectorAddress);
+    if (!feeCollectorOperatorName || !feeCollectorOperator) {
+        console.log('Skipping deployment as feeCollectorOperatorName or feeCollectorOperator is not set');
+        return;
     }
+
+    const feeCollectorAddress = await deployFeeCollectorForOperator(hre, chainId, feeCollectorOperatorName, feeCollectorOperator);
+
+    const envOutputsPath = path.join(__dirname, '../.env.outputs');
+    fs.appendFileSync(envOutputsPath, `OPS_FEE_COLLECTOR_INSTANCE_ADDRESS=${feeCollectorAddress}\n`);
+    console.log(`Wrote OPS_FEE_COLLECTOR_INSTANCE_ADDRESS=${feeCollectorAddress} to .env.outputs`);
 };
 
 module.exports.skip = async () => true;

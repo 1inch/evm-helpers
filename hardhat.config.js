@@ -55,6 +55,8 @@ module.exports = {
     },
     deployOpts: {
         contractHelperConfigs: process.env.OPS_EVM_HELPER_CONFIGS ? JSON.parse(process.env.OPS_EVM_HELPER_CONFIGS) : [],
+        feeCollectorOperatorName: process.env.OPS_FEE_COLLECTOR_OPERATOR_NAME || '',
+        feeCollectorOperator: process.env.OPS_FEE_COLLECTOR_OPERATOR || '',
         feeCollectorOperatorNames: process.env.OPS_FEE_COLLECTOR_OPERATOR_NAMES ? JSON.parse(process.env.OPS_FEE_COLLECTOR_OPERATOR_NAMES) : [],
         deploymentMethod: process.env.OPS_DEPLOYMENT_METHOD,
     },

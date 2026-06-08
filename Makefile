@@ -27,13 +27,15 @@ FILE_DEPLOY_LEFTOVER_EXCHANGER:=$(CURRENT_DIR)/deploy/deploy-leftover-exchanger.
 FILE_DEPLOY_FEE_COLLECTOR_FACTORY:=$(CURRENT_DIR)/deploy/deploy-fee-collector-factory.js
 FILE_DEPLOY_FEE_COLLECTOR_FACTORY_ZKSYNC:=$(CURRENT_DIR)/deploy/deploy-fee-collector-factory-zksync.js
 FILE_DEPLOY_NEW_FEE_COLLECTOR:=$(CURRENT_DIR)/deploy/deploy-new-fee-collector.js
+FILE_DEPLOY_NEW_FEE_COLLECTORS:=$(CURRENT_DIR)/deploy/deploy-new-fee-collectors.js
 FILE_UPGRADE_FEE_COLLECTOR:=$(CURRENT_DIR)/deploy/upgrade-fee-collector.js
 FILE_UPGRADE_FEE_COLLECTOR_ZKSYNC:=$(CURRENT_DIR)/deploy/upgrade-fee-collector-zksync.js
 
 FILE_CONSTANTS_JSON:=$(CURRENT_DIR)/config/constants.json
+FILE_ENV_OUTPUTS:=$(CURRENT_DIR)/.env.outputs
 
 deploy-all:
-		@$(MAKE) deploy-skip-all deploy-helpers deploy-leftover-exchanger deploy-fee-collector-factory deploy-new-fee-collector
+		@$(MAKE) deploy-skip-all deploy-helpers deploy-leftover-exchanger deploy-fee-collector-factory deploy-new-fee-collectors
 
 deploy-helpers:
 		@$(MAKE) OPS_CURRENT_DEP_FILE=$(FILE_DEPLOY) OPS_DEPLOYMENT_METHOD=$(if $(OPS_DEPLOYMENT_METHOD),$(OPS_DEPLOYMENT_METHOD),create3) OPS_SKIP_VERIFY=$(OPS_SKIP_VERIFY) deploy-skip-all validate-helpers deploy-noskip deploy-impl deploy-skip
@@ -55,6 +57,9 @@ deploy-fee-collector-factory:
 
 deploy-new-fee-collector:
 		@$(MAKE) OPS_CURRENT_DEP_FILE=$(FILE_DEPLOY_NEW_FEE_COLLECTOR) OPS_SKIP_VERIFY=$(OPS_SKIP_VERIFY) deploy-skip-all validate-new-fee-collector deploy-noskip deploy-impl deploy-skip
+
+deploy-new-fee-collectors:
+		@$(MAKE) OPS_CURRENT_DEP_FILE=$(FILE_DEPLOY_NEW_FEE_COLLECTORS) OPS_SKIP_VERIFY=$(OPS_SKIP_VERIFY) deploy-skip-all validate-new-fee-collectors deploy-noskip deploy-impl deploy-skip
 
 upgrade-fee-collector:
 		@{ \
@@ -112,9 +117,20 @@ validate-new-fee-collector:
 		@{ \
 		$(MAKE) ID=OPS_NETWORK validate || exit 1; \
 		$(MAKE) ID=OPS_CHAIN_ID validate || exit 1; \
+		$(MAKE) ID=OPS_FEE_COLLECTOR_FACTORY_ADDRESS validate || exit 1; \
+		$(MAKE) ID=OPS_FEE_COLLECTOR_OPERATOR_NAME validate || exit 1; \
+		$(MAKE) ID=OPS_FEE_COLLECTOR_OPERATOR validate || exit 1; \
+		$(MAKE) process-fee-collector-factory process-fee-collector-operator-single || exit 1; \
+		}
+
+validate-new-fee-collectors:
+		@{ \
+		$(MAKE) ID=OPS_NETWORK validate || exit 1; \
+		$(MAKE) ID=OPS_CHAIN_ID validate || exit 1; \
+		$(MAKE) ID=OPS_FEE_COLLECTOR_FACTORY_ADDRESS validate || exit 1; \
 		$(MAKE) ID=OPS_FEE_COLLECTOR_OPERATORS validate || exit 1; \
 		$(MAKE) ID=OPS_FEE_COLLECTOR_OPERATOR_NAMES validate || exit 1; \
-		$(MAKE) process-fee-collector-operator || exit 1; \
+		$(MAKE) process-fee-collector-factory process-fee-collector-operator || exit 1; \
 		}
 
 validate-upgrade-fee-collector:
@@ -155,11 +171,26 @@ process-lop:
 process-fee-collector-factory-owner:
 		@$(MAKE) OPS_GEN_KEY=feeCollectorFactoryOwner OPS_GEN_VAL='$(OPS_FEE_COLLECTOR_FACTORY_OWNER_ADDRESS)' upsert-constant
 
+process-fee-collector-factory:
+		@$(MAKE) OPS_GEN_KEY=feeCollectorFactory OPS_GEN_VAL='$(OPS_FEE_COLLECTOR_FACTORY_ADDRESS)' upsert-constant
+
 process-fee-collector-owner:
 		@$(MAKE) OPS_GEN_KEY=feeCollectorOwner OPS_GEN_VAL='$(OPS_FEE_COLLECTOR_OWNER_ADDRESS)' upsert-constant
 
 process-fee-collector-operator:
 		@$(MAKE) OPS_GEN_KEY=feeCollectorOperator OPS_GEN_VAL='$(OPS_FEE_COLLECTOR_OPERATORS)' upsert-constant
+
+process-fee-collector-operator-single:
+		@{ \
+		$(MAKE) ID=OPS_FEE_COLLECTOR_OPERATOR_NAME validate || exit 1; \
+		$(MAKE) ID=OPS_FEE_COLLECTOR_OPERATOR validate || exit 1; \
+		$(MAKE) ID=OPS_CHAIN_ID validate || exit 1; \
+		tmpfile=$$(mktemp); \
+		jq --arg name '$(OPS_FEE_COLLECTOR_OPERATOR_NAME)' --arg addr '$(OPS_FEE_COLLECTOR_OPERATOR)' \
+			'.feeCollectorOperator."$(OPS_CHAIN_ID)"[$$name] = $$addr' $(FILE_CONSTANTS_JSON) > $$tmpfile \
+			&& mv $$tmpfile $(FILE_CONSTANTS_JSON); \
+		echo "Updated feeCollectorOperator[$(OPS_CHAIN_ID)][$(OPS_FEE_COLLECTOR_OPERATOR_NAME)] = $(OPS_FEE_COLLECTOR_OPERATOR)"; \
+		}
 
 process-leftover-exchanger-owner:
 		@$(MAKE) OPS_GEN_KEY=leftoverExchangerOwner OPS_GEN_VAL='$(OPS_LEFTOVER_EXCHANGER_OWNER_ADDRESS)' upsert-constant
@@ -194,6 +225,7 @@ deploy-skip-all:
 						$(FILE_DEPLOY_FEE_COLLECTOR_FACTORY) \
 						$(FILE_DEPLOY_FEE_COLLECTOR_FACTORY_ZKSYNC) \
 						$(FILE_DEPLOY_NEW_FEE_COLLECTOR) \
+						$(FILE_DEPLOY_NEW_FEE_COLLECTORS) \
 						$(FILE_UPGRADE_FEE_COLLECTOR) \
 						$(FILE_UPGRADE_FEE_COLLECTOR_ZKSYNC); do \
 			$(MAKE) OPS_CURRENT_DEP_FILE=$$secret deploy-skip; \
@@ -291,10 +323,11 @@ help:
 	@echo "  deploy-helpers         Deploy helper contracts"
 	@echo "  deploy-leftover-exchanger Deploy leftover exchanger contract"
 	@echo "  deploy-fee-collector-factory Deploy fee collector factory contract"
-	@echo "  deploy-new-fee-collector Deploy new fee collector contract"
+	@echo "  deploy-new-fee-collector Deploy new fee collector contract for a single operator"
+	@echo "  deploy-new-fee-collectors Deploy new fee collector contracts for multiple operators"
 	@echo "  upgrade-fee-collector  Upgrade fee collector contract"
 	@echo "  get PARAMETER=...      Get deployed contract address"
 	@echo "  launch-hh-node         Launch Hardhat node with forked RPC"
 	@echo "  help                   Show this help message"
 
-.PHONY: install install-utils install-dependencies clean deploy-all deploy-helpers deploy-leftover-exchanger deploy-fee-collector-factory deploy-new-fee-collector upgrade-fee-collector get get-outputs help validate validate-helpers validate-leftover-exchanger validate-fee-collector-factory validate-new-fee-collector validate-upgrade-fee-collector process-helpers-args process-weth process-create3-deployer process-lop process-fee-collector-factory-owner process-fee-collector-owner process-fee-collector-operator process-leftover-exchanger-owner process-leftover-exchanger-salt process-fee-collector-salt process-fee-collector-factory-salt upsert-constant deploy-skip-all deploy-skip deploy-noskip
+.PHONY: install install-utils install-dependencies clean deploy-all deploy-helpers deploy-leftover-exchanger deploy-fee-collector-factory deploy-new-fee-collector deploy-new-fee-collectors upgrade-fee-collector get get-outputs help validate validate-helpers validate-leftover-exchanger validate-fee-collector-factory validate-new-fee-collector validate-new-fee-collectors validate-upgrade-fee-collector process-helpers-args process-weth process-create3-deployer process-lop process-fee-collector-factory process-fee-collector-factory-owner process-fee-collector-owner process-fee-collector-operator process-fee-collector-operator-single process-leftover-exchanger-owner process-leftover-exchanger-salt process-fee-collector-salt process-fee-collector-factory-salt upsert-constant deploy-skip-all deploy-skip deploy-noskip

@@ -22,7 +22,8 @@ The deployment process includes the following steps:
     - `make deploy-helpers` deploys all helper contracts defined in `OPS_EVM_HELPER_CONFIGS`,
     - `make deploy-leftover-exchanger` deploys LeftoverExchanger,
     - `make deploy-fee-collector-factory` deploys FeeCollector and FeeCollectorFactory,
-    - `make deploy-new-fee-collector` deploys specific FeeCollectors defined in `OPS_FEE_COLLECTOR_OPERATORS` and `OPS_FEE_COLLECTOR_OPERATOR_NAMES`,
+    - `make deploy-new-fee-collector` deploys a single FeeCollector for one operator (`OPS_FEE_COLLECTOR_OPERATOR_NAME` and `OPS_FEE_COLLECTOR_OPERATOR`),
+    - `make deploy-new-fee-collectors` deploys multiple FeeCollectors defined in `OPS_FEE_COLLECTOR_OPERATORS` and `OPS_FEE_COLLECTOR_OPERATOR_NAMES`,
     - `make upgrade-fee-collector` upgrades the FeeCollector implementation.
 5. To get deployed contract addresses, use `make get PARAMETER=<param>` where `<param>` is the contract parameter name (e.g., `OPS_EVM_HELPERS_ADDRESS`).
 
@@ -52,8 +53,21 @@ The deployment process includes the following steps:
 ### FeeCollector
 - `OPS_FEE_COLLECTOR_FACTORY_OWNER_ADDRESS`: The owner address for the Fee Collector Factory.
 - `OPS_FEE_COLLECTOR_OWNER_ADDRESS`: The owner address for the Fee Collector.
-- `OPS_FEE_COLLECTOR_OPERATORS`: Comma-separated list of operator addresses for new fee collectors.
-- `OPS_FEE_COLLECTOR_OPERATOR_NAMES`: Comma-separated list of operator names corresponding to the addresses.
+- `OPS_FEE_COLLECTOR_FACTORY_ADDRESS`: The deployed FeeCollectorFactory contract address (required for `deploy-new-fee-collector` and `deploy-new-fee-collectors`).
+
+Single operator (`make deploy-new-fee-collector`):
+- `OPS_FEE_COLLECTOR_OPERATOR_NAME`: Operator name (plain string, e.g. `Safe`).
+- `OPS_FEE_COLLECTOR_OPERATOR`: Operator address (plain string).
+
+After a successful single deploy:
+1. The deploy script appends `OPS_FEE_COLLECTOR_INSTANCE_ADDRESS=0x...` to `.env.outputs`
+2. `process-fee-collector-instance` writes the address to `config/constants.json` as `feeCollector[<chainId>] = "0x..."` via `upsert-constant`
+
+Batch operators (`make deploy-new-fee-collectors`, also used by `deploy-all`):
+- `OPS_FEE_COLLECTOR_OPERATOR_NAMES`: JSON array of operator names (e.g. `'["Safe","DevPortal"]'`).
+- `OPS_FEE_COLLECTOR_OPERATORS`: JSON object mapping names to addresses (e.g. `'{"Safe":"0x...","DevPortal":"0x..."}'`).
+
+Batch deploy does not write `.env.outputs` or update `feeCollector` in `constants.json`.
 
 Note: For ZKSync (chain ID 324), `OPS_ZKSYNC_MODE` is automatically set to true and `OPS_CREATE3_DEPLOYER_ADDRESS` is not required.
 
@@ -68,11 +82,12 @@ Here is a list of main Makefile targets you can use by running `make <target-nam
 - `clean`: Remove all deployment files for the specified network
 
 ### Deployment Targets
-- `deploy-all`: Deploy all contracts (helpers, leftover exchanger, fee collector factory, and new fee collectors)
+- `deploy-all`: Deploy all contracts (helpers, leftover exchanger, fee collector factory, and new fee collectors via batch deploy)
 - `deploy-helpers`: Deploy helper contracts specified in `OPS_EVM_HELPER_CONFIGS`
 - `deploy-leftover-exchanger`: Deploy the LeftoverExchanger contract
 - `deploy-fee-collector-factory`: Deploy the FeeCollectorFactory contract (uses ZKSync-specific deployment if OPS_ZKSYNC_MODE is true)
-- `deploy-new-fee-collector`: Deploy new FeeCollector contracts for specified operators
+- `deploy-new-fee-collector`: Deploy a single FeeCollector for one operator
+- `deploy-new-fee-collectors`: Deploy multiple FeeCollector contracts for specified operators
 - `upgrade-fee-collector`: Upgrade the FeeCollector implementation (uses ZKSync-specific upgrade if OPS_ZKSYNC_MODE is true)
 
 ### Utility Targets
@@ -84,7 +99,8 @@ Here is a list of main Makefile targets you can use by running `make <target-nam
 - `validate-helpers`: Validate environment variables for helper deployment
 - `validate-leftover-exchanger`: Validate environment variables for LeftoverExchanger deployment
 - `validate-fee-collector-factory`: Validate environment variables for FeeCollectorFactory deployment
-- `validate-new-fee-collector`: Validate environment variables for new FeeCollector deployment
+- `validate-new-fee-collector`: Validate environment variables for single FeeCollector deployment
+- `validate-new-fee-collectors`: Validate environment variables for batch FeeCollector deployment
 - `validate-upgrade-fee-collector`: Validate environment variables for FeeCollector upgrade
 
 ## DEPLOYMENT FLOW
