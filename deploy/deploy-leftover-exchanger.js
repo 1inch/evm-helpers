@@ -28,6 +28,7 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
         deployments,
         deployer,
         constructorArgs: [constants.WETH[chainId], constants.LEFTOVER_EXCHANGER_OWNER[chainId]],
+        skipVerify: process.env.OPS_SKIP_VERIFY === 'true',
     });
 
     const salt = constants.LEFTOVER_EXCHANGER_SALT[chainId]
@@ -45,9 +46,10 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
         create3Deployer: constants.CREATE3_DEPLOYER_CONTRACT[chainId],
         salt,
         deployments,
+        skipVerify: process.env.OPS_SKIP_VERIFY === 'true',
     });
 
-    if (chainId !== '31337') {
+    if (chainId !== '31337' && process.env.OPS_SKIP_VERIFY !== 'true') {
         const proxyAdminBytes32 = await ethers.provider.send('eth_getStorageAt', [
             await transparentUpgradeableProxy.getAddress(),
             ADMIN_SLOT,
@@ -61,4 +63,4 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     }
 };
 
-module.exports.skip = async () => true;
+module.exports.skip = async () => false;

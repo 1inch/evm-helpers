@@ -25,6 +25,7 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
         deployments,
         deployer,
         constructorArgs: [constants.WETH[chainId], constants.LOP[chainId], constants.FEE_COLLECTOR_OWNER[chainId]],
+        skipVerify: process.env.OPS_SKIP_VERIFY === 'true',
     });
 
     await deployAndGetContract({
@@ -32,6 +33,7 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
         deployments,
         deployer,
         constructorArgs: [await feeCollector.getAddress(), constants.FEE_COLLECTOR_FACTORY_OWNER[chainId]],
+        skipVerify: process.env.OPS_SKIP_VERIFY === 'true',
     });
 };
 

@@ -29,6 +29,7 @@ module.exports = async ({ deployments }) => {
         create3Deployer: constants.CREATE3_DEPLOYER_CONTRACT[chainId],
         salt: FEE_COLLECTOR_SALT,
         deployments,
+        skipVerify: process.env.OPS_SKIP_VERIFY === 'true',
     });
 
     const create3Deployer = await ethers.getContractAt('ICreate3Deployer', constants.CREATE3_DEPLOYER_CONTRACT[chainId]);

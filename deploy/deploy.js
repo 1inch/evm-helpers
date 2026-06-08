@@ -52,6 +52,7 @@ module.exports = async ({ deployments, getNamedAccounts, config }) => {
                 create3Deployer: constants.CREATE3_DEPLOYER_CONTRACT[chainId],
                 salt,
                 deployments,
+                skipVerify: process.env.OPS_SKIP_VERIFY === 'true',
             });
         } else {
             const { deployer } = await getNamedAccounts();
@@ -61,6 +62,7 @@ module.exports = async ({ deployments, getNamedAccounts, config }) => {
                 deployments,
                 deployer,
                 constructorArgs: constants.CONSTRUCTOR_ARGS?.[contractHelperName]?.[chainId] ?? [],
+                skipVerify: process.env.OPS_SKIP_VERIFY === 'true',
             });
         }
 

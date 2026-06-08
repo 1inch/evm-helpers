@@ -10,6 +10,7 @@ OPS_NETWORK := $(subst ",,$(OPS_NETWORK))
 OPS_CHAIN_ID := $(subst ",,$(OPS_CHAIN_ID))
 OPS_ZKSYNC_MODE := $(subst ",,$(OPS_ZKSYNC_MODE))
 OPS_DEPLOYMENT_METHOD := $(subst ",,$(OPS_DEPLOYMENT_METHOD))
+OPS_SKIP_VERIFY := $(subst ",,$(OPS_SKIP_VERIFY))
 
 IS_ZKSYNC := $(findstring zksync,$(OPS_NETWORK))
 
@@ -34,33 +35,33 @@ FILE_CONSTANTS_JSON:=$(CURRENT_DIR)/config/constants.json
 deploy-all:
 		@$(MAKE) deploy-skip-all deploy-helpers deploy-leftover-exchanger deploy-fee-collector-factory deploy-new-fee-collector
 
-deploy-helpers: 
-		@$(MAKE) OPS_CURRENT_DEP_FILE=$(FILE_DEPLOY) OPS_DEPLOYMENT_METHOD=$(if $(OPS_DEPLOYMENT_METHOD),$(OPS_DEPLOYMENT_METHOD),create3) deploy-skip-all validate-helpers deploy-noskip deploy-impl deploy-skip
+deploy-helpers:
+		@$(MAKE) OPS_CURRENT_DEP_FILE=$(FILE_DEPLOY) OPS_DEPLOYMENT_METHOD=$(if $(OPS_DEPLOYMENT_METHOD),$(OPS_DEPLOYMENT_METHOD),create3) OPS_SKIP_VERIFY=$(OPS_SKIP_VERIFY) deploy-skip-all validate-helpers deploy-noskip deploy-impl deploy-skip
 
 deploy-impl:
 		@yarn deploy $(OPS_NETWORK) || exit 1
 
 deploy-leftover-exchanger:
-		@$(MAKE) OPS_CURRENT_DEP_FILE=$(FILE_DEPLOY_LEFTOVER_EXCHANGER) deploy-skip-all validate-leftover-exchanger deploy-noskip deploy-impl deploy-skip
+		@$(MAKE) OPS_CURRENT_DEP_FILE=$(FILE_DEPLOY_LEFTOVER_EXCHANGER) OPS_SKIP_VERIFY=$(OPS_SKIP_VERIFY) deploy-skip-all validate-leftover-exchanger deploy-noskip deploy-impl deploy-skip
 
 deploy-fee-collector-factory:
 		@{ \
 		if [ "$(OPS_ZKSYNC_MODE)" = "true" ]; then \
-			$(MAKE) OPS_CURRENT_DEP_FILE=$(FILE_DEPLOY_FEE_COLLECTOR_FACTORY_ZKSYNC) deploy-skip-all validate-fee-collector-factory deploy-noskip deploy-impl deploy-skip; \
+			$(MAKE) OPS_CURRENT_DEP_FILE=$(FILE_DEPLOY_FEE_COLLECTOR_FACTORY_ZKSYNC) OPS_SKIP_VERIFY=$(OPS_SKIP_VERIFY) deploy-skip-all validate-fee-collector-factory deploy-noskip deploy-impl deploy-skip; \
 		else \
-			$(MAKE) OPS_CURRENT_DEP_FILE=$(FILE_DEPLOY_FEE_COLLECTOR_FACTORY) deploy-skip-all validate-fee-collector-factory deploy-noskip deploy-impl deploy-skip; \
+			$(MAKE) OPS_CURRENT_DEP_FILE=$(FILE_DEPLOY_FEE_COLLECTOR_FACTORY) OPS_SKIP_VERIFY=$(OPS_SKIP_VERIFY) deploy-skip-all validate-fee-collector-factory deploy-noskip deploy-impl deploy-skip; \
 		fi \
 		}
 
 deploy-new-fee-collector:
-		@$(MAKE) OPS_CURRENT_DEP_FILE=$(FILE_DEPLOY_NEW_FEE_COLLECTOR) deploy-skip-all validate-new-fee-collector deploy-noskip deploy-impl deploy-skip
+		@$(MAKE) OPS_CURRENT_DEP_FILE=$(FILE_DEPLOY_NEW_FEE_COLLECTOR) OPS_SKIP_VERIFY=$(OPS_SKIP_VERIFY) deploy-skip-all validate-new-fee-collector deploy-noskip deploy-impl deploy-skip
 
 upgrade-fee-collector:
 		@{ \
 		if [ "$(OPS_ZKSYNC_MODE)" = "true" ]; then \
-			$(MAKE) OPS_CURRENT_DEP_FILE=$(FILE_UPGRADE_FEE_COLLECTOR_ZKSYNC) deploy-skip-all validate-upgrade-fee-collector deploy-noskip deploy-impl deploy-skip; \
+			$(MAKE) OPS_CURRENT_DEP_FILE=$(FILE_UPGRADE_FEE_COLLECTOR_ZKSYNC) OPS_SKIP_VERIFY=$(OPS_SKIP_VERIFY) deploy-skip-all validate-upgrade-fee-collector deploy-noskip deploy-impl deploy-skip; \
 		else \
-			$(MAKE) OPS_CURRENT_DEP_FILE=$(FILE_UPGRADE_FEE_COLLECTOR) deploy-skip-all validate-upgrade-fee-collector deploy-noskip deploy-impl deploy-skip; \
+			$(MAKE) OPS_CURRENT_DEP_FILE=$(FILE_UPGRADE_FEE_COLLECTOR) OPS_SKIP_VERIFY=$(OPS_SKIP_VERIFY) deploy-skip-all validate-upgrade-fee-collector deploy-noskip deploy-impl deploy-skip; \
 		fi \
 		}
 
@@ -97,11 +98,13 @@ validate-fee-collector-factory:
 		$(MAKE) ID=OPS_LOP_ADDRESS validate || exit 1; \
 		$(MAKE) ID=OPS_FEE_COLLECTOR_FACTORY_OWNER_ADDRESS validate || exit 1; \
 		$(MAKE) ID=OPS_FEE_COLLECTOR_OWNER_ADDRESS validate || exit 1; \
+		$(MAKE) ID=OPS_FEE_COLLECTOR_SALT validate || exit 1; \
+		$(MAKE) ID=OPS_FEE_COLLECTOR_FACTORY_SALT validate || exit 1; \
 		if [ "$(OPS_ZKSYNC_MODE)" = "true" ]; then \
 			$(MAKE) process-weth process-lop process-fee-collector-owner process-fee-collector-factory-owner || exit 1; \
 		else \
 			$(MAKE) ID=OPS_CREATE3_DEPLOYER_ADDRESS validate || exit 1; \
-			$(MAKE) process-weth process-create3-deployer process-lop process-fee-collector-owner process-fee-collector-factory-owner || exit 1; \
+			$(MAKE) process-weth process-create3-deployer process-lop process-fee-collector-owner process-fee-collector-factory-owner process-fee-collector-salt process-fee-collector-factory-salt || exit 1; \
 		fi \
 		}
 
@@ -134,6 +137,9 @@ process-helpers-args:
 		@{ \
 		if echo "$(OPS_EVM_HELPER_CONFIGS)" | grep -q "UniV4Helper"; then \
 			$(MAKE) OPS_GEN_KEY=constructorArgs.UniV4Helper OPS_GEN_VAL='$(OPS_UNIV4HELPER_ARGS)' upsert-constant; \
+		fi; \
+		if echo "$(OPS_EVM_HELPER_CONFIGS)" | grep -q "UniV4HelperV2"; then \
+			$(MAKE) OPS_GEN_KEY=constructorArgs.UniV4HelperV2 OPS_GEN_VAL='$(OPS_UNIV4HELPER_V2_ARGS)' upsert-constant; \
 		fi \
 		}
 
@@ -161,13 +167,23 @@ process-leftover-exchanger-owner:
 process-leftover-exchanger-salt:
 		@if [ -n "$$OPS_LEFTOVER_EXCHANGER_SALT" ]; then $(MAKE) OPS_GEN_KEY=leftoverExchangerSalt OPS_GEN_VAL='$(OPS_LEFTOVER_EXCHANGER_SALT)' upsert-constant; fi
 
+process-fee-collector-salt:
+		@if [ -n "$$OPS_FEE_COLLECTOR_SALT" ]; then $(MAKE) OPS_GEN_KEY=feeCollectorSalt OPS_GEN_VAL='$(OPS_FEE_COLLECTOR_SALT)' upsert-constant; fi
+
+process-fee-collector-factory-salt:
+		@if [ -n "$$OPS_FEE_COLLECTOR_FACTORY_SALT" ]; then $(MAKE) OPS_GEN_KEY=feeCollectorFactorySalt OPS_GEN_VAL='$(OPS_FEE_COLLECTOR_FACTORY_SALT)' upsert-constant; fi
+
 upsert-constant:
 		@{ \
 		$(MAKE) ID=OPS_GEN_VAL validate || exit 1; \
 		$(MAKE) ID=OPS_GEN_KEY validate || exit 1; \
 		$(MAKE) ID=OPS_CHAIN_ID validate || exit 1; \
 		tmpfile=$$(mktemp); \
-		jq '.$(OPS_GEN_KEY)."$(OPS_CHAIN_ID)" = $(OPS_GEN_VAL)' $(FILE_CONSTANTS_JSON) > $$tmpfile && mv $$tmpfile $(FILE_CONSTANTS_JSON); \
+		if echo '$(OPS_GEN_VAL)' | jq type >/dev/null 2>&1; then \
+			jq --argjson val '$(OPS_GEN_VAL)' '.$(OPS_GEN_KEY)."$(OPS_CHAIN_ID)" = $$val' $(FILE_CONSTANTS_JSON) > $$tmpfile; \
+		else \
+			jq --arg val '$(OPS_GEN_VAL)' '.$(OPS_GEN_KEY)."$(OPS_CHAIN_ID)" = $$val' $(FILE_CONSTANTS_JSON) > $$tmpfile; \
+		fi && mv $$tmpfile $(FILE_CONSTANTS_JSON); \
 		echo "Updated $(OPS_GEN_KEY)[$(OPS_CHAIN_ID)] = $(OPS_GEN_VAL)"; \
 		}
 
@@ -281,4 +297,4 @@ help:
 	@echo "  launch-hh-node         Launch Hardhat node with forked RPC"
 	@echo "  help                   Show this help message"
 
-.PHONY: install install-utils install-dependencies clean deploy-all deploy-helpers deploy-leftover-exchanger deploy-fee-collector-factory deploy-new-fee-collector upgrade-fee-collector get get-outputs help validate validate-helpers validate-leftover-exchanger validate-fee-collector-factory validate-new-fee-collector validate-upgrade-fee-collector process-helpers-args process-weth process-create3-deployer process-lop process-fee-collector-factory-owner process-fee-collector-owner process-fee-collector-operator process-leftover-exchanger-owner process-leftover-exchanger-salt upsert-constant deploy-skip-all deploy-skip deploy-noskip
+.PHONY: install install-utils install-dependencies clean deploy-all deploy-helpers deploy-leftover-exchanger deploy-fee-collector-factory deploy-new-fee-collector upgrade-fee-collector get get-outputs help validate validate-helpers validate-leftover-exchanger validate-fee-collector-factory validate-new-fee-collector validate-upgrade-fee-collector process-helpers-args process-weth process-create3-deployer process-lop process-fee-collector-factory-owner process-fee-collector-owner process-fee-collector-operator process-leftover-exchanger-owner process-leftover-exchanger-salt process-fee-collector-salt process-fee-collector-factory-salt upsert-constant deploy-skip-all deploy-skip deploy-noskip

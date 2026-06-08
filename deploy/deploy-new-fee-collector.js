@@ -28,7 +28,7 @@ module.exports = async ({ config }) => {
         const feeCollectorAddress = await feeCollectorFactory.getFeeCollectorAddress(salt);
         console.log('FeeCollector deployed at', feeCollectorAddress);
 
-        if (chainId !== '31337') {
+        if (chainId !== '31337' && process.env.OPS_SKIP_VERIFY !== 'true') {
             await hre.run('verify:verify', {
                 address: feeCollectorAddress,
                 constructorArguments: [constants.FEE_COLLECTOR_FACTORY[chainId], '0x'],

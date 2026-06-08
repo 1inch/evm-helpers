@@ -4,9 +4,6 @@ const { getChainId, ethers } = hre;
 
 const constants = require('../config/constants');
 
-const FEE_COLLECTOR_SALT = ethers.keccak256(ethers.toUtf8Bytes('FeeCollector'));
-const FEE_COLLECTOR_FACTORY_SALT = ethers.keccak256(ethers.toUtf8Bytes('FeeCollectorFactory'));
-
 module.exports = async ({ deployments }) => {
     const networkName = hre.network.name;
     console.log('running deploy script');
@@ -22,13 +19,24 @@ module.exports = async ({ deployments }) => {
         return;
     }
 
+    const feeCollectorSalt = constants.FEE_COLLECTOR_SALT[chainId] ?? 'feeCollector';
+    const feeCollectorFactorySalt = constants.FEE_COLLECTOR_FACTORY_SALT[chainId] ?? 'feeCollectorFactory';
+
+    const FEE_COLLECTOR_SALT = ethers.keccak256(ethers.toUtf8Bytes(feeCollectorSalt));
+    const FEE_COLLECTOR_FACTORY_SALT = ethers.keccak256(ethers.toUtf8Bytes(feeCollectorFactorySalt));
+
+    console.log('Deploying implementation with salt:', feeCollectorSalt);
+
     const feeCollector = await deployAndGetContractWithCreate3({
         contractName: 'FeeCollector',
         constructorArgs: [constants.WETH[chainId], constants.LOP[chainId], constants.FEE_COLLECTOR_OWNER[chainId]],
         create3Deployer: constants.CREATE3_DEPLOYER_CONTRACT[chainId],
         salt: FEE_COLLECTOR_SALT,
         deployments,
+        skipVerify: process.env.OPS_SKIP_VERIFY === 'true',
     });
+
+    console.log('Deploying factory with salt:', feeCollectorFactorySalt);
 
     await deployAndGetContractWithCreate3({
         contractName: 'FeeCollectorFactory',
@@ -36,6 +44,7 @@ module.exports = async ({ deployments }) => {
         create3Deployer: constants.CREATE3_DEPLOYER_CONTRACT[chainId],
         salt: FEE_COLLECTOR_FACTORY_SALT,
         deployments,
+        skipVerify: process.env.OPS_SKIP_VERIFY === 'true',
     });
 };
 
