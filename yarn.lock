@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@1inch/solidity-utils@6.9.10":
-  version "6.9.10"
-  resolved "https://registry.yarnpkg.com/@1inch/solidity-utils/-/solidity-utils-6.9.10.tgz#089a03585024dc44bf244ecb2581997d8600005a"
-  integrity sha512-32pJ2cTuXLV55nQBJ9rxkFvzf+MYHPtNEEI3iDYxztnEkh8pPVLbO9DDQb/fVphuaTNQ/g8dE+Prprq5Cm+Tmg==
+"@1inch/solidity-utils@6.9.11":
+  version "6.9.11"
+  resolved "https://registry.yarnpkg.com/@1inch/solidity-utils/-/solidity-utils-6.9.11.tgz#c9f48846c06292ddf5a9d6370878408746649b96"
+  integrity sha512-LtOAyA1PDZDtfgsUVRf60bcjBXNHuWgdLxibst1ukavc9+7zNQB+t/A6YWak/N2qd+hGbLsDXAQIyU4xTOoP/g==
   dependencies:
     "@metamask/eth-sig-util" "8.0.0"
     "@nomicfoundation/hardhat-ethers" "3.0.8"
@@ -6777,7 +6777,7 @@ safe-array-concat@^1.1.3:
     has-symbols "^1.1.0"
     isarray "^2.0.5"
 
-safe-buffer@^5.0.1, safe-buffer@^5.1.0, safe-buffer@^5.1.1, safe-buffer@^5.1.2, safe-buffer@^5.2.1, safe-buffer@~5.2.0:
+safe-buffer@^5.0.1, safe-buffer@^5.1.0, safe-buffer@^5.1.1, safe-buffer@^5.1.2, safe-buffer@^5.2.0, safe-buffer@^5.2.1, safe-buffer@~5.2.0:
   version "5.2.1"
   resolved "https://registry.yarnpkg.com/safe-buffer/-/safe-buffer-5.2.1.tgz#1eaf9fa9bdb1fdd4ec75f58f9cdb4e6b7827eec6"
   integrity sha512-rp3So07KcdmmKbGvgaNxQSJr7bGVSVk5S9Eq1F+ppbRo70+YeaDxkw5Dd8NPN+GD6bjnYm2VuPuCXmpuYvmCXQ==
