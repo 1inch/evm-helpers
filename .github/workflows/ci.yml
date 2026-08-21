@@ -9,10 +9,10 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v6
         with:
-          node-version: 20
+          node-version: 22
           cache: 'yarn'
       - run: yarn
       - run: yarn lint
@@ -20,10 +20,10 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v6
         with:
-          node-version: 20
+          node-version: 22
           cache: 'yarn'
       - run: yarn
       - run: yarn test
@@ -37,10 +37,10 @@ jobs:
   coverage:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v6
         with:
-          node-version: 20
+          node-version: 22
           cache: 'yarn'
       - run: yarn
       - run: yarn coverage
@@ -50,4 +50,4 @@ jobs:
           ARBITRUM_RPC_URL: ${{ secrets.ARBITRUM_RPC_URL }}
           MATIC_RPC_URL: ${{ secrets.MATIC_RPC_URL }}
           SONIC_RPC_URL: ${{ secrets.SONIC_RPC_URL }}
-      - uses: codecov/codecov-action@v3
+      - uses: codecov/codecov-action@v7
