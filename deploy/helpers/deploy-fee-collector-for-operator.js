@@ -1,6 +1,6 @@
 const constants = require('../../config/constants');
 
-async function deployFeeCollectorForOperator(hre, chainId, feeCollectorOperatorName, operatorAddress) {
+async function deployFeeCollectorForOperator (hre, chainId, feeCollectorOperatorName, operatorAddress) {
     const { ethers } = hre;
 
     console.log('Deploying FeeCollector for operator name:', feeCollectorOperatorName);
@@ -19,7 +19,7 @@ async function deployFeeCollectorForOperator(hre, chainId, feeCollectorOperatorN
     console.log('FeeCollector deployed at', feeCollectorAddress);
 
     const feeCollector = await ethers.getContractAt('FeeCollector', feeCollectorAddress);
-    tx = await feeCollector.setOperator(operatorAddress);
+    const tx = await feeCollector.setOperator(operatorAddress);
     await tx.wait();
     console.log('feeCollectorOperator set to', operatorAddress);
 
