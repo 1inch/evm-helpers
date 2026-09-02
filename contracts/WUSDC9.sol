@@ -15,7 +15,7 @@
 
 pragma solidity ^0.4.18;
 
-contract WETH9 {
+contract WUSDC9 {
     string public name     = "Wrapped USDC";
     string public symbol   = "WUSDC";
     uint8  public decimals = 18;
